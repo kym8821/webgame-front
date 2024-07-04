@@ -1,15 +1,7 @@
-import ProjectileFrame from "./projectileFrame";
+import { ObjectDrawer, Position } from '../objectDrawer';
+import ProjectileFrame from './projectileFrame';
 
-interface Position {
-  posX: number;
-  posY: number;
-  boundX: number;
-  boundY: number;
-  width: number;
-  height: number;
-}
-
-const getProjectilePosition = (canvas: HTMLCanvasElement, projectile: ProjectileFrame) => {
+const getPosition = (canvas: HTMLCanvasElement, projectile: ProjectileFrame) => {
   const info = projectile.info;
   const posX = info.posX * (canvas.width * 0.01);
   const posY = info.posY * canvas.height * 0.4 - info.height * (canvas.width * 0.0005);
@@ -27,7 +19,7 @@ const getProjectilePosition = (canvas: HTMLCanvasElement, projectile: Projectile
   } as Position;
 };
 
-const drawProjectiles = (
+const draw = (
   canvas: HTMLCanvasElement | null,
   context: CanvasRenderingContext2D | null,
   projectiles: ProjectileFrame[],
@@ -45,7 +37,7 @@ const drawProjectiles = (
     }
     const frameNumber = info.frameNumber;
     const frameSize = info.frameSize;
-    const position = getProjectilePosition(canvas, monster);
+    const position = getPosition(canvas, monster);
     context.drawImage(frame[frameNumber], position.posX, position.posY, position.width, position.height);
     if (toChange) {
       projectiles[i].info.posX += 1;
@@ -54,5 +46,5 @@ const drawProjectiles = (
   }
 };
 
-const projectileDrawer = { drawProjectiles, getProjectilePosition };
+const projectileDrawer: ObjectDrawer = { draw, getPosition };
 export default projectileDrawer;

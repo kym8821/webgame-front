@@ -1,15 +1,8 @@
-import MonsterFrame from "./monsterFrame";
+import { ObjectDrawer, Position } from '../objectDrawer';
+import { ObjectFrame } from '../objectFrame';
+import MonsterFrame from './monsterFrame';
 
-interface Position {
-  posX: number;
-  posY: number;
-  boundX: number;
-  boundY: number;
-  width: number;
-  height: number;
-}
-
-const getMonsterPosition = (canvas: HTMLCanvasElement, monster: MonsterFrame) => {
+const getPosition = (canvas: HTMLCanvasElement, monster: MonsterFrame) => {
   const info = monster.info;
   const posX = info.posX * (canvas.width * 0.01);
   const posY = info.posY * canvas.height * 0.4 - info.height * (canvas.width * 0.0005);
@@ -27,7 +20,7 @@ const getMonsterPosition = (canvas: HTMLCanvasElement, monster: MonsterFrame) =>
   } as Position;
 };
 
-const drawMonsters = (
+const draw = (
   canvas: HTMLCanvasElement | null,
   context: CanvasRenderingContext2D | null,
   monsters: MonsterFrame[],
@@ -45,7 +38,7 @@ const drawMonsters = (
     }
     const frameNumber = info.frameNumber;
     const frameSize = info.frameSize;
-    const position = getMonsterPosition(canvas, monster);
+    const position = getPosition(canvas, monster);
     context.drawImage(frame[frameNumber], position.posX, position.posY, position.width, position.height);
     if (toChange) {
       monsters[i].info.posX += 1;
@@ -54,5 +47,5 @@ const drawMonsters = (
   }
 };
 
-const monsterDrawer = { drawMonsters, getMonsterPosition };
+const monsterDrawer: ObjectDrawer = { draw, getPosition };
 export default monsterDrawer;

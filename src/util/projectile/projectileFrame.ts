@@ -1,4 +1,6 @@
-interface ProjectileFrame {
+import { ObjectFrame } from '../objectFrame';
+
+interface ProjectileFrame extends ObjectFrame {
   info: {
     type: string;
     frameSize: number;
@@ -9,7 +11,6 @@ interface ProjectileFrame {
     height: number;
     damage: number;
   };
-  frame: HTMLImageElement[];
 }
 
 export default ProjectileFrame;

@@ -1,8 +1,8 @@
-import monsterImages from "../assets/images/monsterImages";
-import MonsterFrame from "./monsterFrame";
-import monsterInfo, { MonsterInfo } from "./monsterInfo";
+import monsterImages from '../../assets/images/monster/monsterImages';
+import MonsterFrame from './monsterFrame';
+import monsterInfo, { MonsterInfo } from './monsterInfo';
 
-export function getRandomMonster() {
+export function getNextObject() {
   const monsters = Object.values(monsterInfo);
   let totalSpawnRate = 0;
   monsters.forEach((monster) => {
@@ -17,7 +17,7 @@ export function getRandomMonster() {
   return undefined;
 }
 
-const loadMonsterFrames = (monsterInfo: MonsterInfo) => {
+const loadFrames = (monsterInfo: MonsterInfo) => {
   const monster: MonsterFrame = {
     info: {
       type: monsterInfo.name,
@@ -45,6 +45,6 @@ const loadMonsterFrames = (monsterInfo: MonsterInfo) => {
   return undefined;
 };
 
-const monsterLoader = { loadMonsterFrames, getRandomMonster };
+const monsterLoader = { loadFrames, getNextObject };
 
 export default monsterLoader;
