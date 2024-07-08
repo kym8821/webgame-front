@@ -1,13 +1,13 @@
-import { ProjectileManager } from "../../util/projectile/projectileManager";
-import "../../assets/css/canvasStyle.css";
-import { useEffect, useRef } from "react";
-import projectileDrawer from "../../util/projectile/projectileDrawer";
-import { AnimationFrameInfo } from "../../util/animationFrameInfo";
-import { LauncherManager } from "../../util/launcher/launcherManager";
-import projectileInfo from "../../util/projectile/projectileInfo";
-import { getProjectileFrame } from "../../util/projectile/projectileFrame";
-import projectileLoader from "../../util/projectile/projectileLoader";
-import { MonsterManager } from "../../util/monster/monsterManager";
+import { ProjectileManager } from '../../util/projectile/projectileManager';
+import '../../assets/css/canvasStyle.css';
+import { useEffect, useRef } from 'react';
+import projectileDrawer from '../../util/projectile/projectileDrawer';
+import { AnimationFrameInfo } from '../../util/animationFrameInfo';
+import { LauncherManager } from '../../util/launcher/launcherManager';
+import projectileInfo from '../../util/projectile/projectileInfo';
+import { getProjectileFrame } from '../../util/projectile/projectileFrame';
+import projectileLoader from '../../util/projectile/projectileLoader';
+import { MonsterManager } from '../../util/monster/monsterManager';
 
 interface ProjectileScreenProps {
   projectileRef: ProjectileManager;
@@ -45,7 +45,7 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef }: Projectile
       launchers.forEach((launcher) => {
         const projectileId = launcher.info.projectileId;
         if (!(projectileId in projectileInfo)) {
-          alert("invalid projectile id");
+          alert('invalid projectile id');
           return;
         }
         const projectile = projectileInfo[projectileId];
@@ -62,7 +62,7 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef }: Projectile
     canvas.width = window.innerWidth;
     canvas.height = canvas.width / 2;
 
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext('2d');
     if (context) contextRef.current = context;
 
     function windowResize() {
@@ -72,7 +72,7 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef }: Projectile
     }
     setProjectileAnimateTimer();
     setProjectileGenerateTimer();
-    window.addEventListener("resize", windowResize);
+    window.addEventListener('resize', windowResize);
     return () => {
       const [animationFrame, generationFrame] = [projectileRef.animationFrame, projectileRef.generationFrame];
       if (generationFrame && generationFrame.animationFrame) cancelAnimationFrame(generationFrame.animationFrame);

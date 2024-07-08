@@ -1,5 +1,4 @@
-import { AnimationFrameInfo } from "./animationFrameInfo";
-import { ObjectFrame } from "./objectFrame";
+import { AnimationFrameInfo } from './animationFrameInfo';
 
 export interface CanvasObjectManager {
   objects: any[];

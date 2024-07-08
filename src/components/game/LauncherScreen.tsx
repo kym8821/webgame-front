@@ -1,17 +1,17 @@
-import { useEffect, useRef, useState } from "react";
-import { MonsterManager } from "../../util/monster/monsterManager";
-import launcherLoader from "../../util/launcher/launcherLoader";
-import launcherInfo from "../../util/launcher/launcherInfo";
-import { LauncherManager } from "../../util/launcher/launcherManager";
-import launcherDrawer from "../../util/launcher/launcherDrawer";
-import "../../assets/css/canvasStyle.css";
-import { ProjectileManager } from "../../util/projectile/projectileManager";
-import { AnimationFrameInfo } from "../../util/animationFrameInfo";
-import { ObjectDrawer } from "../../util/objectDrawer";
-import { timeStamp } from "console";
-import projectileInfo from "../../util/projectile/projectileInfo";
-import { ProjectileFrame, getProjectileFrame } from "../../util/projectile/projectileFrame";
-import { objectType } from "../../util/objectInfo";
+import { useEffect, useRef, useState } from 'react';
+import { MonsterManager } from '../../util/monster/monsterManager';
+import launcherLoader from '../../util/launcher/launcherLoader';
+import launcherInfo from '../../util/launcher/launcherInfo';
+import { LauncherManager } from '../../util/launcher/launcherManager';
+import launcherDrawer from '../../util/launcher/launcherDrawer';
+import '../../assets/css/canvasStyle.css';
+import { ProjectileManager } from '../../util/projectile/projectileManager';
+import { AnimationFrameInfo } from '../../util/animationFrameInfo';
+import { ObjectDrawer } from '../../util/objectDrawer';
+import { timeStamp } from 'console';
+import projectileInfo from '../../util/projectile/projectileInfo';
+import { ProjectileFrame, getProjectileFrame } from '../../util/projectile/projectileFrame';
+import { objectType } from '../../util/objectInfo';
 
 type shootScreenProps = {
   launcherRef: LauncherManager;
@@ -50,24 +50,24 @@ const ShootScreen = ({ launcherRef, monsterRef, projectileRef }: shootScreenProp
     canvas.width = window.innerWidth;
     canvas.height = canvas.width * 0.5;
 
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext('2d');
     if (context) {
       contextRef.current = context;
     }
 
     const windowResize = () => {
-      console.log("resize : redraw launcher");
+      console.log('resize : redraw launcher');
       canvas.width = window.innerWidth;
       canvas.height = canvas.width * 0.5;
       launcherDrawer.draw(canvas, context, launcherRef, monsterRef, false);
     };
-    window.addEventListener("resize", windowResize);
+    window.addEventListener('resize', windowResize);
     setLauncherAngleTimer();
     return () => {
       const [animationFrame, generationFrame] = [launcherRef.animationFrame, launcherRef.generationFrame];
       if (generationFrame && generationFrame.animationFrame) cancelAnimationFrame(generationFrame.animationFrame);
       if (animationFrame.animationFrame) cancelAnimationFrame(animationFrame.animationFrame);
-      window.removeEventListener("resize", windowResize);
+      window.removeEventListener('resize', windowResize);
     };
   }, []);
 

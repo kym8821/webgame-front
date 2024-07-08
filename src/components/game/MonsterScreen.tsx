@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { MonsterManager } from "../../util/monster/monsterManager";
-import { CanvasObjectManager } from "../../util/canvasObjectManager";
-import { ObjectLoader } from "../../util/objectLoader";
-import { AnimationFrameInfo } from "../../util/animationFrameInfo";
-import { ObjectDrawer } from "../../util/objectDrawer";
-import monsterDrawer from "../../util/monster/monsterDrawer";
-import monsterLoader from "../../util/monster/monsterLoader";
-import "../../assets/css/canvasStyle.css";
+import { useEffect, useRef, useState } from 'react';
+import { MonsterManager } from '../../util/monster/monsterManager';
+import { CanvasObjectManager } from '../../util/canvasObjectManager';
+import { ObjectLoader } from '../../util/objectLoader';
+import { AnimationFrameInfo } from '../../util/animationFrameInfo';
+import { ObjectDrawer } from '../../util/objectDrawer';
+import monsterDrawer from '../../util/monster/monsterDrawer';
+import monsterLoader from '../../util/monster/monsterLoader';
+import '../../assets/css/canvasStyle.css';
 
 type monsterScreenProps = {
   monsterRef: MonsterManager;
@@ -67,13 +67,13 @@ const MonsterScreen = ({ monsterRef }: monsterScreenProps) => {
     canvas.width = window.innerWidth;
     canvas.height = canvas.width * 0.5;
 
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext('2d');
     if (context) {
       contextRef.current = context;
     }
 
     canvas.onclick = (e: MouseEvent) => {
-      console.log("click");
+      console.log('click');
       const x = e.x;
       const y = e.y;
       const delta = 10;
@@ -94,19 +94,20 @@ const MonsterScreen = ({ monsterRef }: monsterScreenProps) => {
     };
 
     const windowResize = () => {
-      console.log("resize : redraw monster");
+      console.log('resize : redraw monster');
       canvas.width = window.innerWidth;
       canvas.height = canvas.width * 0.5;
       monsterDrawer.draw(canvasRef.current, contextRef.current, monsterRef.objects, false); // 리사이즈 시 이미지 재그리기
     };
-    window.addEventListener("resize", windowResize);
+    window.addEventListener('resize', windowResize);
     setObjectTimer(monsterRef, monsterLoader);
     return () => {
-      window.removeEventListener("resize", windowResize);
+      window.removeEventListener('resize', windowResize);
       const monsterAnimationFrame = monsterRef.animationFrame;
       const monsterGenerationFrame = monsterRef.generationFrame;
       if (monsterAnimationFrame.animationFrame) cancelAnimationFrame(monsterAnimationFrame.animationFrame);
-      if (monsterGenerationFrame && monsterGenerationFrame.animationFrame) cancelAnimationFrame(monsterGenerationFrame.animationFrame);
+      if (monsterGenerationFrame && monsterGenerationFrame.animationFrame)
+        cancelAnimationFrame(monsterGenerationFrame.animationFrame);
     };
   }, []);
 

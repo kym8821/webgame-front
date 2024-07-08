@@ -1,13 +1,13 @@
-import LauncherScreen from "../../components/game/LauncherScreen";
-import MonsterScreen from "../../components/game/MonsterScreen";
-import "../../assets/css/canvasStyle.css";
-import { LauncherManager } from "../../util/launcher/launcherManager";
-import { useEffect, useRef } from "react";
-import { MonsterManager } from "../../util/monster/monsterManager";
-import { ProjectileManager } from "../../util/projectile/projectileManager";
-import ProjectileScreen from "../../components/game/ProjectileScreen";
-import monsterDrawer from "../../util/monster/monsterDrawer";
-import MapScreen from "../../components/game/mapScreen";
+import LauncherScreen from '../../components/game/LauncherScreen';
+import MonsterScreen from '../../components/game/MonsterScreen';
+import '../../assets/css/canvasStyle.css';
+import { LauncherManager } from '../../util/launcher/launcherManager';
+import { useEffect, useRef } from 'react';
+import { MonsterManager } from '../../util/monster/monsterManager';
+import { ProjectileManager } from '../../util/projectile/projectileManager';
+import ProjectileScreen from '../../components/game/ProjectileScreen';
+import monsterDrawer from '../../util/monster/monsterDrawer';
+import MapScreen from '../../components/game/mapScreen';
 
 const GamePage = () => {
   const projectileRef = useRef<ProjectileManager>({
@@ -55,9 +55,17 @@ const GamePage = () => {
   return (
     <div className="gamePage">
       <div>game page</div>
-      <LauncherScreen launcherRef={launcherRef.current} monsterRef={monsterRef.current} projectileRef={projectileRef.current} />
+      <LauncherScreen
+        launcherRef={launcherRef.current}
+        monsterRef={monsterRef.current}
+        projectileRef={projectileRef.current}
+      />
       <MonsterScreen monsterRef={monsterRef.current} />
-      <ProjectileScreen monsterRef={monsterRef.current} projectileRef={projectileRef.current} launcherRef={launcherRef.current} />
+      <ProjectileScreen
+        monsterRef={monsterRef.current}
+        projectileRef={projectileRef.current}
+        launcherRef={launcherRef.current}
+      />
       <MapScreen />
     </div>
   );
