@@ -1,0 +1,24 @@
+.gamePage {
+  position: relative;
+}
+
+.shootScreen {
+  position: absolute;
+}
+
+.monsterScreen {
+  position: absolute;
+}
+
+.projectileScreen {
+  position: absolute;
+}
+
+.mapScreen {
+  position: absolute;
+  z-index: -5;
+}
+
+canvas {
+  aspect-ratio: 1920/1080 auto;
+}

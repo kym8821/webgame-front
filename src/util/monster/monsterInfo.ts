@@ -1,4 +1,4 @@
-import { ObjectInfo, objectType } from '../objectInfo';
+import { ObjectInfo, objectType } from "../objectInfo";
 
 export interface MonsterInfo extends ObjectInfo {
   lifePoint: number;
@@ -8,7 +8,7 @@ export interface MonsterInfo extends ObjectInfo {
 const monsterInfo: Record<string, MonsterInfo> = {
   greenSlime: {
     type: objectType.monster,
-    name: 'greenSlime',
+    name: "greenSlime",
     frameSize: 2,
     spawnRate: 80,
     width: 100,
@@ -18,7 +18,7 @@ const monsterInfo: Record<string, MonsterInfo> = {
 
   blueSlime: {
     type: objectType.monster,
-    name: 'blueSlime',
+    name: "blueSlime",
     frameSize: 2,
     spawnRate: 80,
     width: 100,
@@ -28,7 +28,7 @@ const monsterInfo: Record<string, MonsterInfo> = {
 
   skeleton: {
     type: objectType.monster,
-    name: 'skeleton',
+    name: "skeleton",
     frameSize: 4,
     spawnRate: 50,
     width: 100,

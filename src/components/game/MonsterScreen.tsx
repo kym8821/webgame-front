@@ -1,55 +1,29 @@
-import { useEffect, useRef, useState } from 'react';
-import monsterLoader from '../../util/monster/monsterLoader';
-import { AnimationFrameInfo } from '../../util/animationFrameInfo';
-import monsterDrawer from '../../util/monster/monsterDrawer';
-import { MonsterManager } from '../../util/monster/monsterManager';
-import { ObjectDrawer } from '../../util/objectDrawer';
-import { CanvasObjectManager } from '../../util/canvasObjectManager';
-import { ObjectLoader } from '../../util/objectLoader';
-import launcherLoader from '../../util/launcher/launcherLoader';
-import launcherInfo from '../../util/launcher/launcherInfo';
-import { LauncherManager } from '../../util/launcher/launcherManager';
-import launcherDrawer from '../../util/launcher/launcherDrawer';
+import { useEffect, useRef, useState } from "react";
+import { MonsterManager } from "../../util/monster/monsterManager";
+import { CanvasObjectManager } from "../../util/canvasObjectManager";
+import { ObjectLoader } from "../../util/objectLoader";
+import { AnimationFrameInfo } from "../../util/animationFrameInfo";
+import { ObjectDrawer } from "../../util/objectDrawer";
+import monsterDrawer from "../../util/monster/monsterDrawer";
+import monsterLoader from "../../util/monster/monsterLoader";
+import "../../assets/css/canvasStyle.css";
 
-const GameScreen = () => {
+type monsterScreenProps = {
+  monsterRef: MonsterManager;
+};
+
+const MonsterScreen = ({ monsterRef }: monsterScreenProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   const [pointer, setPointer] = useState({
     x: -1,
     y: -1,
   });
-  const monsterRef = useRef<MonsterManager>({
-    animationFrame: {
-      lastFrameTime: 0,
-      interval: 500,
-      animationFrame: null,
-    },
-    generationFrame: {
-      lastFrameTime: 0,
-      interval: 3000,
-      animationFrame: null,
-    },
-    objects: [],
-  });
-
-  const launcherRef = useRef<LauncherManager>({
-    animationFrame: {
-      lastFrameTime: 0,
-      interval: 500,
-      animationFrame: null,
-    },
-    generationFrame: {
-      lastFrameTime: 0,
-      interval: 3000,
-      animationFrame: null,
-    },
-    objects: [],
-  });
 
   // 일정 주기마다 오브젝트를 생성 / 갱신하기 위한 타이머 설정 함수
   function setObjectTimer(objectManager: CanvasObjectManager, objectLoader: ObjectLoader) {
     const { objects, animationFrame, generationFrame } = objectManager;
-
+    if (!generationFrame) return;
     // 오브젝트를 생성하는 함수
     const generate = () => {
       const object = objectLoader.getNextObject();
@@ -87,38 +61,28 @@ const GameScreen = () => {
     animate(objects, animationFrame, monsterDrawer);
   }
 
-  function generateLauncher() {
-    const launcher = launcherLoader.loadFrames(launcherInfo.lv1);
-    if (launcher) launcherRef.current.objects.push(launcher);
-    const step = () => {
-      launcherDrawer.draw(canvasRef.current, contextRef.current, launcherRef.current.objects, true);
-      launcherRef.current.animationFrame.animationFrame = requestAnimationFrame(step);
-    };
-    launcherRef.current.animationFrame.animationFrame = requestAnimationFrame(step);
-    //function animate() {}
-  }
-
   useEffect(() => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     canvas.width = window.innerWidth;
     canvas.height = canvas.width * 0.5;
 
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext("2d");
     if (context) {
       contextRef.current = context;
     }
 
     canvas.onclick = (e: MouseEvent) => {
+      console.log("click");
       const x = e.x;
       const y = e.y;
       const delta = 10;
-      const { objects } = monsterRef.current;
+      const { objects } = monsterRef;
       objects.forEach((monster, index) => {
         const { posX, posY, boundX, boundY } = monsterDrawer.getPosition(canvas, monster);
         if (posX - delta <= x && x <= boundX + delta && posY - delta <= y && y <= boundY + delta) {
           objects.splice(index, 1);
-          monsterDrawer.draw(canvasRef.current, contextRef.current, monsterRef.current.objects, false); // 리사이즈 시 이미지 재그리기
+          monsterDrawer.draw(canvasRef.current, contextRef.current, monsterRef.objects, false); // 리사이즈 시 이미지 재그리기
         }
       });
     };
@@ -130,30 +94,27 @@ const GameScreen = () => {
     };
 
     const windowResize = () => {
+      console.log("resize : redraw monster");
       canvas.width = window.innerWidth;
       canvas.height = canvas.width * 0.5;
-      monsterDrawer.draw(canvasRef.current, contextRef.current, monsterRef.current.objects, false); // 리사이즈 시 이미지 재그리기
+      monsterDrawer.draw(canvasRef.current, contextRef.current, monsterRef.objects, false); // 리사이즈 시 이미지 재그리기
     };
-    window.addEventListener('resize', windowResize);
-    //setMonsterGenerationTimer();
-    setObjectTimer(monsterRef.current, monsterLoader);
-    generateLauncher();
+    window.addEventListener("resize", windowResize);
+    setObjectTimer(monsterRef, monsterLoader);
     return () => {
-      window.removeEventListener('resize', windowResize);
-      const monsterAnimationFrame = monsterRef.current.animationFrame;
-      const monsterGenerationFrame = monsterRef.current.generationFrame;
+      window.removeEventListener("resize", windowResize);
+      const monsterAnimationFrame = monsterRef.animationFrame;
+      const monsterGenerationFrame = monsterRef.generationFrame;
       if (monsterAnimationFrame.animationFrame) cancelAnimationFrame(monsterAnimationFrame.animationFrame);
-      if (monsterGenerationFrame.animationFrame) cancelAnimationFrame(monsterGenerationFrame.animationFrame);
+      if (monsterGenerationFrame && monsterGenerationFrame.animationFrame) cancelAnimationFrame(monsterGenerationFrame.animationFrame);
     };
   }, []);
 
   return (
-    <div>
-      <div>x:{pointer.x}</div>
-      <div>y:{pointer.y}</div>
+    <div className="monsterScreen">
       <canvas ref={canvasRef}></canvas>
     </div>
   );
 };
 
-export default GameScreen;
+export default MonsterScreen;

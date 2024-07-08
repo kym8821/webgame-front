@@ -1,6 +1,7 @@
-import launcherImages from '../../assets/images/launcher/launcherImages';
-import { LauncherFrame } from './launcherFrame';
-import { LauncherInfo } from './launcherInfo';
+import launcherImages from "../../assets/images/launcher/launcherImages";
+import projectileInfo from "../projectile/projectileInfo";
+import { LauncherFrame } from "./launcherFrame";
+import { LauncherInfo } from "./launcherInfo";
 
 const loadFrames = (launcherInfo: LauncherInfo) => {
   const launcher: LauncherFrame = {
@@ -12,7 +13,9 @@ const loadFrames = (launcherInfo: LauncherInfo) => {
       frameNumber: 0,
       width: launcherInfo.width,
       height: launcherInfo.height,
-      radian: 0,
+      angle: 0,
+      projectileId: projectileInfo.lv1.name,
+      projectileSpeed: launcherInfo.projectileSpeed,
     },
     frame: [],
   };

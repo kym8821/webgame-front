@@ -1,6 +1,8 @@
-import monsterImages from '../../assets/images/monster/monsterImages';
-import MonsterFrame from './monsterFrame';
-import monsterInfo, { MonsterInfo } from './monsterInfo';
+import monsterImages from "../../assets/images/monster/monsterImages";
+import MonsterFrame from "./monsterFrame";
+import monsterInfo, { MonsterInfo } from "./monsterInfo";
+
+let monsterId = 1;
 
 export function getNextObject() {
   const monsters = Object.values(monsterInfo);
@@ -20,14 +22,15 @@ export function getNextObject() {
 const loadFrames = (monsterInfo: MonsterInfo) => {
   const monster: MonsterFrame = {
     info: {
+      id: monsterId++,
       type: monsterInfo.name,
       posX: 1,
-      //posY: Math.random() * 3,
       posY: 1,
       frameSize: monsterInfo.frameSize,
       frameNumber: 0,
       width: monsterInfo.width,
       height: monsterInfo.height,
+      lifePoint: monsterInfo.lifePoint,
     },
     frame: [],
   };

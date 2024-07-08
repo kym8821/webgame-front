@@ -1,4 +1,4 @@
-import { ObjectFrame } from '../objectFrame';
+import { ObjectFrame } from "../objectFrame";
 
 export interface LauncherFrame extends ObjectFrame {
   info: {
@@ -9,6 +9,8 @@ export interface LauncherFrame extends ObjectFrame {
     posY: number;
     width: number;
     height: number;
-    radian: number;
+    angle: number;
+    projectileId: string;
+    projectileSpeed: number;
   };
 }
