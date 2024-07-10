@@ -5,8 +5,8 @@ export interface LauncherFrame extends ObjectFrame {
     type: string;
     frameSize: number;
     frameNumber: number;
-    posX: number;
-    posY: number;
+    mapStartX: number;
+    mapStartY: number;
     width: number;
     height: number;
     angle: number;

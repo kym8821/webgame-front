@@ -18,22 +18,3 @@ export interface ProjectileFrame extends ObjectFrame {
   };
   hitMonsters: number[];
 }
-
-export function getProjectileFrame(projectile: ProjectileInfo, launcher: LauncherFrame) {
-  return {
-    frame: [],
-    info: {
-      type: objectType.projectile,
-      frameSize: projectile.frameSize,
-      frameNumber: 0,
-      launcherX: launcher.info.posX,
-      launcherY: launcher.info.posY,
-      move: 0,
-      angle: launcher.info.angle,
-      width: projectile.width,
-      height: projectile.height,
-      damage: projectile.damage,
-    },
-    hitMonsters: [],
-  } as ProjectileFrame;
-}

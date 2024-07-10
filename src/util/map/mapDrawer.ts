@@ -1,8 +1,7 @@
-import mapImages from "../../assets/images/map/mapImages";
-import { ObjectDrawer, Position } from "../objectDrawer";
-import { getMapInfoById } from "./mapInfo";
+import { Position } from "../Position";
+import { getMapInfoById } from "./mapElementInfo";
 
-function getPosition(x: number, y: number, blockSize: number) {
+function MapToCanvasCoord(x: number, y: number, blockSize: number) {
   const [posX, posY] = [x * blockSize, y * blockSize];
   const position: Position = {
     posX: posX,
@@ -15,26 +14,31 @@ function getPosition(x: number, y: number, blockSize: number) {
   return position;
 }
 
+function canvasToMapCoord(x: number, y: number, blockSize: number) {
+  const [posX, posY] = [Math.floor(x / blockSize), Math.floor(y / blockSize)];
+  return [posX, posY];
+}
+
 function draw(context: CanvasRenderingContext2D, map: number[][], blockSize: number) {
+  console.log(blockSize);
   for (let i = 0; i < map.length; i++) {
     for (let j = 0; j < map[i].length; j++) {
       const mapId = map[i][j];
+      if (mapId < 0) continue;
       const currentMapInfo = getMapInfoById(mapId);
       const image = new Image();
       image.src = currentMapInfo.src;
-      console.log(currentMapInfo, mapId);
       image.onload = () => {
-        const position = getPosition(j, i, blockSize);
+        const position = MapToCanvasCoord(j, i, blockSize);
         context.save();
-        console.log("draw");
         context.translate(position.posX, position.posY);
-        context.drawImage(image, 0, 0, blockSize, blockSize);
+        context.drawImage(image, 0, 0, blockSize * currentMapInfo.width, blockSize * currentMapInfo.height);
         context.restore();
       };
     }
   }
 }
 
-const mapDrawer: ObjectDrawer = { draw, getPosition };
+const mapDrawer = { draw, MapToCanvasCoord, canvasToMapCoord };
 
 export default mapDrawer;

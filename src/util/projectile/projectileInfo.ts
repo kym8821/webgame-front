@@ -11,7 +11,7 @@ const projectileInfo: Record<string, ProjectileInfo> = {
     frameSize: 1,
     damage: 1,
     width: 100,
-    height: 20,
+    height: 15,
   },
 };
 

@@ -6,8 +6,3 @@ export interface Position {
   width: number;
   height: number;
 }
-
-export interface ObjectDrawer {
-  draw: Function;
-  getPosition: Function;
-}
