@@ -2,11 +2,11 @@ import { ReactNode, useState } from "react";
 import style from "../../assets/css/gameScreen.module.css";
 import ObjectManageButton from "../button/ObjectManageButton";
 import ObjectCraftButton from "../button/ObjectCraftButton";
-import { MapInfo } from "../../util/map/mapInfo";
+import { MapManager } from "../../util/map/mapManager";
 
 interface GameScreenFooterType {
   setModal: Function;
-  mapInfo: MapInfo;
+  mapInfo: MapManager;
 }
 
 const GameScreenFooter = ({ setModal, mapInfo }: GameScreenFooterType) => {

@@ -1,6 +1,6 @@
 import launcherImages from "../../assets/images/launcher/launcherImages";
 import mapDrawer from "../map/mapDrawer";
-import { MapInfo } from "../map/mapInfo";
+import { MapManager } from "../map/mapManager";
 import MonsterElementHandler from "../monster/monsterElementHandler";
 import MonsterFrame from "../monster/monsterFrame";
 import { MonsterManager } from "../monster/monsterManager";
@@ -10,18 +10,18 @@ import { LauncherFrame } from "./launcherFrame";
 import { LauncherInfo } from "./launcherInfo";
 
 export default class LauncherElementHandler {
-  mapInfo: MapInfo;
+  mapManager: MapManager;
   monsterHandler: MonsterElementHandler;
 
-  constructor(mapInfo: MapInfo) {
-    this.mapInfo = mapInfo;
-    this.monsterHandler = new MonsterElementHandler(mapInfo);
+  constructor(mapManager: MapManager) {
+    this.mapManager = mapManager;
+    this.monsterHandler = new MonsterElementHandler(mapManager);
   }
 
   getPosition = (canvas: HTMLCanvasElement, launcher: LauncherFrame) => {
     const info = launcher.info;
     const ratio = (window.innerWidth * 0.8) / canvas.width;
-    const position = mapDrawer.MapToCanvasCoord(info.mapStartX, info.mapStartY, this.mapInfo.blockSize);
+    const position = mapDrawer.MapToCanvasCoord(info.mapStartX, info.mapStartY, this.mapManager.blockSize);
     const posX = position.posX;
     const posY = position.posY;
     const width = info.width * (canvas.width * 0.0005);
@@ -59,7 +59,6 @@ export default class LauncherElementHandler {
     toChange: boolean
   ) => {
     if (!canvas || !context) return;
-    console.log(launchers);
     context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < launchers.length; i++) {
       const launcher = launchers[i];
@@ -68,7 +67,7 @@ export default class LauncherElementHandler {
       const frameNumber = info.frameNumber;
       const position = this.getPosition(canvas, launcher);
       context.save();
-      context.translate(position.posX + this.mapInfo.blockSize / 2, position.posY + this.mapInfo.blockSize / 2);
+      context.translate(position.posX + this.mapManager.blockSize / 2, position.posY + this.mapManager.blockSize / 2);
       if (monsters.objects.length > 0 && monsterOnFront) {
         launcher.info.angle = this.getLauncherAngle(canvas, monsterOnFront, launcher);
         context.rotate(launcher.info.angle);

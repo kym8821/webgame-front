@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { MonsterManager } from "../../util/monster/monsterManager";
-import { AnimationFrameInfo } from "../../util/animationFrameInfo";
+import { AnimationFrameInfo } from "../../util/object/animationFrameInfo";
 import style from "../../assets/css/gameScreen.module.css";
-import { MapInfo } from "../../util/map/mapInfo";
+import { MapManager } from "../../util/map/mapManager";
 import MonsterElementHandler from "../../util/monster/monsterElementHandler";
 import { getCurrentBlockSize } from "../../util/windowSize";
 
 type monsterScreenProps = {
   monsterRef: React.MutableRefObject<MonsterManager>;
-  mapInfo: MapInfo;
+  mapManager: React.MutableRefObject<MapManager>;
 };
 
-const MonsterScreen = ({ monsterRef, mapInfo }: monsterScreenProps) => {
+const MonsterScreen = ({ monsterRef, mapManager }: monsterScreenProps) => {
   const [canvasRef, contextRef] = [monsterRef.current.canvasRef, monsterRef.current.contextRef];
-  const monsterElementHandler = new MonsterElementHandler(mapInfo);
+  const monsterElementHandler = new MonsterElementHandler(mapManager.current);
   const lastUpdatedBlockSize = useRef<number>(0);
   const [pointer, setPointer] = useState({
     x: -1,
@@ -36,7 +36,7 @@ const MonsterScreen = ({ monsterRef, mapInfo }: monsterScreenProps) => {
     const generate = () => {
       const object = monsterElementHandler.getNextObject();
       if (object) {
-        const objectFrame = monsterElementHandler.loadFrames(object, 0, 5);
+        const objectFrame = monsterElementHandler.loadFrames(object, 0, 3);
         if (objectFrame) monsterRef.current.objects.push(objectFrame);
       }
     };

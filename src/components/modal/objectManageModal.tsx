@@ -1,12 +1,12 @@
 import { useState } from "react";
 import style from "../../assets/css/gameScreen.module.css";
-import { MapInfo } from "../../util/map/mapInfo";
+import { MapManager } from "../../util/map/mapManager";
 import MapComponentDrawer from "../button/MapComponentDrawer";
 import MapComponentSelector from "../button/MapComponentSelector";
 import { MapElementInfo } from "../../util/map/mapElementInfo";
 
 interface ModalType {
-  mapInfo: MapInfo;
+  mapInfo: MapManager;
   setModal: Function;
 }
 

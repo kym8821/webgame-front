@@ -1,4 +1,4 @@
-import { ObjectInfo, objectType } from "../objectInfo";
+import { ObjectInfo, objectType } from "../object/objectInfo";
 
 export interface ProjectileInfo extends ObjectInfo {
   damage: number;

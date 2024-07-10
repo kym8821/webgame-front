@@ -1,5 +1,5 @@
 import { NumberLiteralType } from "typescript";
-import { ObjectFrame } from "../objectFrame";
+import { ObjectFrame } from "../object/objectFrame";
 
 interface MonsterFrame extends ObjectFrame {
   info: {

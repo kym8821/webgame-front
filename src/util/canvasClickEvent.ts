@@ -2,16 +2,15 @@ import { SelectedComponent } from "../pages/gamePage/GamePage";
 import LauncherElementHandler from "./launcher/launcherElementHandler";
 import { LauncherInfo } from "./launcher/launcherInfo";
 import { LauncherManager } from "./launcher/launcherManager";
-import { MapCanvasManager } from "./map/mapCanvasManager";
+import { CanvasManager } from "./object/CanvasManager";
 import mapDrawer from "./map/mapDrawer";
 import mapElementInfo, { MapElementInfo } from "./map/mapElementInfo";
-import { MapInfo } from "./map/mapInfo";
+import { MapManager } from "./map/mapManager";
 import { MonsterManager } from "./monster/monsterManager";
 
 function handleMapElementCreateEvent(
   e: MouseEvent,
-  mapInfo: React.MutableRefObject<MapInfo>,
-  mapManager: React.MutableRefObject<MapCanvasManager>,
+  mapManager: React.MutableRefObject<MapManager>,
   selectedComponent: React.MutableRefObject<SelectedComponent | null>
 ) {
   const [canvas, context] = [mapManager.current.canvasRef.current, mapManager.current.contextRef.current];
@@ -25,18 +24,18 @@ function handleMapElementCreateEvent(
   const px = e.clientX - rect.left;
   const py = e.clientY - rect.top;
 
-  const [mapPointX, mapPointY] = mapDrawer.canvasToMapCoord(px, py, mapInfo.current.blockSize);
-  const mapElementId = mapInfo.current.map[mapPointY][mapPointX];
+  const [mapPointX, mapPointY] = mapDrawer.canvasToMapCoord(px, py, mapManager.current.blockSize);
+  const mapElementId = mapManager.current.map[mapPointY][mapPointX];
   if (mapElementId == 4) {
-    mapInfo.current.map[mapPointY][mapPointX] = component.id;
-    if (context) mapDrawer.draw(context, mapInfo.current.map, mapInfo.current.blockSize);
+    mapManager.current.map[mapPointY][mapPointX] = component.id;
+    if (context) mapDrawer.draw(context, mapManager.current.map, mapManager.current.blockSize);
     // console.log(mapInfo.current.map);
   }
 }
 
 function handleLauncherCreateEvent(
   e: MouseEvent,
-  mapInfo: React.MutableRefObject<MapInfo>,
+  mapInfo: React.MutableRefObject<MapManager>,
   selectedComponent: React.MutableRefObject<SelectedComponent | null>,
   launcherRef: React.MutableRefObject<LauncherManager>,
   monsterRef: React.MutableRefObject<MonsterManager>
@@ -65,12 +64,11 @@ function handleLauncherCreateEvent(
 
 export function handleCanvasClickEvent(
   e: MouseEvent,
-  mapInfo: React.MutableRefObject<MapInfo>,
   selectedComponent: React.MutableRefObject<SelectedComponent | null>,
   launcherRef: React.MutableRefObject<LauncherManager>,
   monsterRef: React.MutableRefObject<MonsterManager>,
-  mapManager: React.MutableRefObject<MapCanvasManager>
+  mapManager: React.MutableRefObject<MapManager>
 ) {
-  handleMapElementCreateEvent(e, mapInfo, mapManager, selectedComponent);
-  handleLauncherCreateEvent(e, mapInfo, selectedComponent, launcherRef, monsterRef);
+  handleMapElementCreateEvent(e, mapManager, selectedComponent);
+  handleLauncherCreateEvent(e, mapManager, selectedComponent, launcherRef, monsterRef);
 }

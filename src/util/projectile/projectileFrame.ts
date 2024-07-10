@@ -1,6 +1,6 @@
 import { LauncherFrame } from "../launcher/launcherFrame";
-import { ObjectFrame } from "../objectFrame";
-import { objectType } from "../objectInfo";
+import { ObjectFrame } from "../object/objectFrame";
+import { objectType } from "../object/objectInfo";
 import { ProjectileInfo } from "./projectileInfo";
 
 export interface ProjectileFrame extends ObjectFrame {

@@ -1,17 +1,17 @@
 import monsterImages from "../../assets/images/monster/monsterImages";
 import mapDrawer from "../map/mapDrawer";
-import { MapInfo } from "../map/mapInfo";
+import { MapManager } from "../map/mapManager";
 import { Position } from "../Position";
 import defaultWindowSize from "../windowSize";
 import MonsterFrame from "./monsterFrame";
 import monsterInfo, { MonsterInfo } from "./monsterInfo";
 
 export default class MonsterElementHandler {
-  mapInfo: MapInfo;
+  mapManager: MapManager;
   monsterId: number;
 
-  constructor(mapInfo: MapInfo) {
-    this.mapInfo = mapInfo;
+  constructor(mapManager: MapManager) {
+    this.mapManager = mapManager;
     this.monsterId = 0;
   }
 
@@ -64,11 +64,11 @@ export default class MonsterElementHandler {
   getPosition = (canvas: HTMLCanvasElement, monster: MonsterFrame) => {
     const ratio = (window.innerWidth * 0.8) / defaultWindowSize.width;
     const info = monster.info;
-    const position: Position = mapDrawer.MapToCanvasCoord(info.startMapX, info.startMapY, this.mapInfo.blockSize);
+    const position: Position = mapDrawer.MapToCanvasCoord(info.startMapX, info.startMapY, this.mapManager.blockSize);
     const width = info.width * (canvas.width * 0.0005);
     const height = info.height * (canvas.width * 0.0005);
     const posX = position.posX + info.move * (canvas.width * 0.02);
-    let posY = position.posY + (this.mapInfo.blockSize / 2 - height);
+    let posY = position.posY + (this.mapManager.blockSize / 2 - height);
     const boundX = posX + width;
     const boundY = posY + height;
     return {
@@ -83,22 +83,11 @@ export default class MonsterElementHandler {
 
   animate = (canvas: HTMLCanvasElement | null, context: CanvasRenderingContext2D | null, monsters: MonsterFrame[], toChange: boolean) => {
     if (!canvas || !context) return;
-    // context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < monsters.length; i++) {
       const monster = monsters[i];
       const [info, frame] = [monster.info, monster.frame];
-      // if (info.move > 50) {
-      //   monsters.splice(i, 1);
-      //   i -= 1;
-      //   continue;
-      // }
       const frameNumber = info.frameNumber;
       const frameSize = info.frameSize;
-      // const position = this.getPosition(canvas, monster);
-      // context.save();
-      // context.translate(position.posX + position.width / 2, position.posY + position.height / 2);
-      // context.drawImage(frame[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
-      // context.restore();
       if (toChange) {
         monsters[i].info.frameNumber = (frameNumber + 1) % frameSize;
       }
@@ -111,14 +100,14 @@ export default class MonsterElementHandler {
     for (let i = 0; i < monsters.length; i++) {
       const monster = monsters[i];
       const [info, frame] = [monster.info, monster.frame];
-      if (info.move > 50) {
+      const frameNumber = info.frameNumber;
+      const position = this.getPosition(canvas, monster);
+      const [mpx, mpy] = mapDrawer.canvasToMapCoord(position.posX, position.posY, this.mapManager.blockSize);
+      if (mpx < 0 || mpx >= this.mapManager.map[0].length - 2 || mpy < 0 || mpy >= this.mapManager.map.length) {
         monsters.splice(i, 1);
         i -= 1;
         continue;
       }
-      const frameNumber = info.frameNumber;
-      const frameSize = info.frameSize;
-      const position = this.getPosition(canvas, monster);
       context.save();
       context.translate(position.posX + position.width / 2, position.posY + position.height / 2);
       context.drawImage(frame[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);

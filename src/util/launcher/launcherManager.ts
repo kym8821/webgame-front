@@ -1,5 +1,5 @@
-import { AnimationFrameInfo } from "../animationFrameInfo";
-import { CanvasObjectManager } from "../canvasObjectManager";
+import { AnimationFrameInfo } from "../object/animationFrameInfo";
+import { CanvasObjectManager } from "../object/canvasObjectManager";
 import { LauncherFrame } from "./launcherFrame";
 
 export interface LauncherManager extends CanvasObjectManager {

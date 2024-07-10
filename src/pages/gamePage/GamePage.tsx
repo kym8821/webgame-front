@@ -7,12 +7,13 @@ import { MonsterManager } from "../../util/monster/monsterManager";
 import { ProjectileManager } from "../../util/projectile/projectileManager";
 import ProjectileScreen from "../../components/gameScreen/ProjectileScreen";
 import MapScreen from "../../components/gameScreen/MapScreen";
-import { MapInfo } from "../../util/map/mapInfo";
+import { MapManager } from "../../util/map/mapManager";
 import GameScreenFooter from "../../components/footer/GameScreenFooter";
 import GameObjectFooter from "../../components/footer/GameObjectFooter";
 import { MapElementInfo } from "../../util/map/mapElementInfo";
 import { LauncherInfo } from "../../util/launcher/launcherInfo";
-import { MapCanvasManager } from "../../util/map/mapCanvasManager";
+import { CanvasManager } from "../../util/object/CanvasManager";
+import UserInterfaceScreen from "../../components/gameScreen/UserInterfaceScreen";
 
 export interface SelectedComponent {
   component: MapElementInfo | LauncherInfo | null;
@@ -25,12 +26,14 @@ const GamePage = () => {
   const [page, setPage] = useState<number>(1);
   const [minPage, maxPage] = [1, 2];
 
-  const mapInfo = useRef<MapInfo>({
-    blockSize: window.innerWidth / 20,
-    map: [[]],
+  const userScreenManager = useRef<CanvasManager>({
+    canvasRef: useRef<HTMLCanvasElement>(null),
+    contextRef: useRef<CanvasRenderingContext2D>(null),
   });
 
-  const mapManager = useRef<MapCanvasManager>({
+  const mapManager = useRef<MapManager>({
+    blockSize: window.innerWidth / 20,
+    map: [[]],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   });
@@ -103,16 +106,18 @@ const GamePage = () => {
       {selectedComponent.current && <div>{selectedComponent.current.type}</div>}
       <div>{modal}</div>
       <div>
-        <LauncherScreen
+        <UserInterfaceScreen
+          userScreenManager={userScreenManager}
           launcherRef={launcherRef}
           monsterRef={monsterRef}
-          mapInfo={mapInfo}
+          projectileRef={projectileRef}
           selectedComponent={selectedComponent}
           mapManager={mapManager}
         />
-        <MonsterScreen monsterRef={monsterRef} mapInfo={mapInfo.current} />
-        <ProjectileScreen monsterRef={monsterRef} projectileRef={projectileRef} launcherRef={launcherRef} mapInfo={mapInfo.current} />
-        <MapScreen mapInfo={mapInfo.current} page={page} selectedComponent={selectedComponent} mapManager={mapManager} />
+        <LauncherScreen launcherRef={launcherRef} monsterRef={monsterRef} selectedComponent={selectedComponent} mapManager={mapManager} />
+        <MonsterScreen monsterRef={monsterRef} mapManager={mapManager} />
+        <ProjectileScreen monsterRef={monsterRef} projectileRef={projectileRef} launcherRef={launcherRef} mapManager={mapManager} />
+        <MapScreen page={page} selectedComponent={selectedComponent} mapManager={mapManager} />
       </div>
       {/* <GameScreenFooter setModal={setModal} mapInfo={mapInfo.current} /> */}
       <GameObjectFooter page={page} setPage={setPage} minPage={minPage} maxPage={maxPage} selectedComponent={selectedComponent} />

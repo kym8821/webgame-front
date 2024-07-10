@@ -1,11 +1,11 @@
 import { ReactNode, useEffect, useState } from "react";
 import style from "../../assets/css/gameScreen.module.css";
 import mapElementInfo, { getMapInfoById, MapElementInfo } from "../../util/map/mapElementInfo";
-import { MapInfo } from "../../util/map/mapInfo";
+import { MapManager } from "../../util/map/mapManager";
 import { mapScreenHandler } from "../gameScreen/MapScreen";
 
 interface MapComponentDrawerType {
-  mapInfo: MapInfo;
+  mapInfo: MapManager;
   selectedComponent: MapElementInfo | null;
 }
 

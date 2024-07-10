@@ -1,4 +1,4 @@
-import { ObjectInfo, objectType } from "../objectInfo";
+import { ObjectInfo, objectType } from "../object/objectInfo";
 
 export interface MonsterInfo extends ObjectInfo {
   lifePoint: number;

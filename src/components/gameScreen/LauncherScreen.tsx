@@ -4,26 +4,25 @@ import launcherInfo, { LauncherInfo } from "../../util/launcher/launcherInfo";
 import { LauncherManager } from "../../util/launcher/launcherManager";
 import style from "../../assets/css/gameScreen.module.css";
 import { ProjectileManager } from "../../util/projectile/projectileManager";
-import { AnimationFrameInfo } from "../../util/animationFrameInfo";
-import { MapInfo } from "../../util/map/mapInfo";
+import { AnimationFrameInfo } from "../../util/object/animationFrameInfo";
+import { MapManager } from "../../util/map/mapManager";
 import LauncherElementHandler from "../../util/launcher/launcherElementHandler";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import mapDrawer from "../../util/map/mapDrawer";
 import mapElementInfo from "../../util/map/mapElementInfo";
 import { handleCanvasClickEvent } from "../../util/canvasClickEvent";
-import { MapCanvasManager } from "../../util/map/mapCanvasManager";
+import { CanvasManager } from "../../util/object/CanvasManager";
 
 type shootScreenProps = {
   launcherRef: React.MutableRefObject<LauncherManager>;
   monsterRef: React.MutableRefObject<MonsterManager>;
-  mapInfo: React.MutableRefObject<MapInfo>;
+  mapManager: React.MutableRefObject<MapManager>;
   selectedComponent: React.MutableRefObject<SelectedComponent | null>;
-  mapManager: React.MutableRefObject<MapCanvasManager>;
 };
 
-const ShootScreen = ({ launcherRef, monsterRef, selectedComponent, mapInfo, mapManager }: shootScreenProps) => {
+const ShootScreen = ({ launcherRef, monsterRef, selectedComponent, mapManager }: shootScreenProps) => {
   const [canvasRef, contextRef] = [launcherRef.current.canvasRef, launcherRef.current.contextRef];
-  const launcherHandler = new LauncherElementHandler(mapInfo.current);
+  const launcherHandler = new LauncherElementHandler(mapManager.current);
   const lastUpdatedBlockSize = useRef<number>(0);
 
   function animate(animation: AnimationFrameInfo, callback: Function) {
@@ -68,7 +67,6 @@ const ShootScreen = ({ launcherRef, monsterRef, selectedComponent, mapInfo, mapM
     if (context) {
       contextRef.current = context;
     }
-    canvas.onclick = (e: MouseEvent) => handleCanvasClickEvent(e, mapInfo, selectedComponent, launcherRef, monsterRef, mapManager);
 
     window.addEventListener("resize", windowResize);
     setLauncherAngleTimer();
@@ -81,7 +79,7 @@ const ShootScreen = ({ launcherRef, monsterRef, selectedComponent, mapInfo, mapM
   }, []);
 
   return (
-    <div className={`${style.gameScreen} ${style.clickEventScreen}`}>
+    <div className={`${style.gameScreen}`}>
       <canvas ref={canvasRef}></canvas>
     </div>
   );

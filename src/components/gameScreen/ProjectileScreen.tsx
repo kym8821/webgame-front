@@ -1,11 +1,11 @@
 import { ProjectileManager } from "../../util/projectile/projectileManager";
 import style from "../../assets/css/gameScreen.module.css";
 import { useEffect, useRef } from "react";
-import { AnimationFrameInfo } from "../../util/animationFrameInfo";
+import { AnimationFrameInfo } from "../../util/object/animationFrameInfo";
 import { LauncherManager } from "../../util/launcher/launcherManager";
 import projectileInfo from "../../util/projectile/projectileInfo";
 import { MonsterManager } from "../../util/monster/monsterManager";
-import { MapInfo } from "../../util/map/mapInfo";
+import { MapManager } from "../../util/map/mapManager";
 import ProjectileElementHandler from "../../util/projectile/projectileElementHandler";
 import { getCurrentBlockSize } from "../../util/windowSize";
 
@@ -13,12 +13,12 @@ interface ProjectileScreenProps {
   projectileRef: React.MutableRefObject<ProjectileManager>;
   launcherRef: React.MutableRefObject<LauncherManager>;
   monsterRef: React.MutableRefObject<MonsterManager>;
-  mapInfo: MapInfo;
+  mapManager: React.MutableRefObject<MapManager>;
 }
 
-const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapInfo }: ProjectileScreenProps) => {
+const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager }: ProjectileScreenProps) => {
   const [canvasRef, contextRef] = [projectileRef.current.canvasRef, projectileRef.current.contextRef];
-  const projectileHandler = new ProjectileElementHandler(mapInfo);
+  const projectileHandler = new ProjectileElementHandler(mapManager.current);
   const lastUpdatedBlockSize = useRef<number>(0);
 
   function animate(animation: AnimationFrameInfo, callback: Function) {

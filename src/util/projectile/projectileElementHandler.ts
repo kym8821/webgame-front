@@ -3,7 +3,7 @@ import LauncherElementHandler from "../launcher/launcherElementHandler";
 import { LauncherFrame } from "../launcher/launcherFrame";
 import launcherInfo from "../launcher/launcherInfo";
 import mapDrawer from "../map/mapDrawer";
-import { MapInfo } from "../map/mapInfo";
+import { MapManager } from "../map/mapManager";
 import MonsterElementHandler from "../monster/monsterElementHandler";
 import MonsterFrame from "../monster/monsterFrame";
 import { Position } from "../Position";
@@ -12,12 +12,12 @@ import { ProjectileFrame } from "./projectileFrame";
 import { ProjectileInfo } from "./projectileInfo";
 
 export default class ProjectileElementHandler {
-  mapInfo: MapInfo;
+  mapManager: MapManager;
   monsterHandler: MonsterElementHandler;
   launcherHandler: LauncherElementHandler;
 
-  constructor(mapInfo: MapInfo) {
-    this.mapInfo = mapInfo;
+  constructor(mapInfo: MapManager) {
+    this.mapManager = mapInfo;
     this.monsterHandler = new MonsterElementHandler(mapInfo);
     this.launcherHandler = new LauncherElementHandler(mapInfo);
   }
@@ -64,7 +64,7 @@ export default class ProjectileElementHandler {
     const info = projectile.info;
     const weight = canvas.width * 0.01;
     const dist = weight * info.move;
-    const launcherPosition = mapDrawer.MapToCanvasCoord(info.launcherX, info.launcherY, this.mapInfo.blockSize);
+    const launcherPosition = mapDrawer.MapToCanvasCoord(info.launcherX, info.launcherY, this.mapManager.blockSize);
     const [posX, posY] = [launcherPosition.posX + dist * Math.cos(info.angle), launcherPosition.posY + dist * Math.sin(info.angle)];
     // const [width, height] = [info.width * ratio, info.height * ratio];
     const width = info.width * (canvas.width * 0.0005);
@@ -96,7 +96,7 @@ export default class ProjectileElementHandler {
       const position = this.getPosition(canvas, projectile);
 
       context.save();
-      context.translate(position.posX + this.mapInfo.blockSize / 2, position.posY + this.mapInfo.blockSize / 2);
+      context.translate(position.posX + this.mapManager.blockSize / 2, position.posY + this.mapManager.blockSize / 2);
       context.rotate(info.angle);
       context.drawImage(frame[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
       context.restore();

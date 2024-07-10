@@ -1,4 +1,4 @@
-import { ObjectFrame } from "../objectFrame";
+import { ObjectFrame } from "../object/objectFrame";
 
 export interface LauncherFrame extends ObjectFrame {
   info: {
