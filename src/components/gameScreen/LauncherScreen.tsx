@@ -8,7 +8,7 @@ import { AnimationFrameInfo } from "../../util/object/animationFrameInfo";
 import { MapManager } from "../../util/map/mapManager";
 import LauncherElementHandler from "../../util/launcher/launcherElementHandler";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
-import mapDrawer from "../../util/map/mapDrawer";
+import mapDrawer from "../../util/map/mapCoordConverter";
 import mapElementInfo from "../../util/map/mapElementInfo";
 import { handleCanvasClickEvent } from "../../util/canvasClickEvent";
 import { CanvasManager } from "../../util/object/CanvasManager";
@@ -39,7 +39,7 @@ const ShootScreen = ({ launcherRef, monsterRef, selectedComponent, mapManager }:
 
   function setLauncherAngleTimer() {
     function handleLauncherAngle() {
-      launcherHandler.draw(canvasRef.current, contextRef.current, launcherRef.current.objects, monsterRef.current, true);
+      launcherHandler.draw(canvasRef.current, contextRef.current, launcherRef.current.launchers, monsterRef.current, true);
     }
 
     // const launcher = launcherHandler.loadFrames(launcherInfo.lv1, 7, 6);
@@ -57,7 +57,7 @@ const ShootScreen = ({ launcherRef, monsterRef, selectedComponent, mapManager }:
     const windowResize = () => {
       canvas.width = canvas.scrollWidth;
       canvas.height = canvas.width / 2;
-      launcherHandler.draw(canvas, context, launcherRef.current.objects, monsterRef.current, false);
+      launcherHandler.draw(canvas, context, launcherRef.current.launchers, monsterRef.current, false);
     };
 
     if (!canvasRef.current) return;

@@ -1,11 +1,20 @@
 import mapImages from "../../assets/images/map/mapImages";
 
+interface MapElementTag {
+  pipe: boolean;
+  tile: boolean;
+  turretBase: boolean;
+  facilityBase: boolean;
+  core: boolean;
+}
+
 export interface MapElementInfo {
   name: string;
   id: number;
   src: string;
   width: number;
   height: number;
+  tag: MapElementTag;
 }
 
 const mapElementInfo: Record<string, MapElementInfo> = {
@@ -15,6 +24,13 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     width: 1,
     height: 1,
     src: mapImages.base1,
+    tag: {
+      pipe: false,
+      tile: false,
+      turretBase: true,
+      facilityBase: false,
+      core: false,
+    },
   },
   floor: {
     name: "floor",
@@ -22,6 +38,13 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     width: 1,
     height: 1,
     src: mapImages.floor,
+    tag: {
+      pipe: false,
+      tile: true,
+      turretBase: false,
+      facilityBase: false,
+      core: false,
+    },
   },
   ex: {
     name: "ex",
@@ -29,6 +52,13 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     width: 1,
     height: 1,
     src: mapImages.ex,
+    tag: {
+      pipe: false,
+      tile: false,
+      turretBase: false,
+      facilityBase: false,
+      core: false,
+    },
   },
   core: {
     name: "core",
@@ -36,6 +66,13 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     width: 2,
     height: 2,
     src: mapImages.core,
+    tag: {
+      pipe: false,
+      tile: false,
+      turretBase: false,
+      facilityBase: false,
+      core: true,
+    },
   },
   tile: {
     name: "tile",
@@ -43,6 +80,27 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     width: 1,
     height: 1,
     src: mapImages.tile,
+    tag: {
+      pipe: false,
+      tile: true,
+      turretBase: false,
+      facilityBase: false,
+      core: false,
+    },
+  },
+  pipe: {
+    name: "pipe",
+    id: 5,
+    width: 1,
+    height: 1,
+    src: mapImages.pipe_0000,
+    tag: {
+      pipe: true,
+      tile: false,
+      turretBase: false,
+      facilityBase: false,
+      core: false,
+    },
   },
 };
 
@@ -53,6 +111,27 @@ const installableMapElements: Record<string, MapElementInfo> = {
     width: 1,
     height: 1,
     src: mapImages.base1,
+    tag: {
+      pipe: false,
+      tile: false,
+      turretBase: false,
+      facilityBase: false,
+      core: false,
+    },
+  },
+  pipe: {
+    name: "pipe",
+    id: 5,
+    width: 1,
+    height: 1,
+    src: mapImages.pipe_0000,
+    tag: {
+      pipe: true,
+      tile: false,
+      turretBase: false,
+      facilityBase: false,
+      core: false,
+    },
   },
 };
 

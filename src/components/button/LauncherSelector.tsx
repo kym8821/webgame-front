@@ -28,6 +28,7 @@ const LauncherSelector = ({ selectedComponent }: ComponentSelectorType) => {
     const mapElementStyle: React.CSSProperties = {
       width: `${width}vw`,
       height: `${width}vw`,
+      aspectRatio: 1,
       margin: `${gap / 2}vw`,
     };
     launcherElements.forEach((element, idx) => {

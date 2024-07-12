@@ -1,7 +1,7 @@
 import style from "../../assets/css/gameScreen.module.css";
 
 interface ModalType {
-  mapInfo: number[][];
+  mapInfo: any;
   setModal: Function;
 }
 

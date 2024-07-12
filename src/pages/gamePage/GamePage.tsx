@@ -34,6 +34,7 @@ const GamePage = () => {
   const mapManager = useRef<MapManager>({
     blockSize: window.innerWidth / 20,
     map: [[]],
+    mapObjects: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   });
@@ -54,7 +55,7 @@ const GamePage = () => {
       interval: 20,
       animationFrame: null,
     },
-    objects: [],
+    projectiles: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   });
@@ -75,7 +76,7 @@ const GamePage = () => {
       interval: 500,
       animationFrame: null,
     },
-    objects: [],
+    launchers: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   });
@@ -96,14 +97,13 @@ const GamePage = () => {
       interval: 40,
       animationFrame: null,
     },
-    objects: [],
+    monsters: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   });
 
   return (
     <div className={style.gamePage}>
-      {selectedComponent.current && <div>{selectedComponent.current.type}</div>}
       <div>{modal}</div>
       <div>
         <UserInterfaceScreen

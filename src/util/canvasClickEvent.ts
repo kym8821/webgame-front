@@ -3,10 +3,11 @@ import LauncherElementHandler from "./launcher/launcherElementHandler";
 import { LauncherInfo } from "./launcher/launcherInfo";
 import { LauncherManager } from "./launcher/launcherManager";
 import { CanvasManager } from "./object/CanvasManager";
-import mapDrawer from "./map/mapDrawer";
+import mapDrawer from "./map/mapCoordConverter";
 import mapElementInfo, { MapElementInfo } from "./map/mapElementInfo";
 import { MapManager } from "./map/mapManager";
 import { MonsterManager } from "./monster/monsterManager";
+import MapElementHandler from "./map/mapElementHandler";
 
 function handleMapElementCreateEvent(
   e: MouseEvent,
@@ -18,6 +19,7 @@ function handleMapElementCreateEvent(
   if (!selectedComponent.current || !selectedComponent.current.component) return;
   if (selectedComponent.current.type != 1) return;
   const component = selectedComponent.current.component as MapElementInfo;
+  console.log(component);
   // 캔버스의 경계 상자를 가져옵니다.
   const rect = canvas.getBoundingClientRect();
   // 이벤트 좌표를 캔버스 내부 좌표로 변환합니다.
@@ -25,11 +27,15 @@ function handleMapElementCreateEvent(
   const py = e.clientY - rect.top;
 
   const [mapPointX, mapPointY] = mapDrawer.canvasToMapCoord(px, py, mapManager.current.blockSize);
-  const mapElementId = mapManager.current.map[mapPointY][mapPointX];
-  if (mapElementId == 4) {
-    mapManager.current.map[mapPointY][mapPointX] = component.id;
-    if (context) mapDrawer.draw(context, mapManager.current.map, mapManager.current.blockSize);
-    // console.log(mapInfo.current.map);
+  const mapElement = mapManager.current.map[mapPointY][mapPointX];
+  if (mapElement.info.id == mapElementInfo.tile.id) {
+    mapManager.current.map[mapPointY][mapPointX].info = component;
+    mapManager.current.map[mapPointY][mapPointX].activate = false;
+    // if (context) mapDrawer.draw(context, mapManager.current.map, mapManager.current.blockSize);
+    if (context) {
+      const mapElementHandler = new MapElementHandler(mapManager.current);
+      mapElementHandler.draw(context);
+    }
   }
 }
 
@@ -53,12 +59,12 @@ function handleLauncherCreateEvent(
   const py = e.clientY - rect.top;
 
   const [mapPointX, mapPointY] = mapDrawer.canvasToMapCoord(px, py, mapInfo.current.blockSize);
-  const mapElementId = mapInfo.current.map[mapPointY][mapPointX];
-  if (mapElementId !== mapElementInfo.base1.id) return;
+  const mapElement = mapInfo.current.map[mapPointY][mapPointX];
+  if (mapElement.info.id !== mapElementInfo.base1.id) return;
   const launcher = launcherHandler.loadFrames(component, mapPointX, mapPointY);
   if (launcher) {
-    launcherRef.current.objects.push(launcher);
-    launcherHandler.draw(canvas, context, launcherRef.current.objects, monsterRef.current, true);
+    launcherRef.current.launchers.push(launcher);
+    launcherHandler.draw(canvas, context, launcherRef.current.launchers, monsterRef.current, true);
   }
 }
 

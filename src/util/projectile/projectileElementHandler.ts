@@ -2,7 +2,7 @@ import porjectileImages from "../../assets/images/projectile/projectileImages";
 import LauncherElementHandler from "../launcher/launcherElementHandler";
 import { LauncherFrame } from "../launcher/launcherFrame";
 import launcherInfo from "../launcher/launcherInfo";
-import mapDrawer from "../map/mapDrawer";
+import mapCoordConverter from "../map/mapCoordConverter";
 import { MapManager } from "../map/mapManager";
 import MonsterElementHandler from "../monster/monsterElementHandler";
 import MonsterFrame from "../monster/monsterFrame";
@@ -64,7 +64,7 @@ export default class ProjectileElementHandler {
     const info = projectile.info;
     const weight = canvas.width * 0.01;
     const dist = weight * info.move;
-    const launcherPosition = mapDrawer.MapToCanvasCoord(info.launcherX, info.launcherY, this.mapManager.blockSize);
+    const launcherPosition = mapCoordConverter.mapToCanvasCoord(info.launcherX, info.launcherY, this.mapManager.blockSize);
     const [posX, posY] = [launcherPosition.posX + dist * Math.cos(info.angle), launcherPosition.posY + dist * Math.sin(info.angle)];
     // const [width, height] = [info.width * ratio, info.height * ratio];
     const width = info.width * (canvas.width * 0.0005);
@@ -102,7 +102,7 @@ export default class ProjectileElementHandler {
       context.restore();
 
       if (toChange) {
-        projectiles[i].info.move -= 1;
+        projectiles[i].info.move -= 2;
         projectiles[i].info.frameNumber = (frameNumber + 1) % frameSize;
       }
 

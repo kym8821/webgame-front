@@ -1,5 +1,5 @@
 import monsterImages from "../../assets/images/monster/monsterImages";
-import mapDrawer from "../map/mapDrawer";
+import mapCoordConverter from "../map/mapCoordConverter";
 import { MapManager } from "../map/mapManager";
 import { Position } from "../Position";
 import defaultWindowSize from "../windowSize";
@@ -64,7 +64,7 @@ export default class MonsterElementHandler {
   getPosition = (canvas: HTMLCanvasElement, monster: MonsterFrame) => {
     const ratio = (window.innerWidth * 0.8) / defaultWindowSize.width;
     const info = monster.info;
-    const position: Position = mapDrawer.MapToCanvasCoord(info.startMapX, info.startMapY, this.mapManager.blockSize);
+    const position: Position = mapCoordConverter.mapToCanvasCoord(info.startMapX, info.startMapY, this.mapManager.blockSize);
     const width = info.width * (canvas.width * 0.0005);
     const height = info.height * (canvas.width * 0.0005);
     const posX = position.posX + info.move * (canvas.width * 0.02);
@@ -102,7 +102,7 @@ export default class MonsterElementHandler {
       const [info, frame] = [monster.info, monster.frame];
       const frameNumber = info.frameNumber;
       const position = this.getPosition(canvas, monster);
-      const [mpx, mpy] = mapDrawer.canvasToMapCoord(position.posX, position.posY, this.mapManager.blockSize);
+      const [mpx, mpy] = mapCoordConverter.canvasToMapCoord(position.posX, position.posY, this.mapManager.blockSize);
       if (mpx < 0 || mpx >= this.mapManager.map[0].length - 2 || mpy < 0 || mpy >= this.mapManager.map.length) {
         monsters.splice(i, 1);
         i -= 1;

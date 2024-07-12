@@ -5,7 +5,7 @@ import { MapManager } from "../../util/map/mapManager";
 import { mapScreenHandler } from "../gameScreen/MapScreen";
 
 interface MapComponentDrawerType {
-  mapInfo: MapManager;
+  mapInfo: any;
   selectedComponent: MapElementInfo | null;
 }
 
@@ -37,7 +37,7 @@ const MapComponentDrawer = ({ mapInfo, selectedComponent }: MapComponentDrawerTy
     for (let i = 0; i < map.length; i++) {
       newMapElements.push(
         <div className={style.mapContainer} key={`map${i}`}>
-          {map[i].map((_, idx) => {
+          {/* {map[i].map((_, idx) => {
             const currnetComponentInfo = getMapInfoById(map[i][idx]);
             return (
               <img
@@ -48,7 +48,7 @@ const MapComponentDrawer = ({ mapInfo, selectedComponent }: MapComponentDrawerTy
                 onClick={(e) => mapComponentCreateHandler(e, idx, i)}
               />
             );
-          })}
+          })} */}
         </div>
       );
     }

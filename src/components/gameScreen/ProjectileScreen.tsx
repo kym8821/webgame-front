@@ -35,15 +35,15 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager }
 
   function setProjectileAnimateTimer() {
     function animateProjectile() {
-      projectileHandler.draw(canvasRef.current, contextRef.current, projectileRef.current.objects, monsterRef.current.objects, true);
+      projectileHandler.draw(canvasRef.current, contextRef.current, projectileRef.current.projectiles, monsterRef.current.monsters, true);
     }
     animate(projectileRef.current.animationFrame, animateProjectile);
   }
 
   function setProjectileGenerateTimer() {
     function generateProjectile() {
-      if (monsterRef.current.objects.length === 0) return;
-      const launchers = launcherRef.current.objects;
+      if (monsterRef.current.monsters.length === 0) return;
+      const launchers = launcherRef.current.launchers;
       launchers.forEach((launcher) => {
         const projectileId = launcher.info.projectileId;
         if (!(projectileId in projectileInfo) || !canvasRef.current) {
@@ -52,7 +52,7 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager }
         }
         const projectile = projectileInfo[projectileId];
         const projectileFrame = projectileHandler.loadFrames(canvasRef.current, projectile, launcher);
-        if (projectileFrame) projectileRef.current.objects.push(projectileFrame);
+        if (projectileFrame) projectileRef.current.projectiles.push(projectileFrame);
       });
     }
     if (launcherRef.current.generationFrame) animate(launcherRef.current.generationFrame, generateProjectile);
@@ -68,7 +68,7 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager }
     const windowResize = () => {
       canvas.width = canvas.scrollWidth;
       canvas.height = canvas.width / 2;
-      projectileHandler.draw(canvas, context, projectileRef.current.objects, monsterRef.current.objects, false);
+      projectileHandler.draw(canvas, context, projectileRef.current.projectiles, monsterRef.current.monsters, false);
       // if (mapInfo.blockSize > lastUpdatedBlockSize.current * 2 && context) {
       //   lastUpdatedBlockSize.current = mapInfo.blockSize;
       //   projectileHandler.draw(canvas, context, projectileRef.objects, monsterRef.objects, false);

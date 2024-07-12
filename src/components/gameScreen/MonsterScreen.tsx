@@ -37,7 +37,7 @@ const MonsterScreen = ({ monsterRef, mapManager }: monsterScreenProps) => {
       const object = monsterElementHandler.getNextObject();
       if (object) {
         const objectFrame = monsterElementHandler.loadFrames(object, 0, 3);
-        if (objectFrame) monsterRef.current.objects.push(objectFrame);
+        if (objectFrame) monsterRef.current.monsters.push(objectFrame);
       }
     };
     if (monsterRef.current.generationFrame) animate(monsterRef.current.generationFrame, generate);
@@ -45,14 +45,14 @@ const MonsterScreen = ({ monsterRef, mapManager }: monsterScreenProps) => {
 
   function setAnimationTimer() {
     const animateMonster = () => {
-      monsterElementHandler.animate(canvasRef.current, contextRef.current, monsterRef.current.objects, true);
+      monsterElementHandler.animate(canvasRef.current, contextRef.current, monsterRef.current.monsters, true);
     };
     animate(monsterRef.current.animationFrame, animateMonster);
   }
 
   function setMovementTimer() {
     const moveMonster = () => {
-      monsterElementHandler.move(canvasRef.current, contextRef.current, monsterRef.current.objects, true);
+      monsterElementHandler.move(canvasRef.current, contextRef.current, monsterRef.current.monsters, true);
     };
     animate(monsterRef.current.movementFrame, moveMonster);
   }
@@ -67,7 +67,7 @@ const MonsterScreen = ({ monsterRef, mapManager }: monsterScreenProps) => {
     const windowResize = () => {
       canvas.width = canvas.scrollWidth;
       canvas.height = canvas.width / 2;
-      monsterElementHandler.move(canvas, context, monsterRef.current.objects, false);
+      monsterElementHandler.move(canvas, context, monsterRef.current.monsters, false);
       // if (mapInfo.blockSize > lastUpdatedBlockSize.current * 2 && context) {
       //   lastUpdatedBlockSize.current = mapInfo.blockSize;
       //   monsterElementHandler.draw(canvas, context, monsterRef.objects, false);
