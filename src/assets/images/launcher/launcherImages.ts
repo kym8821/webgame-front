@@ -1,4 +1,4 @@
-import lv1 from './lv1.png';
+import lv1 from "./lv1.png";
 
 interface LauncherImages {
   [key: string]: string;
