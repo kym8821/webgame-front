@@ -62,13 +62,14 @@ export default class LauncherElementHandler {
     context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < launchers.length; i++) {
       const launcher = launchers[i];
+      const activate = this.mapManager.map[launcher.info.mapStartY][launcher.info.mapStartX].activate;
       const monsterOnFront = monsters.monsters.at(0);
       const [info, frame] = [launcher.info, launcher.frame];
       const frameNumber = info.frameNumber;
       const position = this.getPosition(canvas, launcher);
       context.save();
       context.translate(position.posX + this.mapManager.blockSize / 2, position.posY + this.mapManager.blockSize / 2);
-      if (monsters.monsters.length > 0 && monsterOnFront) {
+      if (activate && monsters.monsters.length > 0 && monsterOnFront) {
         launcher.info.angle = this.getLauncherAngle(canvas, monsterOnFront, launcher);
         context.rotate(launcher.info.angle);
       }

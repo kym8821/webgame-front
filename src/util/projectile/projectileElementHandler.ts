@@ -91,6 +91,7 @@ export default class ProjectileElementHandler {
     for (let i = 0; i < projectiles.length; i++) {
       const projectile = projectiles[i];
       const [info, frame] = [projectile.info, projectile.frame];
+      if (!this.mapManager.map[info.launcherY][info.launcherX].activate) continue;
       const frameNumber = info.frameNumber;
       const frameSize = info.frameSize;
       const position = this.getPosition(canvas, projectile);

@@ -9,6 +9,12 @@ import { MapManager } from "./map/mapManager";
 import { MonsterManager } from "./monster/monsterManager";
 import MapElementHandler from "./map/mapElementHandler";
 
+const SelectedComponentType = {
+  mapElement: 1,
+  launcher: 2,
+  facility: 3,
+};
+
 function handleMapElementCreateEvent(
   e: MouseEvent,
   mapManager: React.MutableRefObject<MapManager>,
@@ -17,7 +23,11 @@ function handleMapElementCreateEvent(
   const [canvas, context] = [mapManager.current.canvasRef.current, mapManager.current.contextRef.current];
   if (!canvas || !context) return;
   if (!selectedComponent.current || !selectedComponent.current.component) return;
-  if (selectedComponent.current.type != 1) return;
+  if (
+    selectedComponent.current.type != SelectedComponentType.mapElement &&
+    selectedComponent.current.type != SelectedComponentType.facility
+  )
+    return;
   const component = selectedComponent.current.component as MapElementInfo;
   console.log(component);
   // 캔버스의 경계 상자를 가져옵니다.
@@ -48,7 +58,7 @@ function handleLauncherCreateEvent(
 ) {
   const [canvas, context] = [launcherRef.current.canvasRef.current, launcherRef.current.contextRef.current];
   if (!selectedComponent.current || !selectedComponent.current.component) return;
-  if (selectedComponent.current.type != 2) return;
+  if (selectedComponent.current.type != SelectedComponentType.launcher) return;
   if (!canvas || !context) return;
   const component = selectedComponent.current.component as LauncherInfo;
   const launcherHandler = new LauncherElementHandler(mapInfo.current);

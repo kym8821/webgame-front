@@ -1,12 +1,17 @@
 import { MapManager } from "./mapManager";
 import { Position } from "../Position";
-import { getMapInfoById } from "./mapElementInfo";
+import mapElementInfo, { getMapInfoById, MapElementInfo } from "./mapElementInfo";
 import mapImages from "../../assets/images/map/mapImages";
 import mapCoordConverter from "./mapCoordConverter";
 
 interface MapPosition {
   x: number;
   y: number;
+}
+
+interface FacilityInfo {
+  pos: MapPosition;
+  element: MapElementInfo;
 }
 
 const delta = [
@@ -47,11 +52,15 @@ export default class MapElementHandler {
     console.log("activate object");
     console.log(corePos);
     const map = this.mapManager.map;
+    console.log(map);
     const visit: boolean[][] = new Array(map.length);
     const stack: MapPosition[] = [];
     for (let i = 0; i < map.length; i++) {
       visit[i] = new Array(map[i].length);
-      for (let j = 0; j < map[i].length; j++) visit[i][j] = false;
+      for (let j = 0; j < map[i].length; j++) {
+        visit[i][j] = false;
+        map[i][j].activate = false;
+      }
     }
     for (let i = 0; i < corePos.length; i++) {
       const pos = corePos[i];
@@ -66,11 +75,14 @@ export default class MapElementHandler {
         const nn: MapPosition = { x: cn.x + delta[i][0], y: cn.y + delta[i][1] };
         if (nn.x < 0 || nn.y < 0 || nn.x >= map[0].length || nn.y >= map.length) continue;
         if (visit[nn.y][nn.x]) continue;
-        console.log(nn);
         visit[nn.y][nn.x] = true;
         const mapElement = map[nn.y][nn.x].info;
+        console.log(nn);
         if (mapElement.tag.pipe) stack.push(nn);
-        if (mapElement.tag.facilityBase || mapElement.tag.turretBase) console.log(`activate ${nn.x} ${nn.y}`);
+        if (mapElement.tag.facilityBase || mapElement.tag.turretBase) {
+          console.log(`activate ${nn.x} ${nn.y}`);
+          map[nn.y][nn.x].activate = true;
+        }
       }
     }
   };
@@ -81,25 +93,48 @@ export default class MapElementHandler {
     const corePos: MapPosition[] = [];
     for (let i = 0; i < map.length; i++) {
       for (let j = 0; j < map[i].length; j++) {
-        const currentMapInfo = map[i][j].info;
+        // if (map[i][j].info.id === mapElementInfo.ex.id) continue;
+        let currentMapInfo = map[i][j].info;
         let src = currentMapInfo.src;
+        let { width, height } = currentMapInfo;
         if (currentMapInfo.tag.pipe) {
           const pipeId = this.getPipe(j, i);
           src = mapImages[pipeId];
         } else if (currentMapInfo.tag.core) {
-          corePos.push({ x: j, y: i } as MapPosition);
+          const pos: MapPosition = { x: j, y: i };
+          corePos.push(pos);
+          src = mapElementInfo.floor.src;
+          [width, height] = [1, 1];
         }
+        if (!src) continue;
         const image = new Image();
         image.src = src;
         image.onload = () => {
           const position = mapCoordConverter.mapToCanvasCoord(j, i, blockSize);
           context.save();
           context.translate(position.posX, position.posY);
-          context.drawImage(image, 0, 0, blockSize * currentMapInfo.width, blockSize * currentMapInfo.height);
+          context.drawImage(image, 0, 0, blockSize * width, blockSize * height);
           context.restore();
         };
       }
     }
+    this.drawFacilities(context);
     this.activateObject(corePos);
+  };
+
+  drawFacilities = (context: CanvasRenderingContext2D) => {
+    const facilities = this.mapManager.mapObjects;
+    facilities.forEach((fac) => {
+      const info = fac.info;
+      const image = new Image();
+      image.src = info.src;
+      image.onload = () => {
+        const position = mapCoordConverter.mapToCanvasCoord(fac.mapPosX, fac.mapPosY, this.mapManager.blockSize);
+        context.save();
+        context.translate(position.posX, position.posY);
+        context.drawImage(image, 0, 0, this.mapManager.blockSize * info.width, this.mapManager.blockSize * info.height);
+        context.restore();
+      };
+    });
   };
 }

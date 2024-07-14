@@ -63,9 +63,9 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   core: {
     name: "core",
     id: 3,
-    width: 2,
-    height: 2,
-    src: mapImages.core,
+    width: 1,
+    height: 1,
+    src: mapImages.floor,
     tag: {
       pipe: false,
       tile: false,
@@ -114,7 +114,7 @@ const installableMapElements: Record<string, MapElementInfo> = {
     tag: {
       pipe: false,
       tile: false,
-      turretBase: false,
+      turretBase: true,
       facilityBase: false,
       core: false,
     },
@@ -128,6 +128,20 @@ const installableMapElements: Record<string, MapElementInfo> = {
     tag: {
       pipe: true,
       tile: false,
+      turretBase: false,
+      facilityBase: false,
+      core: false,
+    },
+  },
+  tile: {
+    name: "tile",
+    id: 4,
+    width: 1,
+    height: 1,
+    src: mapImages.tile,
+    tag: {
+      pipe: false,
+      tile: true,
       turretBase: false,
       facilityBase: false,
       core: false,
