@@ -8,7 +8,6 @@ import { ProjectileManager } from "../../util/projectile/projectileManager";
 import ProjectileScreen from "../../components/gameScreen/ProjectileScreen";
 import MapScreen from "../../components/gameScreen/MapScreen";
 import { MapManager } from "../../util/map/mapManager";
-import GameScreenFooter from "../../components/footer/GameScreenFooter";
 import GameObjectFooter from "../../components/footer/GameObjectFooter";
 import { MapElementInfo } from "../../util/map/mapElementInfo";
 import { LauncherInfo } from "../../util/launcher/launcherInfo";
@@ -119,7 +118,6 @@ const GamePage = () => {
         <ProjectileScreen monsterRef={monsterRef} projectileRef={projectileRef} launcherRef={launcherRef} mapManager={mapManager} />
         <MapScreen page={page} selectedComponent={selectedComponent} mapManager={mapManager} />
       </div>
-      {/* <GameScreenFooter setModal={setModal} mapInfo={mapInfo.current} /> */}
       <GameObjectFooter page={page} setPage={setPage} minPage={minPage} maxPage={maxPage} selectedComponent={selectedComponent} />
     </div>
   );

@@ -14,6 +14,7 @@ const facilityInfo: Record<string, MapElementInfo> = {
       turretBase: false,
       facilityBase: false,
       core: true,
+      installable: false,
     },
   },
 };

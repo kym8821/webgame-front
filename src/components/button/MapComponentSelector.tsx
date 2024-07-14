@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import style from "../../assets/css/gameScreen.module.css";
-import { getMapInfoById, installableMapElements, MapElementInfo } from "../../util/map/mapElementInfo";
+import mapElementInfo, { getMapInfoById, MapElementInfo } from "../../util/map/mapElementInfo";
 import { LauncherInfo } from "../../util/launcher/launcherInfo";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
 
@@ -20,7 +20,7 @@ const MapComponentSelector = ({ selectedComponent }: ComponentSelectorType) => {
   }
 
   useEffect(() => {
-    const mapComponents = Object.values(installableMapElements);
+    const mapComponents = Object.values(mapElementInfo);
     const gap = 0.1;
     const length = 5;
     const width = (18 - gap * length) / length;
@@ -32,19 +32,21 @@ const MapComponentSelector = ({ selectedComponent }: ComponentSelectorType) => {
     };
     const newMapElementList: ReactNode[] = [];
     mapComponents.forEach((element, idx) => {
-      newMapElementList.push(
-        <div>
-          <img
-            src={element.src}
-            alt={element.id.toString()}
-            style={mapElementStyle}
-            key={element.id}
-            onClick={() => {
-              handleClickedObject(element);
-            }}
-          />
-        </div>
-      );
+      if (element.tag.installable) {
+        newMapElementList.push(
+          <div>
+            <img
+              src={element.src}
+              alt={element.id.toString()}
+              style={mapElementStyle}
+              key={element.id}
+              onClick={() => {
+                handleClickedObject(element);
+              }}
+            />
+          </div>
+        );
+      }
     });
     setMapElementList(() => newMapElementList);
   }, []);

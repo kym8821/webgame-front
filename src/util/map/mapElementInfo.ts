@@ -6,6 +6,7 @@ interface MapElementTag {
   turretBase: boolean;
   facilityBase: boolean;
   core: boolean;
+  installable: boolean;
 }
 
 export interface MapElementInfo {
@@ -30,6 +31,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       turretBase: true,
       facilityBase: false,
       core: false,
+      installable: true,
     },
   },
   floor: {
@@ -44,6 +46,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       turretBase: false,
       facilityBase: false,
       core: false,
+      installable: false,
     },
   },
   ex: {
@@ -58,6 +61,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       turretBase: false,
       facilityBase: false,
       core: false,
+      installable: false,
     },
   },
   core: {
@@ -72,6 +76,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       turretBase: false,
       facilityBase: false,
       core: true,
+      installable: false,
     },
   },
   tile: {
@@ -86,6 +91,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       turretBase: false,
       facilityBase: false,
       core: false,
+      installable: false,
     },
   },
   pipe: {
@@ -100,51 +106,22 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       turretBase: false,
       facilityBase: false,
       core: false,
+      installable: true,
     },
   },
-};
-
-const installableMapElements: Record<string, MapElementInfo> = {
-  base1: {
-    name: "base1",
-    id: 0,
-    width: 1,
-    height: 1,
-    src: mapImages.base1,
-    tag: {
-      pipe: false,
-      tile: false,
-      turretBase: true,
-      facilityBase: false,
-      core: false,
-    },
-  },
-  pipe: {
-    name: "pipe",
-    id: 5,
-    width: 1,
-    height: 1,
-    src: mapImages.pipe_0000,
-    tag: {
-      pipe: true,
-      tile: false,
-      turretBase: false,
-      facilityBase: false,
-      core: false,
-    },
-  },
-  tile: {
-    name: "tile",
-    id: 4,
+  objectRemover: {
+    name: "objectRemover",
+    id: 6,
     width: 1,
     height: 1,
     src: mapImages.tile,
     tag: {
       pipe: false,
-      tile: true,
+      tile: false,
       turretBase: false,
       facilityBase: false,
       core: false,
+      installable: true,
     },
   },
 };
@@ -161,5 +138,5 @@ function getMapInfoById(id: number) {
   return ret;
 }
 
-export { getMapInfoById, installableMapElements };
+export { getMapInfoById };
 export default mapElementInfo;
