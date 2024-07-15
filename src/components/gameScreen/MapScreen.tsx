@@ -37,7 +37,8 @@ const map = [
 
 interface MapScreenProps {
   page: number;
-  selectedComponent: React.MutableRefObject<SelectedComponent | null>;
+  // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
+  selectedComponent: SelectedComponent | null;
   mapManager: React.MutableRefObject<MapManager>;
 }
 
@@ -64,17 +65,17 @@ const MapScreen = ({ page, selectedComponent, mapManager }: MapScreenProps) => {
       if (context) mapElementHandler.draw(context);
     }
 
-    const windowResize = () => {
-      const currentBlockSize = getCurrentBlockSize(canvas.scrollWidth, map);
-      if (currentBlockSize && currentBlockSize > lastUpdatedBlockSize.current * 2 && context) {
-        canvas.width = canvas.scrollWidth;
-        canvas.height = canvas.width / 2;
-        mapManager.current.blockSize = currentBlockSize;
-        // mapDrawer.draw(context, mapManager.current.map, mapManager.current.blockSize);
-        mapElementHandler.draw(context);
-        lastUpdatedBlockSize.current = mapManager.current.blockSize;
-      }
-    };
+    // const windowResize = () => {
+    //   const currentBlockSize = getCurrentBlockSize(canvas.scrollWidth, map);
+    //   if (currentBlockSize && currentBlockSize > lastUpdatedBlockSize.current * 2 && context) {
+    //     canvas.width = canvas.scrollWidth;
+    //     canvas.height = canvas.width / 2;
+    //     mapManager.current.blockSize = currentBlockSize;
+    //     // mapDrawer.draw(context, mapManager.current.map, mapManager.current.blockSize);
+    //     mapElementHandler.draw(context);
+    //     lastUpdatedBlockSize.current = mapManager.current.blockSize;
+    //   }
+    // };
 
     if (!canvasRef || !canvasRef.current) return;
     mapManager.current.map = convertNumberMapToMapFrameMap(map);
@@ -91,15 +92,15 @@ const MapScreen = ({ page, selectedComponent, mapManager }: MapScreenProps) => {
       contextRef.current = context;
       // mapScreenHandler.defaultMapElementHandler = new MapElementHandler(canvas, mapManager.current, context);
     }
-    window.addEventListener("resize", windowResize);
+    // window.addEventListener("resize", windowResize);
     setValues();
     return () => {
-      window.removeEventListener("resize", windowResize);
+      // window.removeEventListener("resize", windowResize);
     };
   }, []);
 
   return (
-    <div className={`${style.gameScreen} ${style.mapScreen} ${style.clickEventScreen}`}>
+    <div className={`${style.gameScreen} ${style.mapScreen}`}>
       <canvas ref={canvasRef}></canvas>
     </div>
   );

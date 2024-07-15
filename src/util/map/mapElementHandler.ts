@@ -49,10 +49,10 @@ export default class MapElementHandler {
 
   activateObject = (corePos: MapPosition[]) => {
     // init data
-    console.log("activate object");
-    console.log(corePos);
+    // console.log("activate object");
+    // console.log(corePos);
     const map = this.mapManager.map;
-    console.log(map);
+    // console.log(map);
     const visit: boolean[][] = new Array(map.length);
     const stack: MapPosition[] = [];
     for (let i = 0; i < map.length; i++) {
@@ -77,10 +77,10 @@ export default class MapElementHandler {
         if (visit[nn.y][nn.x]) continue;
         visit[nn.y][nn.x] = true;
         const mapElement = map[nn.y][nn.x].info;
-        console.log(nn);
+        // console.log(nn);
         if (mapElement.tag.pipe) stack.push(nn);
         if (mapElement.tag.facilityBase || mapElement.tag.turretBase) {
-          console.log(`activate ${nn.x} ${nn.y}`);
+          // console.log(`activate ${nn.x} ${nn.y}`);
           map[nn.y][nn.x].activate = true;
         }
       }
@@ -132,7 +132,14 @@ export default class MapElementHandler {
         const position = mapCoordConverter.mapToCanvasCoord(fac.mapPosX, fac.mapPosY, this.mapManager.blockSize);
         context.save();
         context.translate(position.posX, position.posY);
-        context.drawImage(image, 0, 0, this.mapManager.blockSize * info.width, this.mapManager.blockSize * info.height);
+        // context.drawImage(image, 0, 0, this.mapManager.blockSize * info.width, this.mapManager.blockSize * info.height);
+        context.drawImage(
+          image,
+          0,
+          -this.mapManager.blockSize / 4,
+          this.mapManager.blockSize * info.width,
+          this.mapManager.blockSize * info.height
+        );
         context.restore();
       };
     });

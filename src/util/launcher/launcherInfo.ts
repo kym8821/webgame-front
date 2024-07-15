@@ -1,13 +1,27 @@
 import { ObjectInfo, objectType } from "../object/objectInfo";
 
 export interface LauncherInfo extends ObjectInfo {
+  id: number;
   lv: number;
   shootRate: number;
   projectileSpeed: number;
 }
 
+export function isLauncherInfo(obj: LauncherInfo) {
+  if (
+    typeof obj.id === "number" &&
+    typeof obj.lv === "number" &&
+    typeof obj.shootRate === "number" &&
+    typeof obj.projectileSpeed === "number"
+  ) {
+    return true;
+  }
+  return false;
+}
+
 const launcherInfo: Record<string, LauncherInfo> = {
   lv1: {
+    id: 1,
     type: objectType.launcher,
     name: "lv1",
     frameSize: 1,
@@ -18,5 +32,20 @@ const launcherInfo: Record<string, LauncherInfo> = {
     projectileSpeed: 1,
   },
 };
+
+export function getLauncherInfoById(id: number): LauncherInfo | undefined {
+  const infoList = Object.values(launcherInfo);
+  let ret: LauncherInfo | undefined = undefined;
+  // console.log("InfoList:", infoList);
+  // console.log("Searching for ID:", id);
+  infoList.forEach((info) => {
+    // console.log("Checking info:", info);
+    if (info.id === id) {
+      // console.log("Match found:", info);
+      ret = info;
+    }
+  });
+  return ret;
+}
 
 export default launcherInfo;

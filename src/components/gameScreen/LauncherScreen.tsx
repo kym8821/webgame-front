@@ -17,7 +17,8 @@ type shootScreenProps = {
   launcherRef: React.MutableRefObject<LauncherManager>;
   monsterRef: React.MutableRefObject<MonsterManager>;
   mapManager: React.MutableRefObject<MapManager>;
-  selectedComponent: React.MutableRefObject<SelectedComponent | null>;
+  // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
+  selectedComponent: SelectedComponent | null;
 };
 
 const ShootScreen = ({ launcherRef, monsterRef, selectedComponent, mapManager }: shootScreenProps) => {
@@ -68,7 +69,7 @@ const ShootScreen = ({ launcherRef, monsterRef, selectedComponent, mapManager }:
       contextRef.current = context;
     }
 
-    window.addEventListener("resize", windowResize);
+    // window.addEventListener("resize", windowResize);
     setLauncherAngleTimer();
     return () => {
       const [animationFrame, generationFrame] = [launcherRef.current.animationFrame, launcherRef.current.generationFrame];

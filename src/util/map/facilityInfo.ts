@@ -11,6 +11,7 @@ const facilityInfo: Record<string, MapElementInfo> = {
     tag: {
       pipe: false,
       tile: false,
+      base: false,
       turretBase: false,
       facilityBase: false,
       core: true,

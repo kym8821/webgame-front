@@ -5,10 +5,12 @@ import { MapElementInfo } from "../../util/map/mapElementInfo";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
 
 interface ComponentSelectorType {
-  selectedComponent: React.MutableRefObject<SelectedComponent | null>;
+  // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
+  selectedComponent: SelectedComponent | null;
+  setSelectedComponent: Function;
 }
 
-const LauncherSelector = ({ selectedComponent }: ComponentSelectorType) => {
+const LauncherSelector = ({ selectedComponent, setSelectedComponent }: ComponentSelectorType) => {
   const [launcherList, setLauncherList] = useState<ReactNode[]>([]);
 
   function handleClickedObject(element: LauncherInfo) {
@@ -16,7 +18,8 @@ const LauncherSelector = ({ selectedComponent }: ComponentSelectorType) => {
       component: element,
       type: 2,
     };
-    selectedComponent.current = sc;
+    // selectedComponent.current = sc;
+    setSelectedComponent(() => sc);
   }
 
   useEffect(() => {

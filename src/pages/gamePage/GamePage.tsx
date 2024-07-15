@@ -13,6 +13,7 @@ import { MapElementInfo } from "../../util/map/mapElementInfo";
 import { LauncherInfo } from "../../util/launcher/launcherInfo";
 import { CanvasManager } from "../../util/object/CanvasManager";
 import UserInterfaceScreen from "../../components/gameScreen/UserInterfaceScreen";
+import GameObjectSideBar from "../../components/sideBar/GameObjectSibeBar";
 
 export interface SelectedComponent {
   component: MapElementInfo | LauncherInfo | null;
@@ -20,8 +21,8 @@ export interface SelectedComponent {
 }
 
 const GamePage = () => {
-  const [modal, setModal] = useState(<div></div>);
-  const selectedComponent = useRef<SelectedComponent | null>(null);
+  // const selectedComponent = useRef<SelectedComponent | null>(null);
+  const [selectedComponent, setSelectedComponent] = useState<SelectedComponent | null>(null);
   const [page, setPage] = useState<number>(1);
   const [minPage, maxPage] = [1, 2];
 
@@ -31,6 +32,21 @@ const GamePage = () => {
   });
 
   const mapManager = useRef<MapManager>({
+    animationFrame: {
+      lastFrameTime: 0,
+      interval: 20,
+      animationFrame: null,
+    },
+    generationFrame: {
+      lastFrameTime: 0,
+      interval: 1000,
+      animationFrame: null,
+    },
+    movementFrame: {
+      lastFrameTime: 0,
+      interval: 20,
+      animationFrame: null,
+    },
     blockSize: window.innerWidth / 20,
     map: [[]],
     mapObjects: [],
@@ -103,7 +119,6 @@ const GamePage = () => {
 
   return (
     <div className={style.gamePage}>
-      <div>{modal}</div>
       <div>
         <UserInterfaceScreen
           userScreenManager={userScreenManager}
@@ -117,8 +132,16 @@ const GamePage = () => {
         <MonsterScreen monsterRef={monsterRef} mapManager={mapManager} />
         <ProjectileScreen monsterRef={monsterRef} projectileRef={projectileRef} launcherRef={launcherRef} mapManager={mapManager} />
         <MapScreen page={page} selectedComponent={selectedComponent} mapManager={mapManager} />
+        <GameObjectFooter
+          page={page}
+          setPage={setPage}
+          minPage={minPage}
+          maxPage={maxPage}
+          selectedComponent={selectedComponent}
+          setSelectedComponent={setSelectedComponent}
+        />
       </div>
-      <GameObjectFooter page={page} setPage={setPage} minPage={minPage} maxPage={maxPage} selectedComponent={selectedComponent} />
+      <GameObjectSideBar selectedComponent={selectedComponent} />
     </div>
   );
 };

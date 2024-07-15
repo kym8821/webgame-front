@@ -3,6 +3,7 @@ import mapImages from "../../assets/images/map/mapImages";
 interface MapElementTag {
   pipe: boolean;
   tile: boolean;
+  base: boolean;
   turretBase: boolean;
   facilityBase: boolean;
   core: boolean;
@@ -18,6 +19,31 @@ export interface MapElementInfo {
   tag: MapElementTag;
 }
 
+export function isMapElementInfo(obj: MapElementInfo) {
+  if (
+    typeof obj.name === "string" &&
+    typeof obj.id === "number" &&
+    typeof obj.src === "string" &&
+    typeof obj.width === "number" &&
+    typeof obj.height === "number"
+  ) {
+    return true;
+  }
+  return false;
+}
+
+export function getMapInfoById(id: number) {
+  const infoList = Object.values(mapElementInfo);
+  let ret = undefined;
+  infoList.forEach((info) => {
+    if (info.id === id) {
+      ret = info;
+    }
+  });
+  if (!ret) return mapElementInfo["ex"];
+  return ret;
+}
+
 const mapElementInfo: Record<string, MapElementInfo> = {
   base1: {
     name: "base1",
@@ -28,6 +54,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     tag: {
       pipe: false,
       tile: false,
+      base: false,
       turretBase: true,
       facilityBase: false,
       core: false,
@@ -43,6 +70,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     tag: {
       pipe: false,
       tile: true,
+      base: false,
       turretBase: false,
       facilityBase: false,
       core: false,
@@ -58,6 +86,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     tag: {
       pipe: false,
       tile: false,
+      base: false,
       turretBase: false,
       facilityBase: false,
       core: false,
@@ -73,6 +102,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     tag: {
       pipe: false,
       tile: false,
+      base: false,
       turretBase: false,
       facilityBase: false,
       core: true,
@@ -88,6 +118,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     tag: {
       pipe: false,
       tile: true,
+      base: true,
       turretBase: false,
       facilityBase: false,
       core: false,
@@ -103,6 +134,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     tag: {
       pipe: true,
       tile: false,
+      base: false,
       turretBase: false,
       facilityBase: false,
       core: false,
@@ -118,6 +150,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     tag: {
       pipe: false,
       tile: false,
+      base: false,
       turretBase: false,
       facilityBase: false,
       core: false,
@@ -126,17 +159,4 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   },
 };
 
-function getMapInfoById(id: number) {
-  const infoList = Object.values(mapElementInfo);
-  let ret = undefined;
-  infoList.forEach((info) => {
-    if (info.id === id) {
-      ret = info;
-    }
-  });
-  if (!ret) return mapElementInfo["ex"];
-  return ret;
-}
-
-export { getMapInfoById };
 export default mapElementInfo;

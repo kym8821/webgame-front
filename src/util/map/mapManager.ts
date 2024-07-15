@@ -1,8 +1,9 @@
 import { CanvasManager } from "../object/CanvasManager";
+import { CanvasObjectManager } from "../object/canvasObjectManager";
 import { getMapInfoById } from "./mapElementInfo";
 import { MapFrame } from "./mapFrame";
 
-export interface MapManager extends CanvasManager {
+export interface MapManager extends CanvasObjectManager {
   map: MapFrame[][];
   mapObjects: MapFrame[];
   blockSize: number;

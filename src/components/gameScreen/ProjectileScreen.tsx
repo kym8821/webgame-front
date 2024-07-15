@@ -84,7 +84,7 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager }
 
     setProjectileAnimateTimer();
     setProjectileGenerateTimer();
-    window.addEventListener("resize", windowResize);
+    // window.addEventListener("resize", windowResize);
     return () => {
       const [animationFrame, generationFrame] = [projectileRef.current.animationFrame, projectileRef.current.generationFrame];
       if (generationFrame && generationFrame.animationFrame) cancelAnimationFrame(generationFrame.animationFrame);

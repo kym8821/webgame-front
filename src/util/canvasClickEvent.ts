@@ -18,18 +18,22 @@ const SelectedComponentType = {
 function handleMapElementCreateEvent(
   e: MouseEvent,
   mapManager: React.MutableRefObject<MapManager>,
-  selectedComponent: React.MutableRefObject<SelectedComponent | null>
+  // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
+  selectedComponent: SelectedComponent | null
 ) {
   const [canvas, context] = [mapManager.current.canvasRef.current, mapManager.current.contextRef.current];
   if (!canvas || !context) return;
-  if (!selectedComponent.current || !selectedComponent.current.component) return;
-  if (
-    selectedComponent.current.type != SelectedComponentType.mapElement &&
-    selectedComponent.current.type != SelectedComponentType.facility
-  )
-    return;
-  const component = selectedComponent.current.component as MapElementInfo;
-  console.log(component);
+  // if (!selectedComponent.current || !selectedComponent.current.component) return;
+  // if (
+  //   selectedComponent.current.type != SelectedComponentType.mapElement &&
+  //   selectedComponent.current.type != SelectedComponentType.facility
+  // )
+  //   return;
+  // const component = selectedComponent.current.component as MapElementInfo;
+  if (!selectedComponent || !selectedComponent.component) return;
+  if (selectedComponent.type != SelectedComponentType.mapElement && selectedComponent.type != SelectedComponentType.facility) return;
+  const component = selectedComponent.component as MapElementInfo;
+
   // 캔버스의 경계 상자를 가져옵니다.
   const rect = canvas.getBoundingClientRect();
   // 이벤트 좌표를 캔버스 내부 좌표로 변환합니다.
@@ -38,29 +42,38 @@ function handleMapElementCreateEvent(
 
   const [mapPointX, mapPointY] = mapDrawer.canvasToMapCoord(px, py, mapManager.current.blockSize);
   const mapElement = mapManager.current.map[mapPointY][mapPointX];
-  if (mapElement.info.id == mapElementInfo.tile.id) {
+  console.log(mapElement, component);
+  if (mapElement.info.tag.base) {
     mapManager.current.map[mapPointY][mapPointX].info = component;
     mapManager.current.map[mapPointY][mapPointX].activate = false;
     // if (context) mapDrawer.draw(context, mapManager.current.map, mapManager.current.blockSize);
-    if (context) {
-      const mapElementHandler = new MapElementHandler(mapManager.current);
-      mapElementHandler.draw(context);
-    }
+  } else if (component.id === mapElementInfo.objectRemover.id) {
+    mapManager.current.map[mapPointY][mapPointX].info = mapElementInfo.tile;
+    mapManager.current.map[mapPointY][mapPointX].activate = false;
+  }
+  if (context) {
+    const mapElementHandler = new MapElementHandler(mapManager.current);
+    mapElementHandler.draw(context);
   }
 }
 
 function handleLauncherCreateEvent(
   e: MouseEvent,
   mapInfo: React.MutableRefObject<MapManager>,
-  selectedComponent: React.MutableRefObject<SelectedComponent | null>,
+  // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
+  selectedComponent: SelectedComponent | null,
   launcherRef: React.MutableRefObject<LauncherManager>,
   monsterRef: React.MutableRefObject<MonsterManager>
 ) {
   const [canvas, context] = [launcherRef.current.canvasRef.current, launcherRef.current.contextRef.current];
-  if (!selectedComponent.current || !selectedComponent.current.component) return;
-  if (selectedComponent.current.type != SelectedComponentType.launcher) return;
+  // if (!selectedComponent.current || !selectedComponent.current.component) return;
+  // if (selectedComponent.current.type != SelectedComponentType.launcher) return;
+  // if (!canvas || !context) return;
+  // const component = selectedComponent.current.component as LauncherInfo;
+  if (!selectedComponent || !selectedComponent.component) return;
+  if (selectedComponent.type != SelectedComponentType.launcher) return;
   if (!canvas || !context) return;
-  const component = selectedComponent.current.component as LauncherInfo;
+  const component = selectedComponent.component as LauncherInfo;
   const launcherHandler = new LauncherElementHandler(mapInfo.current);
   // 캔버스의 경계 상자를 가져옵니다.
   const rect = canvas.getBoundingClientRect();
@@ -70,7 +83,7 @@ function handleLauncherCreateEvent(
 
   const [mapPointX, mapPointY] = mapDrawer.canvasToMapCoord(px, py, mapInfo.current.blockSize);
   const mapElement = mapInfo.current.map[mapPointY][mapPointX];
-  if (mapElement.info.id !== mapElementInfo.base1.id) return;
+  if (!mapElement.info.tag.turretBase) return;
   const launcher = launcherHandler.loadFrames(component, mapPointX, mapPointY);
   if (launcher) {
     launcherRef.current.launchers.push(launcher);
@@ -80,7 +93,8 @@ function handleLauncherCreateEvent(
 
 export function handleCanvasClickEvent(
   e: MouseEvent,
-  selectedComponent: React.MutableRefObject<SelectedComponent | null>,
+  // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
+  selectedComponent: SelectedComponent | null,
   launcherRef: React.MutableRefObject<LauncherManager>,
   monsterRef: React.MutableRefObject<MonsterManager>,
   mapManager: React.MutableRefObject<MapManager>
