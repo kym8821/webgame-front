@@ -13,6 +13,8 @@ import ProjectileElementHandler from "../../util/projectile/projectileElementHan
 import LauncherElementHandler from "../../util/launcher/launcherElementHandler";
 import { getCurrentBlockSize } from "../../util/windowSize";
 import MapElementHandler from "../../util/map/mapElementHandler";
+import { FacilityManager } from "../../util/facility/facilityManager";
+import FacilityElementHandler from "../../util/facility/facilityElementHandler";
 
 const map = [
   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
@@ -33,6 +35,7 @@ interface UserInterfaceScreen {
   // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
   selectedComponent: SelectedComponent | null;
   mapManager: React.MutableRefObject<MapManager>;
+  facilityManager: React.MutableRefObject<FacilityManager>;
 }
 
 const UserInterfaceScreen = ({
@@ -42,6 +45,7 @@ const UserInterfaceScreen = ({
   projectileRef,
   selectedComponent,
   mapManager,
+  facilityManager,
 }: UserInterfaceScreen) => {
   const [canvasRef, contextRef] = [userScreenManager.current.canvasRef, userScreenManager.current.contextRef];
   const lastUpdatedBlockSize = useRef<number>(0);
@@ -57,14 +61,15 @@ const UserInterfaceScreen = ({
     if (!canvas) return;
     setCanvasSize();
     canvas.onresize = setCanvasSize;
-    canvas.onclick = (e: MouseEvent) => handleCanvasClickEvent(e, selectedComponent, launcherRef, monsterRef, mapManager);
+    canvas.onclick = (e: MouseEvent) => handleCanvasClickEvent(e, selectedComponent, launcherRef, monsterRef, mapManager, facilityManager);
 
     const monsterHandler = new MonsterElementHandler(mapManager.current);
     const projectileHandler = new ProjectileElementHandler(mapManager.current);
     const launcherHandler = new LauncherElementHandler(mapManager.current);
     const mapHandler = new MapElementHandler(mapManager.current);
+    const facilityHandler = new FacilityElementHandler(mapManager.current);
     window.addEventListener("resize", () => {
-      function resizeScreen(manager: CanvasObjectManager) {
+      function resizeScreen(manager: CanvasObjectManager | CanvasManager) {
         const [canvas, context] = [manager.canvasRef.current, manager.contextRef.current];
         if (!canvas || !context) return;
         canvas.width = canvas.scrollWidth;
@@ -80,6 +85,7 @@ const UserInterfaceScreen = ({
         resizeScreen(launcherRef.current);
         resizeScreen(projectileRef.current);
         resizeScreen(mapManager.current);
+        resizeScreen(facilityManager.current);
         mapManager.current.blockSize = currentBlockSize;
         // if (launcherCanvas && launcherContext)
         //   launcherHandler.draw(launcherCanvas, launcherContext, launcherRef.current.launchers, monsterRef.current, false);
@@ -87,6 +93,8 @@ const UserInterfaceScreen = ({
         // if (projectileCanvas && projectileContext)
         //   projectileHandler.draw(launcherCanvas, launcherContext, projectileRef.current.projectiles, monsterRef.current.monsters, false);
         if (mapContext) mapHandler.draw(mapContext);
+        facilityHandler.draw(facilityManager.current);
+
         lastUpdatedBlockSize.current = mapManager.current.blockSize;
       }
     });

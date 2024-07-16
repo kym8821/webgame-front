@@ -14,9 +14,12 @@ import { LauncherInfo } from "../../util/launcher/launcherInfo";
 import { CanvasManager } from "../../util/object/CanvasManager";
 import UserInterfaceScreen from "../../components/gameScreen/UserInterfaceScreen";
 import GameObjectSideBar from "../../components/sideBar/GameObjectSibeBar";
+import { FacilityManager } from "../../util/facility/facilityManager";
+import FacilityScreen from "../../components/gameScreen/facilityScreen";
+import { FacilityInfo } from "../../util/facility/facilityInfo";
 
 export interface SelectedComponent {
-  component: MapElementInfo | LauncherInfo | null;
+  component: MapElementInfo | LauncherInfo | FacilityInfo | null;
   type: number;
 }
 
@@ -24,25 +27,35 @@ const GamePage = () => {
   // const selectedComponent = useRef<SelectedComponent | null>(null);
   const [selectedComponent, setSelectedComponent] = useState<SelectedComponent | null>(null);
   const [page, setPage] = useState<number>(1);
-  const [minPage, maxPage] = [1, 2];
+  const [minPage, maxPage] = [1, 3];
 
   const userScreenManager = useRef<CanvasManager>({
+    animationFrame: {
+      lastFrameTime: 0,
+      interval: 20,
+      animationFrame: null,
+    },
+    canvasRef: useRef<HTMLCanvasElement>(null),
+    contextRef: useRef<CanvasRenderingContext2D>(null),
+  });
+
+  const facilityManager = useRef<FacilityManager>({
+    energy: 0,
+    energyOutput: 0,
+    evolveFactor: 0,
+    evolveFactorOutput: 0,
+    animationFrame: {
+      lastFrameTime: 0,
+      interval: 20,
+      animationFrame: null,
+    },
+    facilities: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   });
 
   const mapManager = useRef<MapManager>({
     animationFrame: {
-      lastFrameTime: 0,
-      interval: 20,
-      animationFrame: null,
-    },
-    generationFrame: {
-      lastFrameTime: 0,
-      interval: 1000,
-      animationFrame: null,
-    },
-    movementFrame: {
       lastFrameTime: 0,
       interval: 20,
       animationFrame: null,
@@ -127,11 +140,13 @@ const GamePage = () => {
           projectileRef={projectileRef}
           selectedComponent={selectedComponent}
           mapManager={mapManager}
+          facilityManager={facilityManager}
         />
         <LauncherScreen launcherRef={launcherRef} monsterRef={monsterRef} selectedComponent={selectedComponent} mapManager={mapManager} />
         <MonsterScreen monsterRef={monsterRef} mapManager={mapManager} />
         <ProjectileScreen monsterRef={monsterRef} projectileRef={projectileRef} launcherRef={launcherRef} mapManager={mapManager} />
         <MapScreen page={page} selectedComponent={selectedComponent} mapManager={mapManager} />
+        <FacilityScreen facilityManager={facilityManager} page={page} mapMananger={mapManager} selectedComponent={selectedComponent} />
         <GameObjectFooter
           page={page}
           setPage={setPage}

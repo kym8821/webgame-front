@@ -1,7 +1,9 @@
 export const objectType = {
-  monster: 'monster',
-  projectile: 'projectile',
-  launcher: 'launcher',
+  monster: "monster",
+  projectile: "projectile",
+  launcher: "launcher",
+  facility: "facility",
+  mapElement: "mapElement",
 };
 
 export interface ObjectInfo {

@@ -5,4 +5,5 @@ export interface MapFrame {
   mapPosY: number;
   info: MapElementInfo;
   activate: boolean;
+  empty: boolean;
 }

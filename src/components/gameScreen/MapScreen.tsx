@@ -9,7 +9,7 @@ import { LauncherInfo } from "../../util/launcher/launcherInfo";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import { handleCanvasClickEvent } from "../../util/canvasClickEvent";
 import { CanvasManager } from "../../util/object/CanvasManager";
-import facilityInfo from "../../util/map/facilityInfo";
+import facilityInfo from "../../util/facility/facilityInfo";
 
 // const map = [
 //   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
@@ -79,12 +79,6 @@ const MapScreen = ({ page, selectedComponent, mapManager }: MapScreenProps) => {
 
     if (!canvasRef || !canvasRef.current) return;
     mapManager.current.map = convertNumberMapToMapFrameMap(map);
-    mapManager.current.mapObjects.push({
-      info: facilityInfo.core,
-      mapPosX: 14,
-      mapPosY: 2,
-      activate: true,
-    });
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 

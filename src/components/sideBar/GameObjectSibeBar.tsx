@@ -4,6 +4,7 @@ import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import { getMapInfoById, isMapElementInfo, MapElementInfo } from "../../util/map/mapElementInfo";
 import { getLauncherInfoById, isLauncherInfo, LauncherInfo } from "../../util/launcher/launcherInfo";
 import launcherImages from "../../assets/images/launcher/launcherImages";
+import { FacilityInfo, getFacilityInfoById, isFacilityInfo } from "../../util/facility/facilityInfo";
 
 interface GameObjectSibeBarType {
   // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
@@ -53,6 +54,23 @@ const GameObjectSideBar = ({ selectedComponent }: GameObjectSibeBarType) => {
           </div>
         ));
       }
+    } else if (isFacilityInfo(sc as FacilityInfo)) {
+      const component = getFacilityInfoById(sc.id);
+      if (!component) {
+        alert("side bar : invalid facility info");
+        return;
+      }
+      console.log(component);
+      setObjectInfo(() => (
+        <div>
+          <div className={style.sideBarImgContainer}>
+            <img src={component.src} className={style.sideBarImg} style={{ aspectRatio: component.width / component.height }} />
+          </div>
+          <div>{component.name}</div>
+          <div>cost : {component.energy}</div>
+          <div>gas : {component.evolveFactor}</div>
+        </div>
+      ));
     }
   }, [selectedComponent]);
   return <div className={style.gameObjectSideBar}>{objectInfo}</div>;

@@ -1,9 +1,8 @@
 import { ReactNode, useEffect, useState } from "react";
-import style from "../../assets/css/gameScreen.module.css";
-import mapElementInfo, { getMapInfoById, MapElementInfo } from "../../util/map/mapElementInfo";
-import { LauncherInfo } from "../../util/launcher/launcherInfo";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import { SelectedComponentType } from "../../util/canvasClickEvent";
+import style from "../../assets/css/gameScreen.module.css";
+import facilityInfo, { FacilityInfo } from "../../util/facility/facilityInfo";
 
 interface ComponentSelectorType {
   // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
@@ -11,40 +10,40 @@ interface ComponentSelectorType {
   setSelectedComponent: Function;
 }
 
-const MapComponentSelector = ({ selectedComponent, setSelectedComponent }: ComponentSelectorType) => {
-  const [mapElementList, setMapElementList] = useState<ReactNode[]>();
+const FacilitySelector = ({ selectedComponent, setSelectedComponent }: ComponentSelectorType) => {
+  const [facilityList, setFacilityList] = useState<ReactNode[]>([]);
 
-  function handleClickedObject(element: MapElementInfo) {
+  function handleClickedObject(element: FacilityInfo) {
     const sc: SelectedComponent = {
       component: element,
-      type: SelectedComponentType.mapElement,
+      type: SelectedComponentType.facility,
     };
     // selectedComponent.current = sc;
     setSelectedComponent(() => sc);
   }
 
   useEffect(() => {
-    const mapComponents = Object.values(mapElementInfo);
+    const facilityElements = Object.values(facilityInfo);
+    const newFacilityList: ReactNode[] = [];
     const gap = 0.1;
     const length = 5;
     const width = (18 - gap * length) / length;
-    console.log(width);
     const mapElementStyle: React.CSSProperties = {
       width: `${width}vw`,
       height: `${width}vw`,
+      aspectRatio: 1,
       margin: `${gap / 2}vw`,
     };
-    const newMapElementList: ReactNode[] = [];
-    mapComponents.forEach((element, idx) => {
+    facilityElements.forEach((element, idx) => {
       if (element.tag.installable) {
-        newMapElementList.push(
+        newFacilityList.push(
           <div>
             <img
               src={element.src}
-              alt={element.id.toString()}
+              alt={element.name}
               style={mapElementStyle}
-              key={element.id}
-              onClick={() => {
+              key={element.name}
+              onClick={(e) => {
                 handleClickedObject(element);
               }}
             />
@@ -52,10 +51,10 @@ const MapComponentSelector = ({ selectedComponent, setSelectedComponent }: Compo
         );
       }
     });
-    setMapElementList(() => newMapElementList);
+    setFacilityList(() => newFacilityList);
   }, []);
 
-  return <div className={style.componentSelector}>{mapElementList}</div>;
+  return <div className={style.componentSelector}>{facilityList}</div>;
 };
 
-export default MapComponentSelector;
+export default FacilitySelector;

@@ -1,4 +1,6 @@
+import { ObjectType } from "typescript";
 import mapImages from "../../assets/images/map/mapImages";
+import { objectType } from "../object/objectInfo";
 
 interface MapElementTag {
   pipe: boolean;
@@ -12,6 +14,7 @@ interface MapElementTag {
 
 export interface MapElementInfo {
   name: string;
+  type: string;
   id: number;
   src: string;
   width: number;
@@ -23,6 +26,7 @@ export interface MapElementInfo {
 
 export function isMapElementInfo(obj: MapElementInfo) {
   if (
+    obj.type === objectType.mapElement &&
     typeof obj.name === "string" &&
     typeof obj.id === "number" &&
     typeof obj.src === "string" &&
@@ -48,8 +52,9 @@ export function getMapInfoById(id: number) {
 }
 
 const mapElementInfo: Record<string, MapElementInfo> = {
-  base1: {
+  turretBase: {
     name: "터렛 베이스",
+    type: objectType.mapElement,
     id: 0,
     width: 1,
     height: 1,
@@ -68,6 +73,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   },
   floor: {
     name: "바닥",
+    type: objectType.mapElement,
     id: 1,
     width: 1,
     height: 1,
@@ -86,6 +92,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   },
   ex: {
     name: "에러타일",
+    type: objectType.mapElement,
     id: 2,
     width: 1,
     height: 1,
@@ -104,6 +111,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   },
   core: {
     name: "코어",
+    type: objectType.mapElement,
     id: 3,
     width: 1,
     height: 1,
@@ -122,6 +130,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   },
   tile: {
     name: "타일",
+    type: objectType.mapElement,
     id: 4,
     width: 1,
     height: 1,
@@ -140,6 +149,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   },
   pipe: {
     name: "파이프",
+    type: objectType.mapElement,
     id: 5,
     width: 1,
     height: 1,
@@ -158,6 +168,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   },
   objectRemover: {
     name: "모듈 제거",
+    type: objectType.mapElement,
     id: 6,
     width: 1,
     height: 1,
@@ -173,6 +184,25 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     },
     energy: 0,
     gas: 0,
+  },
+  facilityBase: {
+    name: "시설 베이스",
+    type: objectType.mapElement,
+    id: 7,
+    width: 1,
+    height: 1,
+    src: mapImages.ex,
+    tag: {
+      pipe: false,
+      tile: false,
+      base: false,
+      turretBase: false,
+      facilityBase: true,
+      core: false,
+      installable: true,
+    },
+    energy: 15,
+    gas: 15,
   },
 };
 

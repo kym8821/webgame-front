@@ -6,6 +6,8 @@ import { MapElementInfo } from "../../util/map/mapElementInfo";
 import LauncherSelector from "../selector/LauncherSelector";
 import { LauncherInfo } from "../../util/launcher/launcherInfo";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
+import { SelectedComponentType } from "../../util/canvasClickEvent";
+import FacilitySelector from "../selector/FacilitySelector";
 
 interface GameObjectFooterType {
   page: number;
@@ -26,8 +28,15 @@ const GameObjectFooter = ({ page, setPage, minPage, maxPage, selectedComponent, 
   return (
     <div className={style.gameScreenFooter}>
       <img src={systemImages.pointerLeft} className={style.pointer} onClick={(e) => handlePage(-1)} />
-      {page === 1 && <MapComponentSelector selectedComponent={selectedComponent} setSelectedComponent={setSelectedComponent} />}
-      {page === 2 && <LauncherSelector selectedComponent={selectedComponent} setSelectedComponent={setSelectedComponent} />}
+      {page === SelectedComponentType.mapElement && (
+        <MapComponentSelector selectedComponent={selectedComponent} setSelectedComponent={setSelectedComponent} />
+      )}
+      {page === SelectedComponentType.launcher && (
+        <LauncherSelector selectedComponent={selectedComponent} setSelectedComponent={setSelectedComponent} />
+      )}
+      {page === SelectedComponentType.facility && (
+        <FacilitySelector selectedComponent={selectedComponent} setSelectedComponent={setSelectedComponent} />
+      )}
       <img src={systemImages.pointerRight} className={style.pointer} onClick={(e) => handlePage(1)} />
     </div>
   );

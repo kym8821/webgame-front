@@ -1,7 +1,6 @@
 import ex from "./ex.png";
 import floor from "./floor.png";
 import base1 from "./base1.png";
-import core from "./core.png";
 import tile from "./tile.png";
 import pipe_0000 from "./pipe_0000.png";
 import pipe_0001 from "./pipe_0001.png";
@@ -28,7 +27,6 @@ const mapImages: MapImages = {
   ex: ex,
   floor: floor,
   base1: base1,
-  core: core,
   tile: tile,
   pipe: "./pipe",
   pipe_0000: pipe_0000,
