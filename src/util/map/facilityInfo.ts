@@ -17,6 +17,8 @@ const facilityInfo: Record<string, MapElementInfo> = {
       core: true,
       installable: false,
     },
+    energy: -1,
+    gas: -1,
   },
 };
 

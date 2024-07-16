@@ -18,8 +18,7 @@ function getImageStyle() {
 }
 
 const GameObjectSideBar = ({ selectedComponent }: GameObjectSibeBarType) => {
-  const [name, setName] = useState<string>();
-  const [image, setImage] = useState<ReactNode>();
+  const [objectInfo, setObjectInfo] = useState<ReactNode>();
 
   useEffect(() => {
     if (!selectedComponent || !selectedComponent.component) return;
@@ -27,27 +26,36 @@ const GameObjectSideBar = ({ selectedComponent }: GameObjectSibeBarType) => {
     const sc = selectedComponent.component;
     if (isMapElementInfo(sc as MapElementInfo)) {
       const component = getMapInfoById(sc.id);
-      console.log(component);
-      setName(() => component.name);
-      setImage(() => <img src={component.src} alt={component.name} style={getImageStyle()} />);
+      setObjectInfo(() => (
+        <div>
+          <div className={style.sideBarImgContainer}>
+            <img src={component.src} className={style.sideBarImg} style={{ aspectRatio: component.width / component.height }} />
+          </div>
+          <div>{component.name}</div>
+          <div>cost : {component.energy}</div>
+          <div>gas : {component.gas}</div>
+        </div>
+      ));
     } else if (isLauncherInfo(sc as LauncherInfo)) {
       const component = getLauncherInfoById(sc.id);
       if (!component) {
         alert("side bar : invalid launcher info");
         return;
       } else {
-        setName(() => component.name);
-        setImage(() => <img src={launcherImages[component.name]} style={getImageStyle()} />);
+        setObjectInfo(() => (
+          <div>
+            <div className={style.sideBarImgContainer}>
+              <img src={component.src} className={style.sideBarImg} style={{ aspectRatio: component.width / component.height }} />
+            </div>
+            <div>{component.name}</div>
+            <div>cost : {component.energy}</div>
+            <div>gas : {component.gas}</div>
+          </div>
+        ));
       }
     }
   }, [selectedComponent]);
-  return (
-    <div className={style.gameObjectSideBar}>
-      {/* {selectedComponent?.component as MapElementInfo} */}
-      {name}
-      {image}
-    </div>
-  );
+  return <div className={style.gameObjectSideBar}>{objectInfo}</div>;
 };
 
 export default GameObjectSideBar;

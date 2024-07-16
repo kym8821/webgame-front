@@ -95,13 +95,8 @@ export default class LauncherElementHandler {
       frame: [],
     };
     const frame = new Image();
-    const src = `${launcherInfo.name}`;
-    if (src in launcherImages) {
-      frame.src = launcherImages[src];
-      launcher.frame.push(frame);
-    } else {
-      console.error(`Frame ${src} not found in monsterImages object.`);
-    }
+    frame.src = launcherInfo.src;
+    launcher.frame.push(frame);
     if (launcher.frame.length > 0) return launcher;
     return undefined;
   };

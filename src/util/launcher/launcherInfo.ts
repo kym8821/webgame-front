@@ -1,10 +1,15 @@
+import { StringLiteral } from "typescript";
 import { ObjectInfo, objectType } from "../object/objectInfo";
+import launcherImages from "../../assets/images/launcher/launcherImages";
 
 export interface LauncherInfo extends ObjectInfo {
   id: number;
   lv: number;
   shootRate: number;
   projectileSpeed: number;
+  src: string;
+  energy: number;
+  gas: number;
 }
 
 export function isLauncherInfo(obj: LauncherInfo) {
@@ -23,13 +28,16 @@ const launcherInfo: Record<string, LauncherInfo> = {
   lv1: {
     id: 1,
     type: objectType.launcher,
-    name: "lv1",
+    name: "석궁",
     frameSize: 1,
     width: 140,
     height: 100,
     lv: 1,
+    src: launcherImages.lv1,
     shootRate: 1,
     projectileSpeed: 1,
+    energy: 10,
+    gas: 10,
   },
 };
 

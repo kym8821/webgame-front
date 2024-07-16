@@ -17,6 +17,8 @@ export interface MapElementInfo {
   width: number;
   height: number;
   tag: MapElementTag;
+  energy: number;
+  gas: number;
 }
 
 export function isMapElementInfo(obj: MapElementInfo) {
@@ -25,7 +27,8 @@ export function isMapElementInfo(obj: MapElementInfo) {
     typeof obj.id === "number" &&
     typeof obj.src === "string" &&
     typeof obj.width === "number" &&
-    typeof obj.height === "number"
+    typeof obj.height === "number" &&
+    obj.tag
   ) {
     return true;
   }
@@ -46,7 +49,7 @@ export function getMapInfoById(id: number) {
 
 const mapElementInfo: Record<string, MapElementInfo> = {
   base1: {
-    name: "base1",
+    name: "터렛 베이스",
     id: 0,
     width: 1,
     height: 1,
@@ -60,9 +63,11 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       core: false,
       installable: true,
     },
+    energy: 15,
+    gas: 15,
   },
   floor: {
-    name: "floor",
+    name: "바닥",
     id: 1,
     width: 1,
     height: 1,
@@ -76,9 +81,11 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       core: false,
       installable: false,
     },
+    energy: -1,
+    gas: -1,
   },
   ex: {
-    name: "ex",
+    name: "에러타일",
     id: 2,
     width: 1,
     height: 1,
@@ -92,9 +99,11 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       core: false,
       installable: false,
     },
+    energy: -1,
+    gas: -1,
   },
   core: {
-    name: "core",
+    name: "코어",
     id: 3,
     width: 1,
     height: 1,
@@ -108,9 +117,11 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       core: true,
       installable: false,
     },
+    energy: -1,
+    gas: -1,
   },
   tile: {
-    name: "tile",
+    name: "타일",
     id: 4,
     width: 1,
     height: 1,
@@ -124,9 +135,11 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       core: false,
       installable: false,
     },
+    energy: 10,
+    gas: 10,
   },
   pipe: {
-    name: "pipe",
+    name: "파이프",
     id: 5,
     width: 1,
     height: 1,
@@ -140,9 +153,11 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       core: false,
       installable: true,
     },
+    energy: 10,
+    gas: 5,
   },
   objectRemover: {
-    name: "objectRemover",
+    name: "모듈 제거",
     id: 6,
     width: 1,
     height: 1,
@@ -156,6 +171,8 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       core: false,
       installable: true,
     },
+    energy: 0,
+    gas: 0,
   },
 };
 

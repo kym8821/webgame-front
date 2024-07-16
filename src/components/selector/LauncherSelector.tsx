@@ -35,12 +35,11 @@ const LauncherSelector = ({ selectedComponent, setSelectedComponent }: Component
       margin: `${gap / 2}vw`,
     };
     launcherElements.forEach((element, idx) => {
-      const src = launcherImages[element.name];
       newMapElementList.push(
         <div>
           <img
-            src={src}
-            alt={element.name.toString()}
+            src={element.src}
+            alt={element.name}
             style={mapElementStyle}
             key={element.name}
             onClick={(e) => {

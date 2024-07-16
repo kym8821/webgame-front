@@ -65,6 +65,10 @@ canvas {
 }
 
 .gameObjectSideBar {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
   position: absolute;
   left: 75vw;
   top: calc((100vh - 35vw) / 2);
@@ -74,4 +78,21 @@ canvas {
   max-height: calc((100vh - 35vw) / 2 + 35vw);
 
   background-color: #f00;
+}
+
+.sideBarImgContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 60%;
+  height: auto;
+  aspect-ratio: 1;
+
+  background-color: #fff;
+}
+
+.sideBarImg {
+  width: 80%;
+  height: auto;
 }
