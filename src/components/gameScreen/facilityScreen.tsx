@@ -61,7 +61,7 @@ const FacilityScreen = ({ facilityManager, mapMananger, resource, setResource }:
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     if (facilityManager.current.facilities.length === 0) {
-      const coreFrame = facilityElementHandler.loadFrames(facilityInfo.core, 14, 2);
+      const coreFrame = facilityElementHandler.loadFrames(facilityInfo.core, 14, 1);
       facilityManager.current.facilities.push(coreFrame);
     }
     if (context) {

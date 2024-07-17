@@ -5,6 +5,8 @@ import { getMapInfoById, isMapElementInfo, MapElementInfo } from "../../util/map
 import { getLauncherInfoById, isLauncherInfo, LauncherInfo } from "../../util/launcher/launcherInfo";
 import launcherImages from "../../assets/images/launcher/launcherImages";
 import { FacilityInfo, getFacilityInfoById, isFacilityInfo } from "../../util/facility/facilityInfo";
+import { SelectedComponentType } from "../../util/canvasClickEvent";
+import { objectType } from "../../util/object/objectInfo";
 
 interface GameObjectSibeBarType {
   // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
@@ -19,6 +21,7 @@ function getImageStyle() {
 }
 
 const GameObjectSideBar = ({ selectedComponent }: GameObjectSibeBarType) => {
+  const [sideBarType, setSideBarType] = useState(<div>{objectType.mapElement}</div>);
   const [objectInfo, setObjectInfo] = useState<ReactNode>();
 
   useEffect(() => {
@@ -72,8 +75,14 @@ const GameObjectSideBar = ({ selectedComponent }: GameObjectSibeBarType) => {
         </div>
       ));
     }
+    setSideBarType(() => <div>{sc.type}</div>);
   }, [selectedComponent]);
-  return <div className={style.gameObjectSideBar}>{objectInfo}</div>;
+  return (
+    <div className={style.gameObjectSideBar}>
+      {sideBarType}
+      {objectInfo}
+    </div>
+  );
 };
 
 export default GameObjectSideBar;

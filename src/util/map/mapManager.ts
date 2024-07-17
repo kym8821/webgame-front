@@ -6,6 +6,7 @@ import { getMapInfoById } from "./mapElementInfo";
 import { MapFrame } from "./mapFrame";
 
 export interface MapManager extends CanvasManager {
+  numberMap: number[][];
   map: MapFrame[][];
   mapObjects: MapFrame[];
   blockSize: number;

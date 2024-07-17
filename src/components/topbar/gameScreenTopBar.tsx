@@ -14,6 +14,10 @@ const GameScreenTopBar = ({ resource }: GameScreenTopBarProps) => {
       <div>
         evolveFactor : {resource.evolveFactor} ( {resource.evolveFactorOutput}/sec )
       </div>
+      <div style={{ display: "flex" }}>
+        <div style={{ backgroundColor: "red", width: `${resource.health}%` }}>{resource.health}</div>
+        <div style={{ backgroundColor: "white", widows: `${100 - resource.health}%` }}></div>
+      </div>
     </div>
   );
 };

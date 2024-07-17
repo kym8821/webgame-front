@@ -31,10 +31,11 @@ const GamePage = () => {
   const [page, setPage] = useState<number>(1);
   const [minPage, maxPage] = [1, 3];
   const [resource, setResource] = useState<Resource>({
-    energy: 30,
+    energy: 20,
     energyOutput: facilityInfo.core.energyOutput,
-    evolveFactor: 30,
+    evolveFactor: 20,
     evolveFactorOutput: facilityInfo.core.evolveFactorOutput,
+    health: 100,
   });
 
   const userScreenManager = useRef<CanvasManager>({
@@ -64,6 +65,7 @@ const GamePage = () => {
   });
 
   const mapManager = useRef<MapManager>({
+    numberMap: [],
     animationFrame: {
       lastFrameTime: 0,
       interval: 20,
@@ -134,6 +136,11 @@ const GamePage = () => {
       interval: 40,
       animationFrame: null,
     },
+    damageFrame: {
+      lastFrameTime: 0,
+      interval: 1000,
+      animationFrame: null,
+    },
     monsters: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
@@ -155,7 +162,7 @@ const GamePage = () => {
           setResource={setResource}
         />
         <LauncherScreen launcherRef={launcherRef} monsterRef={monsterRef} selectedComponent={selectedComponent} mapManager={mapManager} />
-        <MonsterScreen monsterRef={monsterRef} mapManager={mapManager} />
+        <MonsterScreen monsterRef={monsterRef} mapManager={mapManager} setResource={setResource} />
         <ProjectileScreen
           monsterRef={monsterRef}
           projectileRef={projectileRef}

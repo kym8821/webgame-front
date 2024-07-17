@@ -103,18 +103,22 @@ export default class MonsterElementHandler {
       const frameNumber = info.frameNumber;
       const position = this.getPosition(canvas, monster);
       const [mpx, mpy] = mapCoordConverter.canvasToMapCoord(position.posX, position.posY, this.mapManager.blockSize);
-      if (mpx < 0 || mpx >= this.mapManager.map[0].length - 2 || mpy < 0 || mpy >= this.mapManager.map.length) {
-        monsters.splice(i, 1);
-        i -= 1;
-        continue;
-      }
       context.save();
       context.translate(position.posX + position.width / 2, position.posY + position.height / 2);
       context.drawImage(frame[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
       context.restore();
-      if (toChange) {
+      if (this.isOutOfRange(mpx, mpy)) {
+        continue;
+      } else if (toChange) {
         monsters[i].info.move += info.speed * 0.1;
       }
     }
+  };
+
+  isOutOfRange = (mapPosX: number, mapPosY: number) => {
+    if (mapPosX < 0 || mapPosX >= this.mapManager.map[0].length - 2 || mapPosY < 0 || mapPosY >= this.mapManager.map.length) {
+      return true;
+    }
+    return false;
   };
 }

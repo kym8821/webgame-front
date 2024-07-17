@@ -69,7 +69,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
     energy: -1,
     evolveFactor: -1,
     energyOutput: 5,
-    evolveFactorOutput: 2,
+    evolveFactorOutput: 1,
   },
   energyFacility: {
     id: 2,

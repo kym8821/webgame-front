@@ -3,4 +3,5 @@ export interface Resource {
   energyOutput: number;
   evolveFactor: number;
   evolveFactorOutput: number;
+  health: number;
 }

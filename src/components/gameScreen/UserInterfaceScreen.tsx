@@ -17,17 +17,6 @@ import { FacilityManager } from "../../util/facility/facilityManager";
 import FacilityElementHandler from "../../util/facility/facilityElementHandler";
 import { Resource } from "../../util/resource";
 
-const map = [
-  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3],
-  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-];
-
 interface UserInterfaceScreen {
   userScreenManager: React.MutableRefObject<CanvasManager>;
   launcherRef: React.MutableRefObject<LauncherManager>;
@@ -81,7 +70,7 @@ const UserInterfaceScreen = ({
         canvas.width = canvas.scrollWidth;
         canvas.height = canvas.width / 2;
       }
-      const currentBlockSize = getCurrentBlockSize(canvas.scrollWidth, map);
+      const currentBlockSize = getCurrentBlockSize(canvas.scrollWidth, mapManager.current.numberMap);
       if (currentBlockSize && currentBlockSize > lastUpdatedBlockSize.current * 2 && context) {
         // const [monsterCanvas, monsterContext] = [monsterRef.current.canvasRef.current, monsterRef.current.contextRef.current];
         // const [launcherCanvas, launcherContext] = [launcherRef.current.canvasRef.current, launcherRef.current.contextRef.current];
