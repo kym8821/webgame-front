@@ -18,6 +18,7 @@ import pipe_1101 from "./pipe_1101.png";
 import pipe_1011 from "./pipe_1011.png";
 import pipe_0111 from "./pipe_0111.png";
 import pipe_1111 from "./pipe_1111.png";
+import background from "./background.png";
 
 interface MapImages {
   [key: string]: string;
@@ -45,6 +46,7 @@ const mapImages: MapImages = {
   pipe_1011: pipe_1011,
   pipe_0111: pipe_0111,
   pipe_1111: pipe_1111,
+  background: background,
 };
 
 export default mapImages;

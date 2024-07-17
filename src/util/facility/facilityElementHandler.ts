@@ -41,8 +41,8 @@ export default class FacilityElementHandler {
       image.src = info.src;
       image.onload = () => {
         context.save();
-        context.translate(position.posX, position.posY - blockSize * 0.25);
-        context.drawImage(image, 0, 0, blockSize * info.width, blockSize * info.height);
+        context.translate(position.posX, position.posY - blockSize * (info.height - 1));
+        context.drawImage(image, 0, -blockSize * 0.25, blockSize * info.width, blockSize * info.height);
         context.restore();
       };
     });
@@ -53,6 +53,7 @@ export default class FacilityElementHandler {
     console.log(facilities);
     facilities.forEach((fac) => {
       const { mapPosX, mapPosY, info } = fac;
+      console.log(this.mapManager.map[mapPosY][mapPosX]);
       if (this.mapManager.map[mapPosY][mapPosX].activate) {
         console.log(info);
         energyOutput += info.energyOutput;
@@ -60,11 +61,5 @@ export default class FacilityElementHandler {
       }
     });
     return [energyOutput, evolveFactorOutput];
-  };
-
-  updateCurrentOutput = (facilityManager: FacilityManager) => {
-    const [energy, evolveFactor] = this.getCurrentOutput(facilityManager.facilities);
-    // facilityManager.energy = energy;
-    // facilityManager.evolveFactor = evolveFactor;
   };
 }
