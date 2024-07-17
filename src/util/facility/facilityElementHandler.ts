@@ -1,4 +1,5 @@
 import launcherInfo from "../launcher/launcherInfo";
+import mapCoordConverter from "../map/mapCoordConverter";
 import { MapManager } from "../map/mapManager";
 import { FacilityFrame } from "./facilityFrame";
 import { FacilityInfo } from "./facilityInfo";
@@ -35,26 +36,35 @@ export default class FacilityElementHandler {
     context.clearRect(0, 0, canvas.width, canvas.height);
     facilities.forEach((facility) => {
       const { mapPosX, mapPosY, info } = facility;
+      const position = mapCoordConverter.mapToCanvasCoord(mapPosX, mapPosY, blockSize);
       const image = new Image();
       image.src = info.src;
       image.onload = () => {
         context.save();
-        context.translate(mapPosX, mapPosY);
-        context.drawImage(
-          image,
-          mapPosX * blockSize,
-          mapPosY * blockSize - blockSize * 0.4,
-          blockSize * info.width,
-          blockSize * info.height
-        );
+        context.translate(position.posX, position.posY - blockSize * 0.25);
+        context.drawImage(image, 0, 0, blockSize * info.width, blockSize * info.height);
         context.restore();
       };
     });
   };
 
   getCurrentOutput = (facilities: FacilityFrame[]) => {
+    let [energyOutput, evolveFactorOutput] = [0, 0];
+    console.log(facilities);
     facilities.forEach((fac) => {
       const { mapPosX, mapPosY, info } = fac;
+      if (this.mapManager.map[mapPosY][mapPosX].activate) {
+        console.log(info);
+        energyOutput += info.energyOutput;
+        evolveFactorOutput += info.evolveFactorOutput;
+      }
     });
+    return [energyOutput, evolveFactorOutput];
+  };
+
+  updateCurrentOutput = (facilityManager: FacilityManager) => {
+    const [energy, evolveFactor] = this.getCurrentOutput(facilityManager.facilities);
+    // facilityManager.energy = energy;
+    // facilityManager.evolveFactor = evolveFactor;
   };
 }

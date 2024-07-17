@@ -28,7 +28,7 @@ const MapComponentSelector = ({ selectedComponent, setSelectedComponent }: Compo
     const gap = 0.1;
     const length = 5;
     const width = (18 - gap * length) / length;
-    console.log(width);
+    // console.log(width);
     const mapElementStyle: React.CSSProperties = {
       width: `${width}vw`,
       height: `${width}vw`,
@@ -38,7 +38,7 @@ const MapComponentSelector = ({ selectedComponent, setSelectedComponent }: Compo
     mapComponents.forEach((element, idx) => {
       if (element.tag.installable) {
         newMapElementList.push(
-          <div>
+          <div key={element.name}>
             <img
               src={element.src}
               alt={element.id.toString()}

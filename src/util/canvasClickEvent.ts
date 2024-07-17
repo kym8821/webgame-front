@@ -11,6 +11,7 @@ import MapElementHandler from "./map/mapElementHandler";
 import { FacilityManager } from "./facility/facilityManager";
 import { FacilityInfo } from "./facility/facilityInfo";
 import FacilityElementHandler from "./facility/facilityElementHandler";
+import { Resource } from "./resource";
 
 const SelectedComponentType = {
   mapElement: 1,
@@ -22,7 +23,9 @@ function handleFacilityCreateEvent(
   e: MouseEvent,
   mapManager: React.MutableRefObject<MapManager>,
   selectedComponent: SelectedComponent | null,
-  facilityManager: React.MutableRefObject<FacilityManager>
+  facilityManager: React.MutableRefObject<FacilityManager>,
+  resource: Resource,
+  setResource: React.Dispatch<React.SetStateAction<Resource>>
 ) {
   const [canvas, context] = [facilityManager.current.canvasRef.current, facilityManager.current.contextRef.current];
   if (!canvas || !context) return;
@@ -40,17 +43,34 @@ function handleFacilityCreateEvent(
   if (!mapElement.info.tag.facilityBase || !mapElement.empty) {
     return;
   } else {
+    if (resource.energy < component.energy || resource.evolveFactor < component.evolveFactor) return;
     const facilityElementHandler = new FacilityElementHandler(mapManager.current);
     facilityManager.current.facilities.push(facilityElementHandler.loadFrames(component, mapPointX, mapPointY));
     mapManager.current.map[mapPointY][mapPointX].empty = false;
     facilityElementHandler.draw(facilityManager.current);
+    const [energyOutput, evolveFactorOutput] = facilityElementHandler.getCurrentOutput(facilityManager.current.facilities);
+    console.log(energyOutput, evolveFactorOutput);
+    setResource((prev) => {
+      return {
+        ...prev,
+        energy: prev.energy - component.energy,
+        evolveFactor: prev.evolveFactor - component.evolveFactor,
+        energyOutput: energyOutput,
+        evolveFactorOutput: evolveFactorOutput,
+      };
+    });
   }
 }
 
 function handleMapElementCreateEvent(
   e: MouseEvent,
   mapManager: React.MutableRefObject<MapManager>,
-  selectedComponent: SelectedComponent | null
+  selectedComponent: SelectedComponent | null,
+  facilityManager: React.MutableRefObject<FacilityManager>,
+  launcherRef: React.MutableRefObject<LauncherManager>,
+  monsterRef: React.MutableRefObject<MonsterManager>,
+  resource: Resource,
+  setResource: React.Dispatch<React.SetStateAction<Resource>>
 ) {
   const [canvas, context] = [mapManager.current.canvasRef.current, mapManager.current.contextRef.current];
   if (!canvas || !context) return;
@@ -66,13 +86,53 @@ function handleMapElementCreateEvent(
 
   const [mapPointX, mapPointY] = mapCoordConverter.canvasToMapCoord(px, py, mapManager.current.blockSize);
   const mapElement = mapManager.current.map[mapPointY][mapPointX];
-  console.log(mapElement, component);
-  if (mapElement.info.tag.base) {
-    mapManager.current.map[mapPointY][mapPointX].info = component;
-    mapManager.current.map[mapPointY][mapPointX].activate = false;
-  } else if (component.id === mapElementInfo.objectRemover.id) {
-    mapManager.current.map[mapPointY][mapPointX].info = mapElementInfo.tile;
-    mapManager.current.map[mapPointY][mapPointX].activate = false;
+  if (component.id === mapElementInfo.objectRemover.id) {
+    const facilities = facilityManager.current.facilities;
+    const launchers = launcherRef.current.launchers;
+    mapManager.current.map[mapPointY][mapPointX] = {
+      info: mapElementInfo.tile,
+      activate: false,
+      empty: true,
+      mapPosX: mapPointX,
+      mapPosY: mapPointY,
+    };
+    for (let i = 0; i < facilities.length; i++) {
+      const fac = facilities[i];
+      if (fac.mapPosX === mapPointX && fac.mapPosY === mapPointY) {
+        facilities.splice(i, 1);
+        i -= 1;
+      }
+    }
+    for (let i = 0; i < launchers.length; i++) {
+      const launcher = launchers[i];
+      if (launcher.info.mapStartX === mapPointX && launcher.info.mapStartY === mapPointY) {
+        launchers.splice(i, 1);
+        i -= 1;
+      }
+    }
+    const facilityElementHandler = new FacilityElementHandler(mapManager.current);
+    const launcherElementHandler = new LauncherElementHandler(mapManager.current);
+    facilityElementHandler.draw(facilityManager.current);
+    launcherElementHandler.draw(canvas, context, launcherRef.current.launchers, monsterRef.current, true);
+    const [energyOutput, evolveFactorOutput] = facilityElementHandler.getCurrentOutput(facilityManager.current.facilities);
+    console.log(energyOutput, evolveFactorOutput);
+    setResource((prev) => {
+      return {
+        ...prev,
+        energyOutput: energyOutput,
+        evolveFactorOutput: evolveFactorOutput,
+      };
+    });
+  } else if (mapElement.info.tag.base) {
+    if (resource.energy >= component.energy && resource.evolveFactor >= component.gas) {
+      mapManager.current.map[mapPointY][mapPointX].info = component;
+      mapManager.current.map[mapPointY][mapPointX].activate = false;
+      setResource((prev) => ({
+        ...prev,
+        energy: prev.energy - component.energy,
+        evolveFactor: prev.evolveFactor - component.gas,
+      }));
+    }
   }
   if (context) {
     const mapElementHandler = new MapElementHandler(mapManager.current);
@@ -85,7 +145,9 @@ function handleLauncherCreateEvent(
   mapInfo: React.MutableRefObject<MapManager>,
   selectedComponent: SelectedComponent | null,
   launcherRef: React.MutableRefObject<LauncherManager>,
-  monsterRef: React.MutableRefObject<MonsterManager>
+  monsterRef: React.MutableRefObject<MonsterManager>,
+  resource: Resource,
+  setResource: React.Dispatch<React.SetStateAction<Resource>>
 ) {
   const [canvas, context] = [launcherRef.current.canvasRef.current, launcherRef.current.contextRef.current];
   // if (!selectedComponent.current || !selectedComponent.current.component) return;
@@ -96,6 +158,7 @@ function handleLauncherCreateEvent(
   if (selectedComponent.type != SelectedComponentType.launcher) return;
   if (!canvas || !context) return;
   const component = selectedComponent.component as LauncherInfo;
+  if (resource.energy < component.energy || resource.evolveFactor < component.gas) return;
   const launcherHandler = new LauncherElementHandler(mapInfo.current);
   // 캔버스의 경계 상자를 가져옵니다.
   const rect = canvas.getBoundingClientRect();
@@ -107,6 +170,11 @@ function handleLauncherCreateEvent(
   const mapElement = mapInfo.current.map[mapPointY][mapPointX];
   if (!mapElement.info.tag.turretBase) return;
   const launcher = launcherHandler.loadFrames(component, mapPointX, mapPointY);
+  setResource((prev) => ({
+    ...prev,
+    energy: prev.energy - component.energy,
+    evolveFactor: prev.evolveFactor - component.gas,
+  }));
   if (launcher) {
     launcherRef.current.launchers.push(launcher);
     launcherHandler.draw(canvas, context, launcherRef.current.launchers, monsterRef.current, true);
@@ -120,11 +188,13 @@ export function handleCanvasClickEvent(
   launcherRef: React.MutableRefObject<LauncherManager>,
   monsterRef: React.MutableRefObject<MonsterManager>,
   mapManager: React.MutableRefObject<MapManager>,
-  facilityManager: React.MutableRefObject<FacilityManager>
+  facilityManager: React.MutableRefObject<FacilityManager>,
+  resource: Resource,
+  setResource: React.Dispatch<React.SetStateAction<Resource>>
 ) {
-  handleMapElementCreateEvent(e, mapManager, selectedComponent);
-  handleLauncherCreateEvent(e, mapManager, selectedComponent, launcherRef, monsterRef);
-  handleFacilityCreateEvent(e, mapManager, selectedComponent, facilityManager);
+  handleMapElementCreateEvent(e, mapManager, selectedComponent, facilityManager, launcherRef, monsterRef, resource, setResource);
+  handleLauncherCreateEvent(e, mapManager, selectedComponent, launcherRef, monsterRef, resource, setResource);
+  handleFacilityCreateEvent(e, mapManager, selectedComponent, facilityManager, resource, setResource);
 }
 
 export { SelectedComponentType };

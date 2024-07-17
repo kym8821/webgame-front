@@ -8,15 +8,17 @@ import { LauncherInfo } from "../../util/launcher/launcherInfo";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import { SelectedComponentType } from "../../util/canvasClickEvent";
 import FacilitySelector from "../selector/FacilitySelector";
+import { Resource } from "../../util/resource";
 
 interface GameObjectFooterType {
   page: number;
   setPage: Function;
   minPage: number;
   maxPage: number;
-  // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
   selectedComponent: SelectedComponent | null;
   setSelectedComponent: Function;
+  // resource: Resource;
+  // setResource: React.Dispatch<React.SetStateAction<Resource>>;
 }
 
 const GameObjectFooter = ({ page, setPage, minPage, maxPage, selectedComponent, setSelectedComponent }: GameObjectFooterType) => {

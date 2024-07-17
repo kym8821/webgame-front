@@ -12,5 +12,6 @@ export interface LauncherFrame extends ObjectFrame {
     angle: number;
     projectileId: string;
     projectileSpeed: number;
+    shootCost: number;
   };
 }

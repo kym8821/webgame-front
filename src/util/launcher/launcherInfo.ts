@@ -10,6 +10,7 @@ export interface LauncherInfo extends ObjectInfo {
   src: string;
   energy: number;
   gas: number;
+  shootCost: number;
 }
 
 export function isLauncherInfo(obj: LauncherInfo) {
@@ -38,6 +39,7 @@ const launcherInfo: Record<string, LauncherInfo> = {
     projectileSpeed: 1,
     energy: 10,
     gas: 10,
+    shootCost: 1,
   },
 };
 

@@ -15,6 +15,7 @@ import { getCurrentBlockSize } from "../../util/windowSize";
 import MapElementHandler from "../../util/map/mapElementHandler";
 import { FacilityManager } from "../../util/facility/facilityManager";
 import FacilityElementHandler from "../../util/facility/facilityElementHandler";
+import { Resource } from "../../util/resource";
 
 const map = [
   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
@@ -36,6 +37,8 @@ interface UserInterfaceScreen {
   selectedComponent: SelectedComponent | null;
   mapManager: React.MutableRefObject<MapManager>;
   facilityManager: React.MutableRefObject<FacilityManager>;
+  resource: Resource;
+  setResource: React.Dispatch<React.SetStateAction<Resource>>;
 }
 
 const UserInterfaceScreen = ({
@@ -46,6 +49,8 @@ const UserInterfaceScreen = ({
   selectedComponent,
   mapManager,
   facilityManager,
+  resource,
+  setResource,
 }: UserInterfaceScreen) => {
   const [canvasRef, contextRef] = [userScreenManager.current.canvasRef, userScreenManager.current.contextRef];
   const lastUpdatedBlockSize = useRef<number>(0);
@@ -61,7 +66,8 @@ const UserInterfaceScreen = ({
     if (!canvas) return;
     setCanvasSize();
     canvas.onresize = setCanvasSize;
-    canvas.onclick = (e: MouseEvent) => handleCanvasClickEvent(e, selectedComponent, launcherRef, monsterRef, mapManager, facilityManager);
+    canvas.onclick = (e: MouseEvent) =>
+      handleCanvasClickEvent(e, selectedComponent, launcherRef, monsterRef, mapManager, facilityManager, resource, setResource);
 
     const monsterHandler = new MonsterElementHandler(mapManager.current);
     const projectileHandler = new ProjectileElementHandler(mapManager.current);

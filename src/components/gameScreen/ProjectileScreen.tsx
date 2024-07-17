@@ -8,18 +8,22 @@ import { MonsterManager } from "../../util/monster/monsterManager";
 import { MapManager } from "../../util/map/mapManager";
 import ProjectileElementHandler from "../../util/projectile/projectileElementHandler";
 import { getCurrentBlockSize } from "../../util/windowSize";
+import { Resource } from "../../util/resource";
 
 interface ProjectileScreenProps {
   projectileRef: React.MutableRefObject<ProjectileManager>;
   launcherRef: React.MutableRefObject<LauncherManager>;
   monsterRef: React.MutableRefObject<MonsterManager>;
   mapManager: React.MutableRefObject<MapManager>;
+  resource: Resource;
+  setResource: React.Dispatch<React.SetStateAction<Resource>>;
 }
 
-const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager }: ProjectileScreenProps) => {
+const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager, resource, setResource }: ProjectileScreenProps) => {
   const [canvasRef, contextRef] = [projectileRef.current.canvasRef, projectileRef.current.contextRef];
   const projectileHandler = new ProjectileElementHandler(mapManager.current);
   const lastUpdatedBlockSize = useRef<number>(0);
+  const resourceRef = useRef<Resource>(resource);
 
   function animate(animation: AnimationFrameInfo, callback: Function) {
     const step = (timeStamp: number) => {
@@ -44,16 +48,25 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager }
     function generateProjectile() {
       if (monsterRef.current.monsters.length === 0) return;
       const launchers = launcherRef.current.launchers;
+      let updatedEnergy = resourceRef.current.energy;
+      // console.log(updatedEnergy);
       launchers.forEach((launcher) => {
         const projectileId = launcher.info.projectileId;
         if (!(projectileId in projectileInfo) || !canvasRef.current) {
           alert("invalid projectile id or canvas object");
           return;
         }
-        const projectile = projectileInfo[projectileId];
-        const projectileFrame = projectileHandler.loadFrames(canvasRef.current, projectile, launcher);
-        if (projectileFrame) projectileRef.current.projectiles.push(projectileFrame);
+        if (updatedEnergy >= launcher.info.shootCost && mapManager.current.map[launcher.info.mapStartY][launcher.info.mapStartX].activate) {
+          const projectile = projectileInfo[projectileId];
+          const projectileFrame = projectileHandler.loadFrames(canvasRef.current, projectile, launcher);
+          if (projectileFrame) projectileRef.current.projectiles.push(projectileFrame);
+          updatedEnergy -= launcher.info.shootCost;
+        }
       });
+      setResource((prev) => ({
+        ...prev,
+        energy: updatedEnergy,
+      }));
     }
     if (launcherRef.current.generationFrame) animate(launcherRef.current.generationFrame, generateProjectile);
   }
@@ -65,32 +78,21 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager }
       canvas.height = canvas.width / 2;
     }
 
-    const windowResize = () => {
-      canvas.width = canvas.scrollWidth;
-      canvas.height = canvas.width / 2;
-      projectileHandler.draw(canvas, context, projectileRef.current.projectiles, monsterRef.current.monsters, false);
-      // if (mapInfo.blockSize > lastUpdatedBlockSize.current * 2 && context) {
-      //   lastUpdatedBlockSize.current = mapInfo.blockSize;
-      //   projectileHandler.draw(canvas, context, projectileRef.objects, monsterRef.objects, false);
-      // }
-    };
-
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     setCanvasSize();
 
     const context = canvas.getContext("2d");
     if (context) contextRef.current = context;
-
-    setProjectileAnimateTimer();
+    resourceRef.current = resource;
     setProjectileGenerateTimer();
-    // window.addEventListener("resize", windowResize);
+    setProjectileAnimateTimer();
     return () => {
       const [animationFrame, generationFrame] = [projectileRef.current.animationFrame, projectileRef.current.generationFrame];
       if (generationFrame && generationFrame.animationFrame) cancelAnimationFrame(generationFrame.animationFrame);
       if (animationFrame.animationFrame) cancelAnimationFrame(animationFrame.animationFrame);
     };
-  }, []);
+  }, [resource]);
 
   return (
     <div className={style.gameScreen}>

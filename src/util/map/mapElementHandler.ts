@@ -59,7 +59,8 @@ export default class MapElementHandler {
       visit[i] = new Array(map[i].length);
       for (let j = 0; j < map[i].length; j++) {
         visit[i][j] = false;
-        map[i][j].activate = false;
+        if (map[i][j].info.tag.core) map[i][j].activate = true;
+        else map[i][j].activate = false;
       }
     }
     for (let i = 0; i < corePos.length; i++) {
@@ -79,7 +80,7 @@ export default class MapElementHandler {
         const mapElement = map[nn.y][nn.x].info;
         // console.log(nn);
         if (mapElement.tag.pipe) stack.push(nn);
-        if (mapElement.tag.facilityBase || mapElement.tag.turretBase) {
+        if (mapElement.tag.facilityBase || mapElement.tag.turretBase || mapElement.tag.core) {
           // console.log(`activate ${nn.x} ${nn.y}`);
           map[nn.y][nn.x].activate = true;
         }
@@ -118,30 +119,6 @@ export default class MapElementHandler {
         };
       }
     }
-    this.drawFacilities(context);
     this.activateObject(corePos);
-  };
-
-  drawFacilities = (context: CanvasRenderingContext2D) => {
-    const facilities = this.mapManager.mapObjects;
-    facilities.forEach((fac) => {
-      const info = fac.info;
-      const image = new Image();
-      image.src = info.src;
-      image.onload = () => {
-        const position = mapCoordConverter.mapToCanvasCoord(fac.mapPosX, fac.mapPosY, this.mapManager.blockSize);
-        context.save();
-        context.translate(position.posX, position.posY);
-        // context.drawImage(image, 0, 0, this.mapManager.blockSize * info.width, this.mapManager.blockSize * info.height);
-        context.drawImage(
-          image,
-          0,
-          -this.mapManager.blockSize / 4,
-          this.mapManager.blockSize * info.width,
-          this.mapManager.blockSize * info.height
-        );
-        context.restore();
-      };
-    });
   };
 }

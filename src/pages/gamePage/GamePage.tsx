@@ -16,7 +16,9 @@ import UserInterfaceScreen from "../../components/gameScreen/UserInterfaceScreen
 import GameObjectSideBar from "../../components/sideBar/GameObjectSibeBar";
 import { FacilityManager } from "../../util/facility/facilityManager";
 import FacilityScreen from "../../components/gameScreen/facilityScreen";
-import { FacilityInfo } from "../../util/facility/facilityInfo";
+import facilityInfo, { FacilityInfo } from "../../util/facility/facilityInfo";
+import { Resource } from "../../util/resource";
+import GameScreenTopBar from "../../components/topbar/gameScreenTopBar";
 
 export interface SelectedComponent {
   component: MapElementInfo | LauncherInfo | FacilityInfo | null;
@@ -28,6 +30,12 @@ const GamePage = () => {
   const [selectedComponent, setSelectedComponent] = useState<SelectedComponent | null>(null);
   const [page, setPage] = useState<number>(1);
   const [minPage, maxPage] = [1, 3];
+  const [resource, setResource] = useState<Resource>({
+    energy: 30,
+    energyOutput: facilityInfo.core.energyOutput,
+    evolveFactor: 30,
+    evolveFactorOutput: facilityInfo.core.evolveFactorOutput,
+  });
 
   const userScreenManager = useRef<CanvasManager>({
     animationFrame: {
@@ -40,10 +48,11 @@ const GamePage = () => {
   });
 
   const facilityManager = useRef<FacilityManager>({
-    energy: 0,
-    energyOutput: 0,
-    evolveFactor: 0,
-    evolveFactorOutput: 0,
+    generationFrame: {
+      lastFrameTime: 0,
+      interval: 1000,
+      animationFrame: null,
+    },
     animationFrame: {
       lastFrameTime: 0,
       interval: 20,
@@ -132,6 +141,7 @@ const GamePage = () => {
 
   return (
     <div className={style.gamePage}>
+      <GameScreenTopBar resource={resource} />
       <div>
         <UserInterfaceScreen
           userScreenManager={userScreenManager}
@@ -141,12 +151,28 @@ const GamePage = () => {
           selectedComponent={selectedComponent}
           mapManager={mapManager}
           facilityManager={facilityManager}
+          resource={resource}
+          setResource={setResource}
         />
         <LauncherScreen launcherRef={launcherRef} monsterRef={monsterRef} selectedComponent={selectedComponent} mapManager={mapManager} />
         <MonsterScreen monsterRef={monsterRef} mapManager={mapManager} />
-        <ProjectileScreen monsterRef={monsterRef} projectileRef={projectileRef} launcherRef={launcherRef} mapManager={mapManager} />
+        <ProjectileScreen
+          monsterRef={monsterRef}
+          projectileRef={projectileRef}
+          launcherRef={launcherRef}
+          mapManager={mapManager}
+          resource={resource}
+          setResource={setResource}
+        />
         <MapScreen page={page} selectedComponent={selectedComponent} mapManager={mapManager} />
-        <FacilityScreen facilityManager={facilityManager} page={page} mapMananger={mapManager} selectedComponent={selectedComponent} />
+        <FacilityScreen
+          facilityManager={facilityManager}
+          page={page}
+          mapMananger={mapManager}
+          selectedComponent={selectedComponent}
+          setResource={setResource}
+          resource={resource}
+        />
         <GameObjectFooter
           page={page}
           setPage={setPage}

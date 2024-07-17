@@ -20,6 +20,8 @@ export interface FacilityInfo {
   tag: FacilityTag;
   energy: number;
   evolveFactor: number;
+  energyOutput: number;
+  evolveFactorOutput: number;
 }
 
 export function isFacilityInfo(obj: FacilityInfo) {
@@ -66,11 +68,13 @@ const facilityInfo: Record<string, FacilityInfo> = {
     },
     energy: -1,
     evolveFactor: -1,
+    energyOutput: 5,
+    evolveFactorOutput: 2,
   },
   energyFacility: {
     id: 2,
     type: objectType.facility,
-    name: "evolve facility",
+    name: "energy facility",
     src: facilityImages.facilityEnergy,
     width: 1,
     height: 1,
@@ -82,9 +86,11 @@ const facilityInfo: Record<string, FacilityInfo> = {
     },
     energy: -1,
     evolveFactor: -1,
+    energyOutput: 1,
+    evolveFactorOutput: 0,
   },
   evolveFactorFacility: {
-    id: 2,
+    id: 3,
     type: objectType.facility,
     name: "evolve facility",
     src: facilityImages.facilityEvolutionFactor,
@@ -98,6 +104,8 @@ const facilityInfo: Record<string, FacilityInfo> = {
     },
     energy: -1,
     evolveFactor: -1,
+    energyOutput: 0,
+    evolveFactorOutput: 1,
   },
 };
 

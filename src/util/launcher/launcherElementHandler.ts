@@ -91,6 +91,7 @@ export default class LauncherElementHandler {
         angle: 0,
         projectileId: projectileInfo.lv1.name,
         projectileSpeed: launcherInfo.projectileSpeed,
+        shootCost: launcherInfo.shootCost,
       },
       frame: [],
     };

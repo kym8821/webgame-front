@@ -68,8 +68,8 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       core: false,
       installable: true,
     },
-    energy: 15,
-    gas: 15,
+    energy: 10,
+    gas: 10,
   },
   floor: {
     name: "바닥",
@@ -163,7 +163,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       core: false,
       installable: true,
     },
-    energy: 10,
+    energy: 5,
     gas: 5,
   },
   objectRemover: {
@@ -182,8 +182,8 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       core: false,
       installable: true,
     },
-    energy: 0,
-    gas: 0,
+    energy: -5,
+    gas: -5,
   },
   facilityBase: {
     name: "시설 베이스",
@@ -201,8 +201,8 @@ const mapElementInfo: Record<string, MapElementInfo> = {
       core: false,
       installable: true,
     },
-    energy: 15,
-    gas: 15,
+    energy: 10,
+    gas: 10,
   },
 };
 

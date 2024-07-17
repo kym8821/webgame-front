@@ -14,7 +14,7 @@ const monsterInfo: Record<string, MonsterInfo> = {
     spawnRate: 80,
     width: 100,
     height: 100,
-    lifePoint: 10,
+    lifePoint: 5,
     speed: 1,
   },
 
@@ -25,7 +25,7 @@ const monsterInfo: Record<string, MonsterInfo> = {
     spawnRate: 80,
     width: 100,
     height: 100,
-    lifePoint: 12,
+    lifePoint: 6,
     speed: 1,
   },
 
@@ -36,7 +36,7 @@ const monsterInfo: Record<string, MonsterInfo> = {
     spawnRate: 50,
     width: 100,
     height: 120,
-    lifePoint: 20,
+    lifePoint: 10,
     speed: 1,
   },
 };
