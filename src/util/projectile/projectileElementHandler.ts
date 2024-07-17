@@ -112,9 +112,9 @@ export default class ProjectileElementHandler {
         const monsterPosition: Position = this.monsterHandler.getPosition(canvas, monster);
         if (position.boundX < monsterPosition.posX || position.posX > monsterPosition.boundX) continue;
         if (position.boundY < monsterPosition.posY || position.posY > monsterPosition.boundY) continue;
-        if (projectile.hitMonsters.includes(monster.info.id)) continue;
+        if (projectile.hitMonsters.includes(monster.id)) continue;
         monster.info.lifePoint -= projectile.info.damage;
-        projectile.hitMonsters.push(monster.info.id);
+        projectile.hitMonsters.push(monster.id);
         if (monster.info.lifePoint <= 0) {
           monsters.splice(j, 1);
           //monsterDrawer.draw(canvas, context, monsters, false);

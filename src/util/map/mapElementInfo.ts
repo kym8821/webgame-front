@@ -223,13 +223,13 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     energy: 10,
     gas: 10,
   },
-  backGround: {
+  background: {
     name: "배경",
     type: objectType.mapElement,
     id: 9,
     width: 1,
     height: 1,
-    src: mapImages.ex,
+    src: mapImages.background,
     tag: {
       pipe: false,
       tile: false,

@@ -148,7 +148,7 @@ const GamePage = () => {
 
   return (
     <div className={style.gamePage}>
-      <GameScreenTopBar resource={resource} />
+      <GameScreenTopBar resource={resource} mapManager={mapManager}/>
       <div>
         <UserInterfaceScreen
           userScreenManager={userScreenManager}

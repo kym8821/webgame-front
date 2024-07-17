@@ -8,6 +8,7 @@ interface FacilityTag {
   energy: boolean;
   evolveFactor: boolean;
   installable: boolean;
+  objectRemover: boolean;
 }
 
 export interface FacilityInfo {
@@ -65,6 +66,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
       energy: false,
       evolveFactor: false,
       installable: false,
+      objectRemover: false,
     },
     energy: -1,
     evolveFactor: -1,
@@ -83,6 +85,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
       energy: true,
       evolveFactor: false,
       installable: true,
+      objectRemover: false,
     },
     energy: -1,
     evolveFactor: -1,
@@ -101,11 +104,31 @@ const facilityInfo: Record<string, FacilityInfo> = {
       energy: false,
       evolveFactor: true,
       installable: true,
+      objectRemover: false,
     },
     energy: -1,
     evolveFactor: -1,
     energyOutput: 0,
     evolveFactorOutput: 1,
+  },
+  objectRemover: {
+    id: 4,
+    type: objectType.facility,
+    name: "objectRemover",
+    src: mapImages.tile,
+    width: 1,
+    height: 1,
+    tag: {
+      core: false,
+      energy: false,
+      evolveFactor: false,
+      installable: true,
+      objectRemover: true,
+    },
+    energy: -5,
+    evolveFactor: -5,
+    energyOutput: 0,
+    evolveFactorOutput: 0,
   },
 };
 

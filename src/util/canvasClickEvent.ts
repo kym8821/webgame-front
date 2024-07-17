@@ -32,6 +32,7 @@ function handleFacilityCreateEvent(
   if (!selectedComponent || !selectedComponent.component) return;
   if (selectedComponent.type != SelectedComponentType.facility) return;
   const component = selectedComponent.component as FacilityInfo;
+  const facilityElementHandler = new FacilityElementHandler(mapManager.current);
   // 캔버스의 경계 상자를 가져옵니다.
   const rect = canvas.getBoundingClientRect();
   // 이벤트 좌표를 캔버스 내부 좌표로 변환합니다.
@@ -40,26 +41,33 @@ function handleFacilityCreateEvent(
 
   const [mapPointX, mapPointY] = mapCoordConverter.canvasToMapCoord(px, py, mapManager.current.blockSize);
   const mapElement = mapManager.current.map[mapPointY][mapPointX];
-  if (!mapElement.info.tag.facilityBase || !mapElement.empty) {
-    return;
+  console.log(component);
+  if (component.tag.objectRemover) {
+    const facilities = facilityManager.current.facilities;
+    for (let i = 0; i < facilities.length; i++) {
+      const fac = facilities[i];
+      if (fac.mapPosX === mapPointX && fac.mapPosY === mapPointY) {
+        facilities.splice(i, 1);
+        i -= 1;
+      }
+    }
   } else {
     if (resource.energy < component.energy || resource.evolveFactor < component.evolveFactor) return;
-    const facilityElementHandler = new FacilityElementHandler(mapManager.current);
     facilityManager.current.facilities.push(facilityElementHandler.loadFrames(component, mapPointX, mapPointY));
     mapManager.current.map[mapPointY][mapPointX].empty = false;
-    facilityElementHandler.draw(facilityManager.current);
-    const [energyOutput, evolveFactorOutput] = facilityElementHandler.getCurrentOutput(facilityManager.current.facilities);
-    console.log(energyOutput, evolveFactorOutput);
-    setResource((prev) => {
-      return {
-        ...prev,
-        energy: prev.energy - component.energy,
-        evolveFactor: prev.evolveFactor - component.evolveFactor,
-        energyOutput: energyOutput,
-        evolveFactorOutput: evolveFactorOutput,
-      };
-    });
   }
+  const [energyOutput, evolveFactorOutput] = facilityElementHandler.getCurrentOutput(facilityManager.current.facilities);
+  console.log(energyOutput, evolveFactorOutput);
+  setResource((prev) => {
+    return {
+      ...prev,
+      energy: prev.energy - component.energy,
+      evolveFactor: prev.evolveFactor - component.evolveFactor,
+      energyOutput: energyOutput,
+      evolveFactorOutput: evolveFactorOutput,
+    };
+  });
+  facilityElementHandler.draw(facilityManager.current);
 }
 
 function handleMapElementCreateEvent(
@@ -169,15 +177,23 @@ function handleLauncherCreateEvent(
   const [mapPointX, mapPointY] = mapCoordConverter.canvasToMapCoord(px, py, mapInfo.current.blockSize);
   const mapElement = mapInfo.current.map[mapPointY][mapPointX];
   if (!mapElement.info.tag.turretBase) return;
-  const launcher = launcherHandler.loadFrames(component, mapPointX, mapPointY);
   setResource((prev) => ({
     ...prev,
     energy: prev.energy - component.energy,
     evolveFactor: prev.evolveFactor - component.gas,
   }));
-  if (launcher) {
+  if (!component.tag.objectRemover) {
+    const launcher = launcherHandler.loadFrames(component, mapPointX, mapPointY);
+    if (!launcher) return;
     launcherRef.current.launchers.push(launcher);
     launcherHandler.draw(canvas, context, launcherRef.current.launchers, monsterRef.current, true);
+  } else {
+    launcherRef.current.launchers.forEach((obj, idx) => {
+      const { mapStartX, mapStartY } = obj.info;
+      if (mapStartX === mapPointX && mapStartY === mapPointY) {
+        launcherRef.current.launchers.splice(idx, 1);
+      }
+    });
   }
 }
 

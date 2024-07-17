@@ -67,7 +67,7 @@ const MonsterScreen = ({ monsterRef, mapManager, setResource }: monsterScreenPro
         if (!canvasRef.current) return;
         const position = monsterElementHandler.getPosition(canvasRef.current, monster);
         const [mpx, mpy] = mapCoordConverter.canvasToMapCoord(position.posX, position.posY, mapManager.current.blockSize);
-        if (monsterElementHandler.isOutOfRange(mpx, mpy)) damage += monster.info.id;
+        if (monsterElementHandler.isOutOfRange(mpx, mpy)) damage += monster.id;
       });
       setResource((prev) => {
         if (damage > prev.health) {
@@ -91,16 +91,6 @@ const MonsterScreen = ({ monsterRef, mapManager, setResource }: monsterScreenPro
       canvas.width = canvas.scrollWidth;
       canvas.height = canvas.width / 2;
     }
-
-    // const windowResize = () => {
-    //   canvas.width = canvas.scrollWidth;
-    //   canvas.height = canvas.width / 2;
-    //   monsterElementHandler.move(canvas, context, monsterRef.current.monsters, false);
-    //   // if (mapInfo.blockSize > lastUpdatedBlockSize.current * 2 && context) {
-    //   //   lastUpdatedBlockSize.current = mapInfo.blockSize;
-    //   //   monsterElementHandler.draw(canvas, context, monsterRef.objects, false);
-    //   // }
-    // };
 
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;

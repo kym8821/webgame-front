@@ -1,6 +1,12 @@
 import { StringLiteral } from "typescript";
 import { ObjectInfo, objectType } from "../object/objectInfo";
 import launcherImages from "../../assets/images/launcher/launcherImages";
+import mapImages from "../../assets/images/map/mapImages";
+
+interface LauncherTag {
+  shooter: boolean;
+  objectRemover: boolean;
+}
 
 export interface LauncherInfo extends ObjectInfo {
   id: number;
@@ -11,6 +17,7 @@ export interface LauncherInfo extends ObjectInfo {
   energy: number;
   gas: number;
   shootCost: number;
+  tag: LauncherTag;
 }
 
 export function isLauncherInfo(obj: LauncherInfo) {
@@ -40,6 +47,29 @@ const launcherInfo: Record<string, LauncherInfo> = {
     energy: 10,
     gas: 10,
     shootCost: 1,
+    tag: {
+      shooter: true,
+      objectRemover: false,
+    },
+  },
+  launcherRemover: {
+    id: 2,
+    type: objectType.launcher,
+    name: "발사체 제거",
+    frameSize: 1,
+    width: 100,
+    height: 100,
+    lv: 1,
+    src: mapImages.tile,
+    shootRate: 1,
+    projectileSpeed: 1,
+    energy: -5,
+    gas: -5,
+    shootCost: 1,
+    tag: {
+      shooter: false,
+      objectRemover: true,
+    },
   },
 };
 
