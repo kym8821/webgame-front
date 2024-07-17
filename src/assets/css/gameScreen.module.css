@@ -98,4 +98,10 @@ canvas {
 }
 
 .gameScreenTopBar {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  left: 5vw;
+  top: calc((100vh - 35vw) / 2);
+  width: 70vw;
 }
