@@ -20,8 +20,7 @@ export default class LauncherElementHandler {
 
   getPosition = (canvas: HTMLCanvasElement, launcher: LauncherFrame) => {
     const info = launcher.info;
-    const ratio = (window.innerWidth * 0.8) / canvas.width;
-    const position = mapCoordConverter.mapToCanvasCoord(info.mapStartX, info.mapStartY, this.mapManager.blockSize);
+    const position = mapCoordConverter.mapToCanvasCoord(launcher.mapStartX, launcher.mapStartY, this.mapManager.blockSize);
     const posX = position.posX;
     const posY = position.posY;
     const width = info.width * (canvas.width * 0.0005);
@@ -62,16 +61,16 @@ export default class LauncherElementHandler {
     context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < launchers.length; i++) {
       const launcher = launchers[i];
-      const activate = this.mapManager.map[launcher.info.mapStartY][launcher.info.mapStartX].activate;
+      const activate = this.mapManager.map[launcher.mapStartY][launcher.mapStartX].activate;
       const monsterOnFront = monsters.monsters.at(0);
       const [info, frame] = [launcher.info, launcher.frame];
-      const frameNumber = info.frameNumber;
+      const frameNumber = launcher.frameNumber;
       const position = this.getPosition(canvas, launcher);
       context.save();
       context.translate(position.posX + this.mapManager.blockSize / 2, position.posY + this.mapManager.blockSize / 2);
       if (activate && monsters.monsters.length > 0 && monsterOnFront) {
-        launcher.info.angle = this.getLauncherAngle(canvas, monsterOnFront, launcher);
-        context.rotate(launcher.info.angle);
+        launcher.angle = this.getLauncherAngle(canvas, monsterOnFront, launcher);
+        context.rotate(launcher.angle);
       }
       context.drawImage(frame[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
       context.restore();
@@ -80,21 +79,15 @@ export default class LauncherElementHandler {
 
   loadFrames = (launcherInfo: LauncherInfo, mapStartX: number, mapStartY: number) => {
     const launcher: LauncherFrame = {
-      info: {
-        type: launcherInfo.name,
-        mapStartX: mapStartX,
-        mapStartY: mapStartY,
-        frameSize: launcherInfo.frameSize,
-        frameNumber: 0,
-        width: launcherInfo.width,
-        height: launcherInfo.height,
-        angle: 0,
-        projectileId: projectileInfo.lv1.name,
-        projectileSpeed: launcherInfo.projectileSpeed,
-        shootCost: launcherInfo.shootCost,
-      },
+      info: launcherInfo,
+      angle: 0,
+      projectileId: 1,
+      frameNumber: 0,
+      mapStartX: mapStartX,
+      mapStartY: mapStartY,
       frame: [],
     };
+
     const frame = new Image();
     frame.src = launcherInfo.src;
     launcher.frame.push(frame);

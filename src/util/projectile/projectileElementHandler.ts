@@ -7,7 +7,6 @@ import { MapManager } from "../map/mapManager";
 import MonsterElementHandler from "../monster/monsterElementHandler";
 import MonsterFrame from "../monster/monsterFrame";
 import { Position } from "../Position";
-import defaultWindowSize from "../windowSize";
 import { ProjectileFrame } from "./projectileFrame";
 import { ProjectileInfo } from "./projectileInfo";
 
@@ -32,18 +31,12 @@ export default class ProjectileElementHandler {
 
   loadFrames = (canvas: HTMLCanvasElement, projectileInfo: ProjectileInfo, launcherFrame: LauncherFrame) => {
     const projectile: ProjectileFrame = {
-      info: {
-        type: projectileInfo.name,
-        damage: projectileInfo.damage,
-        frameSize: projectileInfo.frameSize,
-        frameNumber: 0,
-        launcherX: launcherFrame.info.mapStartX,
-        launcherY: launcherFrame.info.mapStartY,
-        move: 0,
-        angle: launcherFrame.info.angle,
-        width: projectileInfo.width,
-        height: projectileInfo.height,
-      },
+      info: projectileInfo,
+      frameNumber: 0,
+      launcherX: launcherFrame.mapStartX,
+      launcherY: launcherFrame.mapStartY,
+      move: 0,
+      angle: launcherFrame.angle,
       frame: [],
       hitMonsters: [],
     };
@@ -60,12 +53,14 @@ export default class ProjectileElementHandler {
   };
 
   getPosition = (canvas: HTMLCanvasElement, projectile: ProjectileFrame) => {
-    const ratio = canvas.width / defaultWindowSize.width;
     const info = projectile.info;
     const weight = canvas.width * 0.01;
-    const dist = weight * info.move;
-    const launcherPosition = mapCoordConverter.mapToCanvasCoord(info.launcherX, info.launcherY, this.mapManager.blockSize);
-    const [posX, posY] = [launcherPosition.posX + dist * Math.cos(info.angle), launcherPosition.posY + dist * Math.sin(info.angle)];
+    const dist = weight * projectile.move;
+    const launcherPosition = mapCoordConverter.mapToCanvasCoord(projectile.launcherX, projectile.launcherY, this.mapManager.blockSize);
+    const [posX, posY] = [
+      launcherPosition.posX + dist * Math.cos(projectile.angle),
+      launcherPosition.posY + dist * Math.sin(projectile.angle),
+    ];
     // const [width, height] = [info.width * ratio, info.height * ratio];
     const width = info.width * (canvas.width * 0.0005);
     const height = info.height * (canvas.width * 0.0005);
@@ -91,20 +86,20 @@ export default class ProjectileElementHandler {
     for (let i = 0; i < projectiles.length; i++) {
       const projectile = projectiles[i];
       const [info, frame] = [projectile.info, projectile.frame];
-      if (!this.mapManager.map[info.launcherY][info.launcherX].activate) continue;
-      const frameNumber = info.frameNumber;
+      if (!this.mapManager.map[projectile.launcherY][projectile.launcherX].activate) continue;
+      const frameNumber = projectile.frameNumber;
       const frameSize = info.frameSize;
       const position = this.getPosition(canvas, projectile);
 
       context.save();
       context.translate(position.posX + this.mapManager.blockSize / 2, position.posY + this.mapManager.blockSize / 2);
-      context.rotate(info.angle);
+      context.rotate(projectile.angle);
       context.drawImage(frame[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
       context.restore();
 
       if (toChange) {
-        projectiles[i].info.move -= 2;
-        projectiles[i].info.frameNumber = (frameNumber + 1) % frameSize;
+        projectiles[i].move -= 2;
+        projectiles[i].frameNumber = (frameNumber + 1) % frameSize;
       }
 
       for (let j = 0; j < monsters.length; j++) {
@@ -117,7 +112,6 @@ export default class ProjectileElementHandler {
         projectile.hitMonsters.push(monster.id);
         if (monster.info.lifePoint <= 0) {
           monsters.splice(j, 1);
-          //monsterDrawer.draw(canvas, context, monsters, false);
           j -= 1;
         }
       }

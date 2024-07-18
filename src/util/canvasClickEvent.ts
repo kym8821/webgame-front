@@ -113,7 +113,7 @@ function handleMapElementCreateEvent(
     }
     for (let i = 0; i < launchers.length; i++) {
       const launcher = launchers[i];
-      if (launcher.info.mapStartX === mapPointX && launcher.info.mapStartY === mapPointY) {
+      if (launcher.mapStartX === mapPointX && launcher.mapStartY === mapPointY) {
         launchers.splice(i, 1);
         i -= 1;
       }
@@ -189,7 +189,7 @@ function handleLauncherCreateEvent(
     launcherHandler.draw(canvas, context, launcherRef.current.launchers, monsterRef.current, true);
   } else {
     launcherRef.current.launchers.forEach((obj, idx) => {
-      const { mapStartX, mapStartY } = obj.info;
+      const { mapStartX, mapStartY } = obj;
       if (mapStartX === mapPointX && mapStartY === mapPointY) {
         launcherRef.current.launchers.splice(idx, 1);
       }

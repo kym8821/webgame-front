@@ -3,7 +3,7 @@ import style from "../../assets/css/gameScreen.module.css";
 import { useEffect, useRef } from "react";
 import { AnimationFrameInfo } from "../../util/object/animationFrameInfo";
 import { LauncherManager } from "../../util/launcher/launcherManager";
-import projectileInfo from "../../util/projectile/projectileInfo";
+import projectileInfo, { getProjectileInfoById } from "../../util/projectile/projectileInfo";
 import { MonsterManager } from "../../util/monster/monsterManager";
 import { MapManager } from "../../util/map/mapManager";
 import ProjectileElementHandler from "../../util/projectile/projectileElementHandler";
@@ -51,14 +51,15 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager, 
       let updatedEnergy = resourceRef.current.energy;
       // console.log(updatedEnergy);
       launchers.forEach((launcher) => {
-        const projectileId = launcher.info.projectileId;
-        if (!(projectileId in projectileInfo) || !canvasRef.current) {
-          alert("invalid projectile id or canvas object");
-          return;
-        }
-        if (updatedEnergy >= launcher.info.shootCost && mapManager.current.map[launcher.info.mapStartY][launcher.info.mapStartX].activate) {
-          const projectile = projectileInfo[projectileId];
-          const projectileFrame = projectileHandler.loadFrames(canvasRef.current, projectile, launcher);
+        const projectileId = launcher.projectileId;
+        const projectileInfo = getProjectileInfoById(projectileId);
+        if (
+          updatedEnergy >= launcher.info.shootCost &&
+          mapManager.current.map[launcher.mapStartY][launcher.mapStartX].activate &&
+          canvasRef.current &&
+          projectileInfo
+        ) {
+          const projectileFrame = projectileHandler.loadFrames(canvasRef.current, projectileInfo, launcher);
           if (projectileFrame) projectileRef.current.projectiles.push(projectileFrame);
           updatedEnergy -= launcher.info.shootCost;
         }
