@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { MonsterManager } from "../../util/monster/monsterManager";
-import { AnimationFrameInfo } from "../../util/object/animationFrameInfo";
-import style from "../../assets/css/gameScreen.module.css";
-import { MapManager } from "../../util/map/mapManager";
-import MonsterElementHandler from "../../util/monster/monsterElementHandler";
-import { getCurrentBlockSize } from "../../util/windowSize";
-import { Resource } from "../../util/resource";
-import mapCoordConverter from "../../util/map/mapCoordConverter";
+import { useEffect, useRef, useState } from 'react';
+import { MonsterManager } from '../../util/monster/monsterManager';
+import { AnimationFrameInfo } from '../../util/object/animationFrameInfo';
+import style from '../../assets/css/gameScreen.module.css';
+import { MapManager } from '../../util/map/mapManager';
+import MonsterElementHandler from '../../util/monster/monsterElementHandler';
+import { getCurrentBlockSize } from '../../util/windowSize';
+import { Resource } from '../../util/resource';
+import mapCoordConverter from '../../util/map/mapCoordConverter';
 
 type monsterScreenProps = {
   monsterRef: React.MutableRefObject<MonsterManager>;
@@ -66,7 +66,11 @@ const MonsterScreen = ({ monsterRef, mapManager, setResource }: monsterScreenPro
       monsterRef.current.monsters.forEach((monster) => {
         if (!canvasRef.current) return;
         const position = monsterElementHandler.getPosition(canvasRef.current, monster);
-        const [mpx, mpy] = mapCoordConverter.canvasToMapCoord(position.posX, position.posY, mapManager.current.blockSize);
+        const [mpx, mpy] = mapCoordConverter.canvasToMapCoord(
+          position.posX,
+          position.posY,
+          mapManager.current.blockSize
+        );
         if (monsterElementHandler.isOutOfRange(mpx, mpy)) damage += monster.id;
       });
       setResource((prev) => {
@@ -96,7 +100,7 @@ const MonsterScreen = ({ monsterRef, mapManager, setResource }: monsterScreenPro
     const canvas = canvasRef.current;
     setCanvasSize();
 
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext('2d');
     if (context) {
       contextRef.current = context;
     }
@@ -120,7 +124,8 @@ const MonsterScreen = ({ monsterRef, mapManager, setResource }: monsterScreenPro
       const monsterDamageFrame = monsterRef.current.damageFrame;
       if (monsterAnimationFrame.animationFrame) cancelAnimationFrame(monsterAnimationFrame.animationFrame);
       if (monsterMovementFrame.animationFrame) cancelAnimationFrame(monsterMovementFrame.animationFrame);
-      if (monsterGenerationFrame && monsterGenerationFrame.animationFrame) cancelAnimationFrame(monsterGenerationFrame.animationFrame);
+      if (monsterGenerationFrame && monsterGenerationFrame.animationFrame)
+        cancelAnimationFrame(monsterGenerationFrame.animationFrame);
       if (monsterDamageFrame.animationFrame) cancelAnimationFrame(monsterDamageFrame.animationFrame);
     };
   }, []);

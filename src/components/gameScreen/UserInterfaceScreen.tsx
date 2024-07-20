@@ -1,21 +1,22 @@
-import { SelectedComponent } from "../../pages/gamePage/GamePage";
-import { LauncherManager } from "../../util/launcher/launcherManager";
-import { CanvasManager } from "../../util/object/CanvasManager";
-import { MapManager } from "../../util/map/mapManager";
-import { MonsterManager } from "../../util/monster/monsterManager";
-import { ProjectileManager } from "../../util/projectile/projectileManager";
-import { useEffect, useRef } from "react";
-import { handleCanvasClickEvent } from "../../util/canvasClickEvent";
-import style from "../../assets/css/gameScreen.module.css";
-import { CanvasObjectManager } from "../../util/object/canvasObjectManager";
-import MonsterElementHandler from "../../util/monster/monsterElementHandler";
-import ProjectileElementHandler from "../../util/projectile/projectileElementHandler";
-import LauncherElementHandler from "../../util/launcher/launcherElementHandler";
-import { getCurrentBlockSize } from "../../util/windowSize";
-import MapElementHandler from "../../util/map/mapElementHandler";
-import { FacilityManager } from "../../util/facility/facilityManager";
-import FacilityElementHandler from "../../util/facility/facilityElementHandler";
-import { Resource } from "../../util/resource";
+import { SelectedComponent } from '../../pages/gamePage/GamePage';
+import { LauncherManager } from '../../util/launcher/launcherManager';
+import { CanvasManager } from '../../util/object/CanvasManager';
+import { MapManager } from '../../util/map/mapManager';
+import { MonsterManager } from '../../util/monster/monsterManager';
+import { ProjectileManager } from '../../util/projectile/projectileManager';
+import { useEffect, useRef } from 'react';
+import { handleCanvasClickEvent } from '../../util/canvasClickEvent';
+import style from '../../assets/css/gameScreen.module.css';
+import { CanvasObjectManager } from '../../util/object/canvasObjectManager';
+import MonsterElementHandler from '../../util/monster/monsterElementHandler';
+import ProjectileElementHandler from '../../util/projectile/projectileElementHandler';
+import LauncherElementHandler from '../../util/launcher/launcherElementHandler';
+import { getCurrentBlockSize } from '../../util/windowSize';
+import MapElementHandler from '../../util/map/mapElementHandler';
+import { FacilityManager } from '../../util/facility/facilityManager';
+import FacilityElementHandler from '../../util/facility/facilityElementHandler';
+import { Resource } from '../../util/resource';
+import { AnimationFrameInfo } from '../../util/object/animationFrameInfo';
 
 interface UserInterfaceScreen {
   userScreenManager: React.MutableRefObject<CanvasManager>;
@@ -44,6 +45,18 @@ const UserInterfaceScreen = ({
   const [canvasRef, contextRef] = [userScreenManager.current.canvasRef, userScreenManager.current.contextRef];
   const lastUpdatedBlockSize = useRef<number>(0);
 
+  function animate(animation: AnimationFrameInfo, callback: Function) {
+    const step = (timeStamp: number) => {
+      const { interval, lastFrameTime } = animation;
+      if (timeStamp - lastFrameTime > interval) {
+        animation.lastFrameTime = timeStamp;
+        callback();
+      }
+      if (animation) animation.animationFrame = requestAnimationFrame(step);
+    };
+    animation.animationFrame = requestAnimationFrame(step);
+  }
+
   useEffect(() => {
     function setCanvasSize() {
       if (!canvas) return;
@@ -56,14 +69,23 @@ const UserInterfaceScreen = ({
     setCanvasSize();
     canvas.onresize = setCanvasSize;
     canvas.onclick = (e: MouseEvent) =>
-      handleCanvasClickEvent(e, selectedComponent, launcherRef, monsterRef, mapManager, facilityManager, resource, setResource);
+      handleCanvasClickEvent(
+        e,
+        selectedComponent,
+        launcherRef,
+        monsterRef,
+        mapManager,
+        facilityManager,
+        resource,
+        setResource
+      );
 
     const monsterHandler = new MonsterElementHandler(mapManager.current);
     const projectileHandler = new ProjectileElementHandler(mapManager.current);
     const launcherHandler = new LauncherElementHandler(mapManager.current);
     const mapHandler = new MapElementHandler(mapManager.current);
     const facilityHandler = new FacilityElementHandler(mapManager.current);
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
       function resizeScreen(manager: CanvasObjectManager | CanvasManager) {
         const [canvas, context] = [manager.canvasRef.current, manager.contextRef.current];
         if (!canvas || !context) return;
@@ -93,7 +115,7 @@ const UserInterfaceScreen = ({
         lastUpdatedBlockSize.current = mapManager.current.blockSize;
       }
     });
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext('2d');
     if (context) {
       contextRef.current = context;
     }

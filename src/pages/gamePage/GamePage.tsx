@@ -1,24 +1,25 @@
-import LauncherScreen from "../../components/gameScreen/LauncherScreen";
-import MonsterScreen from "../../components/gameScreen/MonsterScreen";
-import style from "../../assets/css/gameScreen.module.css";
-import { LauncherManager } from "../../util/launcher/launcherManager";
-import { useEffect, useRef, useState } from "react";
-import { MonsterManager } from "../../util/monster/monsterManager";
-import { ProjectileManager } from "../../util/projectile/projectileManager";
-import ProjectileScreen from "../../components/gameScreen/ProjectileScreen";
-import MapScreen from "../../components/gameScreen/MapScreen";
-import { MapManager } from "../../util/map/mapManager";
-import GameObjectFooter from "../../components/footer/GameObjectFooter";
-import { MapElementInfo } from "../../util/map/mapElementInfo";
-import { LauncherInfo } from "../../util/launcher/launcherInfo";
-import { CanvasManager } from "../../util/object/CanvasManager";
-import UserInterfaceScreen from "../../components/gameScreen/UserInterfaceScreen";
-import GameObjectSideBar from "../../components/sideBar/GameObjectSibeBar";
-import { FacilityManager } from "../../util/facility/facilityManager";
-import FacilityScreen from "../../components/gameScreen/facilityScreen";
-import facilityInfo, { FacilityInfo } from "../../util/facility/facilityInfo";
-import { Resource } from "../../util/resource";
-import GameScreenTopBar from "../../components/topbar/gameScreenTopBar";
+import LauncherScreen from '../../components/gameScreen/LauncherScreen';
+import MonsterScreen from '../../components/gameScreen/MonsterScreen';
+import style from '../../assets/css/gameScreen.module.css';
+import { LauncherManager } from '../../util/launcher/launcherManager';
+import { useEffect, useRef, useState } from 'react';
+import { MonsterManager } from '../../util/monster/monsterManager';
+import { ProjectileManager } from '../../util/projectile/projectileManager';
+import ProjectileScreen from '../../components/gameScreen/ProjectileScreen';
+import MapScreen from '../../components/gameScreen/MapScreen';
+import { MapManager } from '../../util/map/mapManager';
+import GameObjectFooter from '../../components/footer/GameObjectFooter';
+import { MapElementInfo } from '../../util/map/mapElementInfo';
+import { LauncherInfo } from '../../util/launcher/launcherInfo';
+import { CanvasManager } from '../../util/object/CanvasManager';
+import UserInterfaceScreen from '../../components/gameScreen/UserInterfaceScreen';
+import GameObjectSideBar from '../../components/sideBar/GameObjectSibeBar';
+import { FacilityManager } from '../../util/facility/facilityManager';
+import FacilityScreen from '../../components/gameScreen/facilityScreen';
+import facilityInfo, { FacilityInfo } from '../../util/facility/facilityInfo';
+import { Resource } from '../../util/resource';
+import GameScreenTopBar from '../../components/topbar/gameScreenTopBar';
+import GameOverModal from '../../components/modal/GameOverModal';
 
 export interface SelectedComponent {
   component: MapElementInfo | LauncherInfo | FacilityInfo | null;
@@ -146,9 +147,17 @@ const GamePage = () => {
     contextRef: useRef<CanvasRenderingContext2D>(null),
   });
 
+  function resetGame() {
+    projectileRef.current.projectiles.splice(0, projectileRef.current.projectiles.length);
+    launcherRef.current.launchers.splice(0, launcherRef.current.launchers.length);
+    monsterRef.current.monsters.splice(0, monsterRef.current.monsters.length);
+    facilityManager.current.facilities.splice(0, facilityManager.current.facilities.length);
+  }
+
   return (
     <div className={style.gamePage}>
-      <GameScreenTopBar resource={resource} mapManager={mapManager}/>
+      {resource.health <= 0 && <GameOverModal setResource={setResource} resetGame={resetGame} />}
+      <GameScreenTopBar resource={resource} mapManager={mapManager} />
       <div>
         <UserInterfaceScreen
           userScreenManager={userScreenManager}
@@ -161,7 +170,12 @@ const GamePage = () => {
           resource={resource}
           setResource={setResource}
         />
-        <LauncherScreen launcherRef={launcherRef} monsterRef={monsterRef} selectedComponent={selectedComponent} mapManager={mapManager} />
+        <LauncherScreen
+          launcherRef={launcherRef}
+          monsterRef={monsterRef}
+          selectedComponent={selectedComponent}
+          mapManager={mapManager}
+        />
         <MonsterScreen monsterRef={monsterRef} mapManager={mapManager} setResource={setResource} />
         <ProjectileScreen
           monsterRef={monsterRef}

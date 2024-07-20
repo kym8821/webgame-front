@@ -105,3 +105,26 @@ canvas {
   top: calc((100vh - 35vw) / 2);
   width: 70vw;
 }
+
+.gameScreenModalContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  left: 5vw;
+  top: calc((100vh - 35vw) / 2);
+
+  width: 90vw;
+  height: 43vw;
+
+  background-color: rgba(0, 0, 0, 0.7);
+
+  z-index: 1000;
+}
+
+.gameScreenModal {
+  width: 80%;
+  height: 80%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
