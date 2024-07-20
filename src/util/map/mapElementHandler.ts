@@ -1,8 +1,8 @@
-import { MapManager } from "./mapManager";
-import { Position } from "../Position";
-import mapElementInfo, { getMapInfoById, MapElementInfo } from "./mapElementInfo";
-import mapImages from "../../assets/images/map/mapImages";
-import mapCoordConverter from "./mapCoordConverter";
+import { MapManager } from './mapManager';
+import { Position } from '../Position';
+import mapElementInfo, { getMapInfoById, MapElementInfo } from './mapElementInfo';
+import mapImages from '../../assets/images/map/mapImages';
+import mapCoordConverter from './mapCoordConverter';
 
 interface MapPosition {
   x: number;
@@ -29,19 +29,19 @@ export default class MapElementHandler {
   }
 
   getPipe = (x: number, y: number) => {
-    let pipe = "";
+    let pipe = '';
     const map = this.mapManager.map;
     for (let i = 0; i < 4; i++) {
       const [dx, dy] = [x + delta[i][0], y + delta[i][1]];
       if (dx < 0 || dy < 0 || dx >= map[0].length || dy >= map.length) {
-        pipe = pipe + "0";
+        pipe = pipe + '0';
         continue;
       }
       const elementInfo = map[dy][dx].info;
       if (!elementInfo.tag.tile) {
-        pipe = pipe + "1";
+        pipe = pipe + '1';
       } else {
-        pipe = pipe + "0";
+        pipe = pipe + '0';
       }
     }
     return `pipe_${pipe}`;
@@ -99,12 +99,11 @@ export default class MapElementHandler {
         let src = currentMapInfo.src;
         let { width, height } = currentMapInfo;
         if (currentMapInfo.tag.pipe) {
-          const pipeId = this.getPipe(j, i);
-          src = mapImages[pipeId];
+          // const pipeId = this.getPipe(j, i);
+          // src = mapImages[pipeId];
         } else if (currentMapInfo.tag.core) {
           const pos: MapPosition = { x: j, y: i };
           corePos.push(pos);
-          src = mapElementInfo.floor.src;
           [width, height] = [1, 1];
         }
         if (!src) continue;

@@ -1,9 +1,9 @@
-import launcherInfo from "../launcher/launcherInfo";
-import mapCoordConverter from "../map/mapCoordConverter";
-import { MapManager } from "../map/mapManager";
-import { FacilityFrame } from "./facilityFrame";
-import { FacilityInfo } from "./facilityInfo";
-import { FacilityManager } from "./facilityManager";
+import launcherInfo from '../launcher/launcherInfo';
+import mapCoordConverter from '../map/mapCoordConverter';
+import { MapManager } from '../map/mapManager';
+import { FacilityFrame } from './facilityFrame';
+import { FacilityInfo } from './facilityInfo';
+import { FacilityManager } from './facilityManager';
 
 export default class FacilityElementHandler {
   mapManager: MapManager;
@@ -17,12 +17,26 @@ export default class FacilityElementHandler {
       info: facilityInfo,
       mapPosX: mapPosX,
       mapPosY: mapPosY,
+      frameNumber: 0,
       frame: [],
     };
     const image = new Image();
     image.src = facilityInfo.src;
-    facilityFrame.frame.push(image);
+    facilityInfo.frames.forEach((src) => {
+      const image = new Image();
+      image.src = src;
+      facilityFrame.frame.push(image);
+    });
     return facilityFrame;
+  };
+
+  animate = (facilityManager: FacilityManager) => {
+    const facilities = facilityManager.facilities;
+    for (let i = 0; i < facilities.length; i++) {
+      const nextFrameNumber = (facilities[i].frameNumber + 1) % facilities[i].info.frameSize;
+      facilities[i].frameNumber = nextFrameNumber;
+      console.log(facilities[i].info.frames[nextFrameNumber]);
+    }
   };
 
   draw = (facilityManager: FacilityManager) => {
@@ -37,14 +51,11 @@ export default class FacilityElementHandler {
     facilities.forEach((facility) => {
       const { mapPosX, mapPosY, info } = facility;
       const position = mapCoordConverter.mapToCanvasCoord(mapPosX, mapPosY, blockSize);
-      const image = new Image();
-      image.src = info.src;
-      image.onload = () => {
-        context.save();
-        context.translate(position.posX, position.posY - blockSize * (info.height - 1));
-        context.drawImage(image, 0, -blockSize * 0.25, blockSize * info.width, blockSize * info.height);
-        context.restore();
-      };
+      const image = facility.frame[facility.frameNumber];
+      context.save();
+      context.translate(position.posX, position.posY - blockSize * (info.height - 1));
+      context.drawImage(image, 0, -blockSize * 0.25, blockSize * info.width, blockSize * info.height);
+      context.restore();
     });
   };
 

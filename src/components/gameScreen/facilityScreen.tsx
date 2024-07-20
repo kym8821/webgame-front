@@ -1,19 +1,19 @@
-import { useEffect, useRef } from "react";
-import style from "../../assets/css/gameScreen.module.css";
-import mapDrawer from "../../util/map/mapCoordConverter";
-import { convertNumberMapToMapFrameMap, MapManager } from "../../util/map/mapManager";
-import { getCurrentBlockSize } from "../../util/windowSize";
-import MapElementHandler from "../../util/map/mapElementHandler";
-import mapElementInfo, { MapElementInfo } from "../../util/map/mapElementInfo";
-import { LauncherInfo } from "../../util/launcher/launcherInfo";
-import { SelectedComponent } from "../../pages/gamePage/GamePage";
-import { handleCanvasClickEvent } from "../../util/canvasClickEvent";
-import { CanvasManager } from "../../util/object/CanvasManager";
-import facilityInfo from "../../util/facility/facilityInfo";
-import { FacilityManager } from "../../util/facility/facilityManager";
-import FacilityElementHandler from "../../util/facility/facilityElementHandler";
-import { AnimationFrameInfo } from "../../util/object/animationFrameInfo";
-import { Resource } from "../../util/resource";
+import { useEffect, useRef } from 'react';
+import style from '../../assets/css/gameScreen.module.css';
+import mapDrawer from '../../util/map/mapCoordConverter';
+import { convertNumberMapToMapFrameMap, MapManager } from '../../util/map/mapManager';
+import { getCurrentBlockSize } from '../../util/windowSize';
+import MapElementHandler from '../../util/map/mapElementHandler';
+import mapElementInfo, { MapElementInfo } from '../../util/map/mapElementInfo';
+import { LauncherInfo } from '../../util/launcher/launcherInfo';
+import { SelectedComponent } from '../../pages/gamePage/GamePage';
+import { handleCanvasClickEvent } from '../../util/canvasClickEvent';
+import { CanvasManager } from '../../util/object/CanvasManager';
+import facilityInfo from '../../util/facility/facilityInfo';
+import { FacilityManager } from '../../util/facility/facilityManager';
+import FacilityElementHandler from '../../util/facility/facilityElementHandler';
+import { AnimationFrameInfo } from '../../util/object/animationFrameInfo';
+import { Resource } from '../../util/resource';
 
 interface FacilityScreenProps {
   page: number;
@@ -52,6 +52,14 @@ const FacilityScreen = ({ facilityManager, mapMananger, resource, setResource }:
     animate(facilityManager.current.generationFrame, callback);
   }
 
+  function generateAnimationTimer() {
+    function callback() {
+      facilityElementHandler.animate(facilityManager.current);
+      facilityElementHandler.draw(facilityManager.current);
+    }
+    animate(facilityManager.current.animationFrame, callback);
+  }
+
   useEffect(() => {
     function setValues() {
       canvas.width = canvas.scrollWidth;
@@ -59,11 +67,11 @@ const FacilityScreen = ({ facilityManager, mapMananger, resource, setResource }:
     }
     if (!canvasRef || !canvasRef.current) return;
     const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    if (facilityManager.current.facilities.length === 0) {
-      const coreFrame = facilityElementHandler.loadFrames(facilityInfo.core, 14, 2);
-      facilityManager.current.facilities.push(coreFrame);
-    }
+    const context = canvas.getContext('2d');
+    // if (facilityManager.current.facilities.length === 0) {
+    //   const coreFrame = facilityElementHandler.loadFrames(facilityInfo.core, 14, 2);
+    //   facilityManager.current.facilities.push(coreFrame);
+    // }
     if (context) {
       contextRef.current = context;
     }
@@ -73,9 +81,12 @@ const FacilityScreen = ({ facilityManager, mapMananger, resource, setResource }:
 
   useEffect(() => {
     generateResource();
+    generateAnimationTimer();
     return () => {
       if (facilityManager.current.generationFrame.animationFrame)
         cancelAnimationFrame(facilityManager.current.generationFrame.animationFrame);
+      if (facilityManager.current.animationFrame.animationFrame)
+        cancelAnimationFrame(facilityManager.current.animationFrame.animationFrame);
     };
   }, [resource]);
 

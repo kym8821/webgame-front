@@ -1,10 +1,10 @@
-import monsterImages from "../../assets/images/monster/monsterImages";
-import mapCoordConverter from "../map/mapCoordConverter";
-import { MapManager } from "../map/mapManager";
-import { Position } from "../Position";
-import defaultWindowSize from "../windowSize";
-import MonsterFrame from "./monsterFrame";
-import monsterInfo, { MonsterInfo } from "./monsterInfo";
+import monsterImages from '../../assets/images/monster/monsterImages';
+import mapCoordConverter from '../map/mapCoordConverter';
+import { MapManager } from '../map/mapManager';
+import { Position } from '../Position';
+import defaultWindowSize from '../windowSize';
+import MonsterFrame from './monsterFrame';
+import monsterInfo, { MonsterInfo } from './monsterInfo';
 
 export default class MonsterElementHandler {
   mapManager: MapManager;
@@ -56,9 +56,12 @@ export default class MonsterElementHandler {
   };
 
   getPosition = (canvas: HTMLCanvasElement, monster: MonsterFrame) => {
-    const ratio = (window.innerWidth * 0.8) / defaultWindowSize.width;
     const info = monster.info;
-    const position: Position = mapCoordConverter.mapToCanvasCoord(monster.startMapX, monster.startMapY, this.mapManager.blockSize);
+    const position: Position = mapCoordConverter.mapToCanvasCoord(
+      monster.startMapX,
+      monster.startMapY,
+      this.mapManager.blockSize
+    );
     const width = info.width * (canvas.width * 0.0005);
     const height = info.height * (canvas.width * 0.0005);
     const posX = position.posX + monster.move * (canvas.width * 0.02);
@@ -75,7 +78,12 @@ export default class MonsterElementHandler {
     } as Position;
   };
 
-  animate = (canvas: HTMLCanvasElement | null, context: CanvasRenderingContext2D | null, monsters: MonsterFrame[], toChange: boolean) => {
+  animate = (
+    canvas: HTMLCanvasElement | null,
+    context: CanvasRenderingContext2D | null,
+    monsters: MonsterFrame[],
+    toChange: boolean
+  ) => {
     if (!canvas || !context) return;
     for (let i = 0; i < monsters.length; i++) {
       const monster = monsters[i];
@@ -88,7 +96,12 @@ export default class MonsterElementHandler {
     }
   };
 
-  move = (canvas: HTMLCanvasElement | null, context: CanvasRenderingContext2D | null, monsters: MonsterFrame[], toChange: boolean) => {
+  move = (
+    canvas: HTMLCanvasElement | null,
+    context: CanvasRenderingContext2D | null,
+    monsters: MonsterFrame[],
+    toChange: boolean
+  ) => {
     if (!canvas || !context) return;
     context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < monsters.length; i++) {
@@ -110,7 +123,12 @@ export default class MonsterElementHandler {
   };
 
   isOutOfRange = (mapPosX: number, mapPosY: number) => {
-    if (mapPosX < 0 || mapPosX >= this.mapManager.map[0].length - 2 || mapPosY < 0 || mapPosY >= this.mapManager.map.length) {
+    if (
+      mapPosX < 0 ||
+      mapPosX >= this.mapManager.map[0].length - 2 ||
+      mapPosY < 0 ||
+      mapPosY >= this.mapManager.map.length
+    ) {
       return true;
     }
     return false;

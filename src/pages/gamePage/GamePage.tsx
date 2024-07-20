@@ -20,6 +20,7 @@ import facilityInfo, { FacilityInfo } from '../../util/facility/facilityInfo';
 import { Resource } from '../../util/resource';
 import GameScreenTopBar from '../../components/topbar/gameScreenTopBar';
 import GameOverModal from '../../components/modal/GameOverModal';
+import FacilityElementHandler from '../../util/facility/facilityElementHandler';
 
 export interface SelectedComponent {
   component: MapElementInfo | LauncherInfo | FacilityInfo | null;
@@ -57,7 +58,7 @@ const GamePage = () => {
     },
     animationFrame: {
       lastFrameTime: 0,
-      interval: 20,
+      interval: 1000,
       animationFrame: null,
     },
     facilities: [],
@@ -148,11 +149,29 @@ const GamePage = () => {
   });
 
   function resetGame() {
+    const facilityElementHandler = new FacilityElementHandler(mapManager.current);
+
     projectileRef.current.projectiles.splice(0, projectileRef.current.projectiles.length);
     launcherRef.current.launchers.splice(0, launcherRef.current.launchers.length);
     monsterRef.current.monsters.splice(0, monsterRef.current.monsters.length);
     facilityManager.current.facilities.splice(0, facilityManager.current.facilities.length);
+
+    if (facilityManager.current.facilities.length === 0)
+      facilityManager.current.facilities.push(facilityElementHandler.loadFrames(facilityInfo.core, 14, 2));
+    facilityElementHandler.draw(facilityManager.current);
+
+    setResource(() => ({
+      energy: 20,
+      energyOutput: facilityInfo.core.energyOutput,
+      evolveFactor: 20,
+      evolveFactorOutput: facilityInfo.core.evolveFactorOutput,
+      health: 100,
+    }));
   }
+
+  useEffect(() => {
+    resetGame();
+  }, []);
 
   return (
     <div className={style.gamePage}>

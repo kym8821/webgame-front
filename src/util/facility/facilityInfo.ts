@@ -1,7 +1,7 @@
-import facilityImages from "../../assets/images/facility/facilityImages";
-import mapImages from "../../assets/images/map/mapImages";
-import { MapElementInfo } from "../map/mapElementInfo";
-import { objectType } from "../object/objectInfo";
+import facilityImages from '../../assets/images/facility/facilityImages';
+import mapImages from '../../assets/images/map/mapImages';
+import { MapElementInfo } from '../map/mapElementInfo';
+import { objectType } from '../object/objectInfo';
 
 interface FacilityTag {
   core: boolean;
@@ -23,19 +23,21 @@ export interface FacilityInfo {
   evolveFactor: number;
   energyOutput: number;
   evolveFactorOutput: number;
+  frameSize: number;
+  frames: string[];
 }
 
 export function isFacilityInfo(obj: FacilityInfo) {
   console.log(obj);
   if (
     obj.type === objectType.facility &&
-    typeof obj.id === "number" &&
-    typeof obj.name === "string" &&
-    typeof obj.src === "string" &&
-    typeof obj.width === "number" &&
-    typeof obj.height === "number" &&
-    typeof obj.energy === "number" &&
-    typeof obj.evolveFactor === "number"
+    typeof obj.id === 'number' &&
+    typeof obj.name === 'string' &&
+    typeof obj.src === 'string' &&
+    typeof obj.width === 'number' &&
+    typeof obj.height === 'number' &&
+    typeof obj.energy === 'number' &&
+    typeof obj.evolveFactor === 'number'
   ) {
     return true;
   }
@@ -57,8 +59,8 @@ const facilityInfo: Record<string, FacilityInfo> = {
   core: {
     id: 1,
     type: objectType.facility,
-    name: "core",
-    src: facilityImages.core,
+    name: 'core',
+    src: facilityImages.core1,
     width: 2,
     height: 2,
     tag: {
@@ -72,12 +74,14 @@ const facilityInfo: Record<string, FacilityInfo> = {
     evolveFactor: -1,
     energyOutput: 5,
     evolveFactorOutput: 1,
+    frameSize: 2,
+    frames: [facilityImages.core1, facilityImages.core2],
   },
-  energyFacility: {
+  energy: {
     id: 2,
     type: objectType.facility,
-    name: "energy facility",
-    src: facilityImages.facilityEnergy,
+    name: 'energy facility',
+    src: facilityImages.energy1,
     width: 1,
     height: 1,
     tag: {
@@ -91,12 +95,14 @@ const facilityInfo: Record<string, FacilityInfo> = {
     evolveFactor: -1,
     energyOutput: 1,
     evolveFactorOutput: 0,
+    frameSize: 2,
+    frames: [facilityImages.energy1, facilityImages.energy2],
   },
-  evolveFactorFacility: {
+  evolveFactor: {
     id: 3,
     type: objectType.facility,
-    name: "evolve facility",
-    src: facilityImages.facilityEvolutionFactor,
+    name: 'evolve facility',
+    src: facilityImages.evolveFactor1,
     width: 1,
     height: 1,
     tag: {
@@ -110,11 +116,13 @@ const facilityInfo: Record<string, FacilityInfo> = {
     evolveFactor: -1,
     energyOutput: 0,
     evolveFactorOutput: 1,
+    frameSize: 2,
+    frames: [facilityImages.evolveFactor1, facilityImages.evolveFactor2],
   },
   objectRemover: {
     id: 4,
     type: objectType.facility,
-    name: "objectRemover",
+    name: 'objectRemover',
     src: mapImages.tile,
     width: 1,
     height: 1,
@@ -129,6 +137,8 @@ const facilityInfo: Record<string, FacilityInfo> = {
     evolveFactor: -5,
     energyOutput: 0,
     evolveFactorOutput: 0,
+    frameSize: 1,
+    frames: [mapImages.tile],
   },
 };
 
