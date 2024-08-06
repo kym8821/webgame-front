@@ -91,7 +91,11 @@ export default class MapElementHandler {
   draw = (context: CanvasRenderingContext2D) => {
     const map = this.mapManager.map;
     const blockSize = this.mapManager.blockSize;
+    console.log(blockSize);
     const corePos: MapPosition[] = [];
+    if (!this.mapManager.canvasRef.current) return;
+    const { width, height } = this.mapManager.canvasRef.current;
+    context.clearRect(0, 0, width, height);
     for (let i = 0; i < map.length; i++) {
       for (let j = 0; j < map[i].length; j++) {
         // if (map[i][j].info.id === mapElementInfo.ex.id) continue;

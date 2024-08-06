@@ -112,7 +112,13 @@ export default class MonsterElementHandler {
       const [mpx, mpy] = mapCoordConverter.canvasToMapCoord(position.posX, position.posY, this.mapManager.blockSize);
       context.save();
       context.translate(position.posX + position.width / 2, position.posY + position.height / 2);
-      context.drawImage(frame[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
+      context.drawImage(
+        frame[frameNumber],
+        Math.round(-position.width / 2),
+        Math.round(-position.height / 2),
+        Math.round(position.width),
+        Math.round(position.height)
+      );
       context.restore();
       if (this.isOutOfRange(mpx, mpy)) {
         continue;

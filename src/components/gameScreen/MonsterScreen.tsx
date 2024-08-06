@@ -79,7 +79,7 @@ const MonsterScreen = ({ monsterRef, mapManager, setResource }: monsterScreenPro
         } else if (prev.health - damage > 100) {
           damage = 0;
         }
-        console.log(prev);
+        // console.log(prev);
         return {
           ...prev,
           health: prev.health - damage,
@@ -105,11 +105,11 @@ const MonsterScreen = ({ monsterRef, mapManager, setResource }: monsterScreenPro
       contextRef.current = context;
     }
 
-    canvas.onmousemove = (e: MouseEvent) => {
-      const x = e.x;
-      const y = e.y;
-      setPointer(() => ({ x: x, y: y }));
-    };
+    // canvas.onmousemove = (e: MouseEvent) => {
+    //   const x = e.clientX;
+    //   const y = e.clientY;
+    //   console.log(x, y);
+    // };
 
     // window.addEventListener("resize", windowResize);
     setAnimationTimer();

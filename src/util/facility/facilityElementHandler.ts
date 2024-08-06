@@ -35,7 +35,7 @@ export default class FacilityElementHandler {
     for (let i = 0; i < facilities.length; i++) {
       const nextFrameNumber = (facilities[i].frameNumber + 1) % facilities[i].info.frameSize;
       facilities[i].frameNumber = nextFrameNumber;
-      console.log(facilities[i].info.frames[nextFrameNumber]);
+      // console.log(facilities[i].info.frames[nextFrameNumber]);
     }
   };
 
