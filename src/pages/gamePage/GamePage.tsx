@@ -1,20 +1,14 @@
 import LauncherScreen from "../../components/gameScreen/LauncherScreen";
 import MonsterScreen from "../../components/gameScreen/MonsterScreen";
 import style from "../../assets/css/gameScreen.module.css";
-import { LauncherManager } from "../../util/launcher/launcherManager";
 import { useEffect, useRef, useState } from "react";
-import { MonsterManager } from "../../util/monster/monsterManager";
-import { ProjectileManager } from "../../util/projectile/projectileManager";
 import ProjectileScreen from "../../components/gameScreen/ProjectileScreen";
 import MapScreen from "../../components/gameScreen/MapScreen";
-import { MapManager } from "../../util/map/mapManager";
 import GameObjectFooter from "../../components/footer/GameObjectFooter";
 import { MapElementInfo } from "../../util/map/mapElementInfo";
 import { LauncherInfo } from "../../util/launcher/launcherInfo";
-import { CanvasManager } from "../../util/object/CanvasManager";
 import UserInterfaceScreen from "../../components/gameScreen/UserInterfaceScreen";
 import GameObjectSideBar from "../../components/sideBar/GameObjectSibeBar";
-import { FacilityManager } from "../../util/facility/facilityManager";
 import FacilityScreen from "../../components/gameScreen/facilityScreen";
 import facilityInfo, { FacilityInfo } from "../../util/facility/facilityInfo";
 import { Resource } from "../../util/resource";
@@ -22,7 +16,7 @@ import GameScreenTopBar from "../../components/topbar/gameScreenTopBar";
 import GameOverModal from "../../components/modal/GameOverModal";
 import FacilityElementHandler from "../../util/facility/facilityElementHandler";
 import { TotalScreenManager } from "../../util/totalScreenManager";
-import { loadTotalScreenManager } from "../../api/gamePageApi";
+import { loadTotalScreenManager } from "../../api/managerLoader";
 
 export interface SelectedComponent {
   component: MapElementInfo | LauncherInfo | FacilityInfo | null;

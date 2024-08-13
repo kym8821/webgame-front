@@ -1,14 +1,10 @@
-import { FacilityFrame } from "../facility/facilityFrame";
-import { FacilityInfo } from "../facility/facilityInfo";
-import { CanvasManager } from "../object/CanvasManager";
 import { CanvasObjectManager, CanvasObjectManagerClassType } from "../object/canvasObjectManager";
 import { getMapInfoById } from "./mapElementInfo";
 import { MapFrame, MapFrameClass } from "./mapFrame";
 
-export interface MapManager extends CanvasManager {
+export interface MapManager extends CanvasObjectManager<MapFrameClass, MapFrame> {
   numberMap: number[][];
   map: MapFrameClass[][];
-  mapObjects: MapFrameClass[];
   blockSize: number;
 }
 

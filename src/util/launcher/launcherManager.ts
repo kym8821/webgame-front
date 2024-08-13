@@ -1,9 +1,10 @@
-import { AnimationFrameInfo } from "../object/animationFrameInfo";
-import { CanvasObjectManager, CanvasObjectManagerClassType } from "../object/canvasObjectManager";
+import { CanvasObjectFrameManager } from "../object/CanvasObjectFrameManager";
+import { CanvasObjectManagerClassType } from "../object/canvasObjectManager";
 import { LauncherFrame, LauncherFrameClass } from "./launcherFrame";
 
-export interface LauncherManager extends CanvasObjectManager {
-  launchers: LauncherFrameClass[];
+export interface LauncherManager extends CanvasObjectFrameManager<LauncherFrameClass, LauncherFrame> {
+  generationFrame: undefined;
+  movementFrame: undefined;
 }
 
 export class LauncherManagerClass implements CanvasObjectManagerClassType<LauncherManager> {
@@ -12,7 +13,7 @@ export class LauncherManagerClass implements CanvasObjectManagerClassType<Launch
   }
   manager: LauncherManager;
   delete = (callback: (launcher: LauncherFrameClass) => boolean) => {
-    const launchers = this.manager.launchers;
+    const launchers = this.manager.objects;
     for (let i = 0; i < launchers.length; i++) {
       const launcher = launchers[i];
       if (callback(launcher)) {
@@ -22,6 +23,6 @@ export class LauncherManagerClass implements CanvasObjectManagerClassType<Launch
     }
   };
   add = (launcher: LauncherFrameClass) => {
-    this.manager.launchers.push(launcher);
+    this.manager.objects.push(launcher);
   };
 }

@@ -1,11 +1,10 @@
-import { AnimationFrameInfo } from "../object/animationFrameInfo";
-import { CanvasManager } from "../object/CanvasManager";
+import { CanvasObjectFrameManager } from "../object/CanvasObjectFrameManager";
 import { CanvasObjectManagerClassType } from "../object/canvasObjectManager";
-import { FacilityFrameClass } from "./facilityFrame";
+import { FacilityFrame, FacilityFrameClass } from "./facilityFrame";
 
-export interface FacilityManager extends CanvasManager {
-  generationFrame: AnimationFrameInfo;
-  facilities: FacilityFrameClass[];
+export interface FacilityManager extends CanvasObjectFrameManager<FacilityFrameClass, FacilityFrame> {
+  animationFrame: undefined;
+  movementFrame: undefined;
 }
 
 export class FacilityManagerClass implements CanvasObjectManagerClassType<FacilityManager> {
@@ -14,12 +13,12 @@ export class FacilityManagerClass implements CanvasObjectManagerClassType<Facili
   }
   manager: FacilityManager;
   add: Function = (facility: FacilityFrameClass) => {
-    this.manager.facilities.push(facility);
+    this.manager.objects.push(facility);
   };
   delete: Function = (callback: (facility: FacilityFrameClass) => boolean) => {
-    for (let i = 0; i < this.manager.facilities.length; i++) {
-      if (callback(this.manager.facilities[i])) {
-        this.manager.facilities.splice(i, 1);
+    for (let i = 0; i < this.manager.objects.length; i++) {
+      if (callback(this.manager.objects[i])) {
+        this.manager.objects.splice(i, 1);
         i -= 1;
       }
     }

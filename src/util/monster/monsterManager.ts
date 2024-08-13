@@ -1,9 +1,9 @@
 import { AnimationFrameInfo } from "../object/animationFrameInfo";
-import { CanvasObjectManager, CanvasObjectManagerClassType } from "../object/canvasObjectManager";
+import { CanvasObjectFrameManager } from "../object/CanvasObjectFrameManager";
+import { CanvasObjectManagerClassType } from "../object/canvasObjectManager";
 import MonsterFrame, { MonsterFrameClass } from "./monsterFrame";
 
-export interface MonsterManager extends CanvasObjectManager {
-  monsters: MonsterFrameClass[];
+export interface MonsterManager extends CanvasObjectFrameManager<MonsterFrameClass, MonsterFrame> {
   damageFrame: AnimationFrameInfo;
 }
 
@@ -13,7 +13,7 @@ export class MonsterManagerClass implements CanvasObjectManagerClassType<Monster
   }
   manager: MonsterManager;
   delete = (callback: (frame: MonsterFrameClass) => boolean) => {
-    const monsters = this.manager.monsters;
+    const monsters = this.manager.objects;
     for (let i = 0; i < monsters.length; i++) {
       const monster = monsters[i];
       if (callback(monster)) {
@@ -23,7 +23,7 @@ export class MonsterManagerClass implements CanvasObjectManagerClassType<Monster
     }
   };
   add = (monster: MonsterFrameClass) => {
-    const monsters = this.manager.monsters;
+    const monsters = this.manager.objects;
     monsters.push(monster);
   };
 }
