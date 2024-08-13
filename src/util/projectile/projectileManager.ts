@@ -1,9 +1,12 @@
+import { AnimationFrameInfo } from "../object/animationFrameInfo";
 import { CanvasObjectFrameManager } from "../object/CanvasObjectFrameManager";
 import { CanvasObjectManagerClassType } from "../object/canvasObjectManager";
 import { ProjectileFrame, ProjectileFrameClass } from "./projectileFrame";
 
 export interface ProjectileManager extends CanvasObjectFrameManager<ProjectileFrameClass, ProjectileFrame> {
-  movementFrame: undefined;
+  animationFrame: AnimationFrameInfo;
+  generationFrame: AnimationFrameInfo;
+  movementFrame?: undefined;
 }
 
 export class ProjectileManagerClass implements CanvasObjectManagerClassType<ProjectileManager> {

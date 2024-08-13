@@ -1,10 +1,12 @@
+import { AnimationFrameInfo } from "../object/animationFrameInfo";
 import { CanvasObjectFrameManager } from "../object/CanvasObjectFrameManager";
 import { CanvasObjectManagerClassType } from "../object/canvasObjectManager";
 import { LauncherFrame, LauncherFrameClass } from "./launcherFrame";
 
 export interface LauncherManager extends CanvasObjectFrameManager<LauncherFrameClass, LauncherFrame> {
-  generationFrame: undefined;
-  movementFrame: undefined;
+  animationFrame: AnimationFrameInfo | undefined;
+  generationFrame?: undefined;
+  movementFrame?: undefined;
 }
 
 export class LauncherManagerClass implements CanvasObjectManagerClassType<LauncherManager> {

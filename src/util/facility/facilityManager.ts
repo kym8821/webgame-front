@@ -1,10 +1,12 @@
+import { AnimationFrameInfo } from "../object/animationFrameInfo";
 import { CanvasObjectFrameManager } from "../object/CanvasObjectFrameManager";
 import { CanvasObjectManagerClassType } from "../object/canvasObjectManager";
 import { FacilityFrame, FacilityFrameClass } from "./facilityFrame";
 
 export interface FacilityManager extends CanvasObjectFrameManager<FacilityFrameClass, FacilityFrame> {
-  animationFrame: undefined;
-  movementFrame: undefined;
+  animationFrame: AnimationFrameInfo;
+  generationFrame: AnimationFrameInfo;
+  movementFrame?: undefined;
 }
 
 export class FacilityManagerClass implements CanvasObjectManagerClassType<FacilityManager> {

@@ -9,11 +9,6 @@ import { TotalScreenManager } from "../util/totalScreenManager";
 
 export async function loadTotalScreenManager(totalScreenManagerRef: React.MutableRefObject<TotalScreenManager | undefined>) {
   const userScreenManager: CanvasManager = {
-    animationFrame: {
-      lastFrameTime: 0,
-      interval: 20,
-      animationFrame: null,
-    },
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   };
@@ -38,7 +33,7 @@ export async function loadTotalScreenManager(totalScreenManagerRef: React.Mutabl
       interval: 1000,
       animationFrame: null,
     },
-    monsters: [],
+    objects: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   };
@@ -53,25 +48,16 @@ export async function loadTotalScreenManager(totalScreenManagerRef: React.Mutabl
       interval: 1000,
       animationFrame: null,
     },
-    movementFrame: {
-      lastFrameTime: 0,
-      interval: 20,
-      animationFrame: null,
-    },
-    projectiles: [],
+    movementFrame: undefined,
+    objects: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   };
   const mapManager: MapManager = {
     numberMap: [],
-    animationFrame: {
-      lastFrameTime: 0,
-      interval: 20,
-      animationFrame: null,
-    },
     blockSize: window.innerWidth / 20,
     map: [[]],
-    mapObjects: [],
+    objects: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   };
@@ -86,7 +72,7 @@ export async function loadTotalScreenManager(totalScreenManagerRef: React.Mutabl
       interval: 1000,
       animationFrame: null,
     },
-    facilities: [],
+    objects: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   };
@@ -96,17 +82,7 @@ export async function loadTotalScreenManager(totalScreenManagerRef: React.Mutabl
       interval: 500,
       animationFrame: null,
     },
-    generationFrame: {
-      lastFrameTime: 0,
-      interval: 500,
-      animationFrame: null,
-    },
-    movementFrame: {
-      lastFrameTime: 0,
-      interval: 500,
-      animationFrame: null,
-    },
-    launchers: [],
+    objects: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   };

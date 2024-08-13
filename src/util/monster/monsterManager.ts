@@ -4,6 +4,9 @@ import { CanvasObjectManagerClassType } from "../object/canvasObjectManager";
 import MonsterFrame, { MonsterFrameClass } from "./monsterFrame";
 
 export interface MonsterManager extends CanvasObjectFrameManager<MonsterFrameClass, MonsterFrame> {
+  animationFrame: AnimationFrameInfo;
+  generationFrame: AnimationFrameInfo;
+  movementFrame: AnimationFrameInfo;
   damageFrame: AnimationFrameInfo;
 }
 
