@@ -1,14 +1,14 @@
 import { FacilityFrame } from "../facility/facilityFrame";
 import { FacilityInfo } from "../facility/facilityInfo";
 import { CanvasManager } from "../object/CanvasManager";
-import { CanvasObjectManager } from "../object/canvasObjectManager";
+import { CanvasObjectManager, CanvasObjectManagerClassType } from "../object/canvasObjectManager";
 import { getMapInfoById } from "./mapElementInfo";
-import { MapFrame } from "./mapFrame";
+import { MapFrame, MapFrameClass } from "./mapFrame";
 
 export interface MapManager extends CanvasManager {
   numberMap: number[][];
-  map: MapFrame[][];
-  mapObjects: MapFrame[];
+  map: MapFrameClass[][];
+  mapObjects: MapFrameClass[];
   blockSize: number;
 }
 
@@ -24,9 +24,19 @@ export function convertNumberMapToMapFrameMap(map: number[][]) {
         info: mapInfo,
         activate: false,
         empty: true,
+        images: [],
       };
       mapFrameMap[i].push(mapFrame);
     }
   }
   return mapFrameMap;
+}
+
+export class MapManagerClass implements CanvasObjectManagerClassType<MapManager> {
+  constructor(mapManager: MapManager) {
+    this.manager = mapManager;
+  }
+  manager: MapManager;
+  add: Function = () => {};
+  delete: Function = () => {};
 }

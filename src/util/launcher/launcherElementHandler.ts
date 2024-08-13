@@ -1,47 +1,24 @@
-import launcherImages from "../../assets/images/launcher/launcherImages";
-import mapCoordConverter from "../map/mapCoordConverter";
 import { MapManager } from "../map/mapManager";
-import MonsterElementHandler from "../monster/monsterElementHandler";
-import MonsterFrame from "../monster/monsterFrame";
-import { MonsterManager } from "../monster/monsterManager";
+import { MonsterFrameClass } from "../monster/monsterFrame";
+import ObjectElementHandler from "../object/ObjectElementHandler";
 import { Position } from "../Position";
-import projectileInfo from "../projectile/projectileInfo";
-import { LauncherFrame } from "./launcherFrame";
-import { LauncherInfo } from "./launcherInfo";
+import { LauncherFrameClass } from "./launcherFrame";
+import { LauncherManager } from "./launcherManager";
 
-export default class LauncherElementHandler {
+export default class LauncherElementHandler implements ObjectElementHandler<LauncherManager> {
   mapManager: MapManager;
-  monsterHandler: MonsterElementHandler;
+  manager: LauncherManager;
 
-  constructor(mapManager: MapManager) {
+  constructor(manager: LauncherManager, mapManager: MapManager) {
     this.mapManager = mapManager;
-    this.monsterHandler = new MonsterElementHandler(mapManager);
+    this.manager = manager;
   }
 
-  getPosition = (canvas: HTMLCanvasElement, launcher: LauncherFrame) => {
-    const info = launcher.info;
-    const position = mapCoordConverter.mapToCanvasCoord(launcher.mapStartX, launcher.mapStartY, this.mapManager.blockSize);
-    const posX = position.posX;
-    const posY = position.posY;
-    const width = info.width * (canvas.width * 0.0005);
-    const height = info.height * (canvas.width * 0.0005);
-    // const width = ratio * info.width;
-    // const height = ratio * info.height;
-    const boundX = posX + width;
-    const boundY = posY + height;
-    return {
-      posX: posX,
-      posY: posY,
-      width: width,
-      height: height,
-      boundX: boundX,
-      boundY: boundY,
-    } as Position;
-  };
-
-  getLauncherAngle = (canvas: HTMLCanvasElement, monster: MonsterFrame, launcher: LauncherFrame) => {
-    const monsterPosition: Position = this.monsterHandler.getPosition(canvas, monster);
-    const launcherPosition: Position = this.getPosition(canvas, launcher);
+  getLauncherAngle = (monster: MonsterFrameClass, launcher: LauncherFrameClass) => {
+    const canvas = this.manager.canvasRef.current;
+    if (!canvas) return;
+    const monsterPosition: Position = monster.getPosition(canvas.width, canvas.height, this.mapManager.blockSize);
+    const launcherPosition: Position = launcher.getPosition(canvas.width, canvas.height, this.mapManager.blockSize);
     const hypo = monsterPosition.posX - launcherPosition.posX;
     const height = Math.abs(monsterPosition.posY - launcherPosition.posY);
     let angle = 1;
@@ -50,48 +27,45 @@ export default class LauncherElementHandler {
     return angle;
   };
 
-  draw = (
-    canvas: HTMLCanvasElement | null,
-    context: CanvasRenderingContext2D | null,
-    launchers: LauncherFrame[],
-    monsters: MonsterManager,
-    toChange: boolean
-  ) => {
+  private drawAll = (callback: Function) => {
+    const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
     if (!canvas || !context) return;
+    const launchers = this.manager.launchers;
     context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < launchers.length; i++) {
-      const launcher = launchers[i];
-      const activate = this.mapManager.map[launcher.mapStartY][launcher.mapStartX].activate;
-      const monsterOnFront = monsters.monsters.at(0);
-      const [info, frame] = [launcher.info, launcher.frame];
-      const frameNumber = launcher.frameNumber;
-      const position = this.getPosition(canvas, launcher);
+      const [launcherFrame, launcherInfo] = [launchers[i].frame, launchers[i].frame.info];
+      const frameNumber = launcherFrame.frameNumber;
+      const position = launchers[i].getPosition(canvas.width, canvas.height, this.mapManager.blockSize);
       context.save();
       context.translate(position.posX + this.mapManager.blockSize / 2, position.posY + this.mapManager.blockSize / 2);
-      if (activate && monsters.monsters.length > 0 && monsterOnFront) {
-        launcher.angle = this.getLauncherAngle(canvas, monsterOnFront, launcher);
-        context.rotate(launcher.angle);
-      }
-      context.drawImage(frame[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
+      callback(launcherFrame);
+      context.drawImage(launcherFrame.images[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
       context.restore();
     }
   };
 
-  loadFrames = (launcherInfo: LauncherInfo, mapStartX: number, mapStartY: number) => {
-    const launcher: LauncherFrame = {
-      info: launcherInfo,
-      angle: 0,
-      projectileId: 1,
-      frameNumber: 0,
-      mapStartX: mapStartX,
-      mapStartY: mapStartY,
-      frame: [],
+  drawNext = (monsters: MonsterFrameClass[]) => {
+    const callback = (launcherFrame: LauncherFrameClass) => {
+      const monsterOnFront = monsters.at(0);
+      const activate = this.mapManager.map[launcherFrame.frame.mapStartY][launcherFrame.frame.mapStartX].frame.activate;
+      const context = this.manager.contextRef.current;
+      if (!context || !activate) return;
+      if (monsters.length <= 0 || !monsterOnFront) return;
+      const angle = this.getLauncherAngle(monsterOnFront, launcherFrame);
+      if (angle) {
+        launcherFrame.frame.angle = angle;
+        context.rotate(angle);
+      }
     };
+    this.drawAll(callback);
+  };
 
-    const frame = new Image();
-    frame.src = launcherInfo.src;
-    launcher.frame.push(frame);
-    if (launcher.frame.length > 0) return launcher;
-    return undefined;
+  reDraw = () => {
+    const callback = () => {};
+    this.drawAll(callback);
+  };
+
+  animate = () => {
+    throw new Error("invalid function call : launcher animate");
   };
 }

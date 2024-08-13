@@ -1,4 +1,5 @@
 import { Position } from "../Position";
+import { MapManager } from "./mapManager";
 
 interface MapPosition {
   x: number;
@@ -30,6 +31,13 @@ function canvasToMapCoord(x: number, y: number, blockSize: number) {
   return [posX, posY];
 }
 
-const mapCoordConverter = { mapToCanvasCoord, canvasToMapCoord };
+function isOutOfRange(mapPosX: number, mapPosY: number, mapManager: MapManager) {
+  if (mapPosX < 0 || mapPosX >= mapManager.map[0].length || mapPosY < 0 || mapPosY >= mapManager.map.length) {
+    return true;
+  }
+  return false;
+}
+
+const mapCoordConverter = { mapToCanvasCoord, canvasToMapCoord, isOutOfRange };
 
 export default mapCoordConverter;

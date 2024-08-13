@@ -1,4 +1,11 @@
+import { Position } from "../Position";
+
 export interface ObjectFrame {
   info: any;
-  frame: HTMLImageElement[];
+  images: HTMLImageElement[];
+}
+
+export interface ObjectFrameClassType<T extends ObjectFrame> {
+  frame: T;
+  getPosition: (...args: any) => Position;
 }

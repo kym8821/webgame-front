@@ -1,18 +1,18 @@
-import { SelectedComponent } from '../pages/gamePage/GamePage';
-import LauncherElementHandler from './launcher/launcherElementHandler';
-import { LauncherInfo } from './launcher/launcherInfo';
-import { LauncherManager } from './launcher/launcherManager';
-import { CanvasManager } from './object/CanvasManager';
-import mapCoordConverter from './map/mapCoordConverter';
-import mapElementInfo, { MapElementInfo } from './map/mapElementInfo';
-import { MapManager } from './map/mapManager';
-import { MonsterManager } from './monster/monsterManager';
-import MapElementHandler from './map/mapElementHandler';
-import { FacilityManager } from './facility/facilityManager';
-import { FacilityInfo } from './facility/facilityInfo';
-import FacilityElementHandler from './facility/facilityElementHandler';
-import { Resource } from './resource';
-import { Console } from 'console';
+import { SelectedComponent } from "../pages/gamePage/GamePage";
+import LauncherElementHandler from "./launcher/launcherElementHandler";
+import { LauncherInfo } from "./launcher/launcherInfo";
+import { LauncherManager } from "./launcher/launcherManager";
+import { CanvasManager } from "./object/CanvasManager";
+import mapCoordConverter from "./map/mapCoordConverter";
+import mapElementInfo, { MapElementInfo } from "./map/mapElementInfo";
+import { MapManager } from "./map/mapManager";
+import { MonsterManager } from "./monster/monsterManager";
+import MapElementHandler from "./map/mapElementHandler";
+import { FacilityManager } from "./facility/facilityManager";
+import { FacilityInfo } from "./facility/facilityInfo";
+import FacilityElementHandler from "./facility/facilityElementHandler";
+import { Resource } from "./resource";
+import { Console } from "console";
 
 const SelectedComponentType = {
   mapElement: 1,
@@ -57,9 +57,7 @@ function handleFacilityCreateEvent(
     facilityManager.current.facilities.push(facilityElementHandler.loadFrames(component, mapPointX, mapPointY));
     mapManager.current.map[mapPointY][mapPointX].empty = false;
   }
-  const [energyOutput, evolveFactorOutput] = facilityElementHandler.getCurrentOutput(
-    facilityManager.current.facilities
-  );
+  const [energyOutput, evolveFactorOutput] = facilityElementHandler.getCurrentOutput(facilityManager.current.facilities);
   console.log(energyOutput, evolveFactorOutput);
   setResource((prev) => {
     return {
@@ -83,7 +81,7 @@ function handleMapElementCreateEvent(
   resource: Resource,
   setResource: React.Dispatch<React.SetStateAction<Resource>>
 ) {
-  console.log('click event');
+  console.log("click event");
   console.log(selectedComponent);
   const [canvas, context] = [mapManager.current.canvasRef.current, mapManager.current.contextRef.current];
   if (!canvas || !context) return;
@@ -123,12 +121,10 @@ function handleMapElementCreateEvent(
       }
     }
     const facilityElementHandler = new FacilityElementHandler(mapManager.current);
-    const launcherElementHandler = new LauncherElementHandler(mapManager.current);
+    const launcherElementHandler = new LauncherElementHandler(monsterRef.current, mapManager.current);
     facilityElementHandler.draw(facilityManager.current);
     launcherElementHandler.draw(canvas, context, launcherRef.current.launchers, monsterRef.current, true);
-    const [energyOutput, evolveFactorOutput] = facilityElementHandler.getCurrentOutput(
-      facilityManager.current.facilities
-    );
+    const [energyOutput, evolveFactorOutput] = facilityElementHandler.getCurrentOutput(facilityManager.current.facilities);
     console.log(energyOutput, evolveFactorOutput);
     setResource((prev) => {
       return {
@@ -173,7 +169,7 @@ function handleLauncherCreateEvent(
   if (!canvas || !context) return;
   const component = selectedComponent.component as LauncherInfo;
   if (resource.energy < component.energy || resource.evolveFactor < component.gas) return;
-  const launcherHandler = new LauncherElementHandler(mapInfo.current);
+  const launcherHandler = new LauncherElementHandler(monsterRef.current, mapInfo.current);
   // 캔버스의 경계 상자를 가져옵니다.
   const rect = canvas.getBoundingClientRect();
   // 이벤트 좌표를 캔버스 내부 좌표로 변환합니다.
@@ -214,16 +210,7 @@ export function handleCanvasClickEvent(
   resource: Resource,
   setResource: React.Dispatch<React.SetStateAction<Resource>>
 ) {
-  handleMapElementCreateEvent(
-    e,
-    mapManager,
-    selectedComponent,
-    facilityManager,
-    launcherRef,
-    monsterRef,
-    resource,
-    setResource
-  );
+  handleMapElementCreateEvent(e, mapManager, selectedComponent, facilityManager, launcherRef, monsterRef, resource, setResource);
   handleLauncherCreateEvent(e, mapManager, selectedComponent, launcherRef, monsterRef, resource, setResource);
   handleFacilityCreateEvent(e, mapManager, selectedComponent, facilityManager, resource, setResource);
 }
