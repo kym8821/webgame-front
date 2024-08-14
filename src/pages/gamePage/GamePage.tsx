@@ -1,7 +1,7 @@
 import LauncherScreen from "../../components/gameScreen/LauncherScreen";
 import MonsterScreen from "../../components/gameScreen/MonsterScreen";
 import style from "../../assets/css/gameScreen.module.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import ProjectileScreen from "../../components/gameScreen/ProjectileScreen";
 import MapScreen from "../../components/gameScreen/MapScreen";
 import GameObjectFooter from "../../components/footer/GameObjectFooter";
@@ -15,8 +15,8 @@ import { Resource } from "../../util/resource";
 import GameScreenTopBar from "../../components/topbar/gameScreenTopBar";
 import GameOverModal from "../../components/modal/GameOverModal";
 import FacilityElementHandler from "../../util/facility/facilityElementHandler";
-import { TotalScreenManager } from "../../util/totalScreenManager";
-import { loadTotalScreenManager } from "../../api/managerLoader";
+import { useTotalScreenManager } from "../../api/managerLoader";
+import { useTotalElementHandler } from "../../api/elementHandlerLoader,";
 
 export interface SelectedComponent {
   component: MapElementInfo | LauncherInfo | FacilityInfo | null;
@@ -28,7 +28,8 @@ const GamePage = () => {
   const [selectedComponent, setSelectedComponent] = useState<SelectedComponent | null>(null);
   const [page, setPage] = useState<number>(1);
   const [minPage, maxPage] = [1, 3];
-  const totalScreenManagerRef = useRef<TotalScreenManager>();
+  const totalScreenManager = useTotalScreenManager();
+  const totalElementHandler = useTotalElementHandler(totalScreenManager);
   const [resource, setResource] = useState<Resource>({
     energy: 20,
     energyOutput: facilityInfo.core.energyOutput,
@@ -38,17 +39,14 @@ const GamePage = () => {
   });
 
   function resetGame() {
-    const facilityElementHandler = new FacilityElementHandler(mapManager.current);
-
-    projectileRef.current.projectiles.splice(0, projectileRef.current.projectiles.length);
-    launcherRef.current.launchers.splice(0, launcherRef.current.launchers.length);
-    monsterRef.current.monsters.splice(0, monsterRef.current.monsters.length);
-    facilityManager.current.facilities.splice(0, facilityManager.current.facilities.length);
-
-    if (facilityManager.current.facilities.length === 0)
-      facilityManager.current.facilities.push(facilityElementHandler.loadFrames(facilityInfo.core, 14, 2));
-    facilityElementHandler.draw(facilityManager.current);
-
+    if (!totalScreenManager) return;
+    const mapManager = totalScreenManager.mapManager;
+    const facilityManager = totalScreenManager.facilityManager;
+    const facilityElementHandler = new FacilityElementHandler(facilityManager.manager, mapManager.manager);
+    totalScreenManager.resetManagers.forEach((manager) => {
+      manager.deleteAll();
+    });
+    facilityElementHandler.reDraw();
     setResource(() => ({
       energy: 20,
       energyOutput: facilityInfo.core.energyOutput,
@@ -60,40 +58,27 @@ const GamePage = () => {
 
   useEffect(() => {
     resetGame();
-    loadTotalScreenManager(totalScreenManagerRef);
   }, []);
 
   return (
     <div className={style.gamePage}>
       {resource.health <= 0 && <GameOverModal setResource={setResource} resetGame={resetGame} />}
-      <GameScreenTopBar resource={resource} mapManager={mapManager} />
+      {totalScreenManager && <GameScreenTopBar resource={resource} mapManager={totalScreenManager.mapManager} />}
       <div>
         <UserInterfaceScreen
-          userScreenManager={userScreenManager}
-          launcherRef={launcherRef}
-          monsterRef={monsterRef}
-          projectileRef={projectileRef}
+          totalScreenManager={totalScreenManager}
+          totalElementHandler={totalElementHandler}
           selectedComponent={selectedComponent}
-          mapManager={mapManager}
-          facilityManager={facilityManager}
           resource={resource}
           setResource={setResource}
         />
-        <LauncherScreen launcherRef={launcherRef} monsterRef={monsterRef} selectedComponent={selectedComponent} mapManager={mapManager} />
-        <MonsterScreen monsterRef={monsterRef} mapManager={mapManager} setResource={setResource} />
-        <ProjectileScreen
-          monsterRef={monsterRef}
-          projectileRef={projectileRef}
-          launcherRef={launcherRef}
-          mapManager={mapManager}
-          resource={resource}
-          setResource={setResource}
-        />
-        <MapScreen page={page} selectedComponent={selectedComponent} mapManager={mapManager} />
+        <LauncherScreen totalScreenManager={totalScreenManager} selectedComponent={selectedComponent} />
+        <MonsterScreen totalScreenManager={totalScreenManager} setResource={setResource} />
+        <ProjectileScreen totalScreenManager={totalScreenManager} resource={resource} setResource={setResource} />
+        <MapScreen page={page} selectedComponent={selectedComponent} totalScreenManager={totalScreenManager} />
         <FacilityScreen
-          facilityManager={facilityManager}
+          totalScreenManager={totalScreenManager}
           page={page}
-          mapMananger={mapManager}
           selectedComponent={selectedComponent}
           setResource={setResource}
           resource={resource}

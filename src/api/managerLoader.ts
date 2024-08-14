@@ -1,18 +1,18 @@
 import { useRef } from "react";
-import { FacilityManager, FacilityManagerClass } from "../util/facility/facilityManager";
-import { LauncherManager, LauncherManagerClass } from "../util/launcher/launcherManager";
-import { MapManager, MapManagerClass } from "../util/map/mapManager";
-import { MonsterManager, MonsterManagerClass } from "../util/monster/monsterManager";
-import { CanvasManager } from "../util/object/CanvasManager";
-import { ProjectileManager, ProjectileManagerClass } from "../util/projectile/projectileManager";
+import { FacilityManagerClass } from "../util/facility/facilityManager";
+import { LauncherManagerClass } from "../util/launcher/launcherManager";
+import { MapManagerClass } from "../util/map/mapManager";
+import { MonsterManagerClass } from "../util/monster/monsterManager";
+import { CanvasManager } from "../util/object/objectManager/CanvasManager";
+import { ProjectileManagerClass } from "../util/projectile/projectileManager";
 import { TotalScreenManager } from "../util/totalScreenManager";
 
-export async function loadTotalScreenManager(totalScreenManagerRef: React.MutableRefObject<TotalScreenManager | undefined>) {
+export function useTotalScreenManager() {
   const userScreenManager: CanvasManager = {
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
   };
-  const monsterManager: MonsterManager = {
+  const monsterManager: MonsterManagerClass = new MonsterManagerClass({
     animationFrame: {
       lastFrameTime: 0,
       interval: 500,
@@ -36,8 +36,8 @@ export async function loadTotalScreenManager(totalScreenManagerRef: React.Mutabl
     objects: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
-  };
-  const projectileManager: ProjectileManager = {
+  });
+  const projectileManager: ProjectileManagerClass = new ProjectileManagerClass({
     animationFrame: {
       lastFrameTime: 0,
       interval: 20,
@@ -52,16 +52,16 @@ export async function loadTotalScreenManager(totalScreenManagerRef: React.Mutabl
     objects: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
-  };
-  const mapManager: MapManager = {
+  });
+  const mapManager: MapManagerClass = new MapManagerClass({
     numberMap: [],
     blockSize: window.innerWidth / 20,
     map: [[]],
     objects: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
-  };
-  const facilityManager: FacilityManager = {
+  });
+  const facilityManager: FacilityManagerClass = new FacilityManagerClass({
     generationFrame: {
       lastFrameTime: 0,
       interval: 1000,
@@ -75,8 +75,8 @@ export async function loadTotalScreenManager(totalScreenManagerRef: React.Mutabl
     objects: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
-  };
-  const launcherManager: LauncherManager = {
+  });
+  const launcherManager: LauncherManagerClass = new LauncherManagerClass({
     animationFrame: {
       lastFrameTime: 0,
       interval: 500,
@@ -85,14 +85,16 @@ export async function loadTotalScreenManager(totalScreenManagerRef: React.Mutabl
     objects: [],
     canvasRef: useRef<HTMLCanvasElement>(null),
     contextRef: useRef<CanvasRenderingContext2D>(null),
-  };
+  });
   const totalScreenManager: TotalScreenManager = {
     userScreenManager: userScreenManager,
-    launcherManager: new LauncherManagerClass(launcherManager),
-    facilityManager: new FacilityManagerClass(facilityManager),
-    monsterManager: new MonsterManagerClass(monsterManager),
-    projectileManager: new ProjectileManagerClass(projectileManager),
-    mapManager: new MapManagerClass(mapManager),
+    launcherManager: launcherManager,
+    facilityManager: facilityManager,
+    monsterManager: monsterManager,
+    projectileManager: projectileManager,
+    mapManager: mapManager,
+    resetManagers: [launcherManager, facilityManager, monsterManager, projectileManager],
+    transformableManagers: [launcherManager, facilityManager, monsterManager, projectileManager, mapManager],
   };
-  totalScreenManagerRef.current = totalScreenManager;
+  return totalScreenManager;
 }
