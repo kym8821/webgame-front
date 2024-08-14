@@ -8,25 +8,23 @@ export interface LauncherFrame extends ObjectFrame {
   angle: number;
   projectileId: number;
   frameNumber: number;
-  mapStartX: number;
-  mapStartY: number;
 }
 
 export class LauncherFrameClass implements ObjectFrameClassType<LauncherFrame> {
-  loadFrame = (launcherInfo: LauncherInfo, startMapX: number, startMapY: number) => {
+  static loadFrame = (launcherInfo: LauncherInfo, mapPointX: number, mapPointY: number) => {
     const launcher: LauncherFrame = {
       info: launcherInfo,
       angle: 0,
       projectileId: 1,
       frameNumber: 0,
-      mapStartX: startMapX,
-      mapStartY: startMapY,
+      mapPointX: mapPointX,
+      mapPointY: mapPointY,
       images: [],
     };
     const frame = new Image();
     frame.src = launcherInfo.src;
     launcher.images.push(frame);
-    if (launcher.images.length > 0) return launcher;
+    if (launcher.images.length > 0) return new LauncherFrameClass(launcher);
     return undefined;
   };
   constructor(launcherFrame: LauncherFrame) {
@@ -35,7 +33,7 @@ export class LauncherFrameClass implements ObjectFrameClassType<LauncherFrame> {
   frame: LauncherFrame;
   getPosition = (canvasWidth: number, canvasHeight: number, blockSize: number) => {
     const info = this.frame.info;
-    const position = mapCoordConverter.mapToCanvasCoord(this.frame.mapStartX, this.frame.mapStartY, blockSize);
+    const position = mapCoordConverter.mapToCanvasCoord(this.frame.mapPointX, this.frame.mapPointY, blockSize);
     const posX = position.posX;
     const posY = position.posY;
     const width = info.width * (canvasWidth * 0.0005);

@@ -2,6 +2,8 @@ import { Position } from "../Position";
 
 export interface ObjectFrame {
   info: any;
+  mapPointX: number;
+  mapPointY: number;
   images: HTMLImageElement[];
 }
 

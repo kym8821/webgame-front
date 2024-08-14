@@ -1,4 +1,4 @@
-import { CanvasObjectManager, CanvasObjectManagerClassType } from "../object/canvasObjectManager";
+import { CanvasObjectManager, CanvasObjectManagerClass, CanvasObjectManagerClassType } from "../object/objectManager/canvasObjectManager";
 import { getMapInfoById } from "./mapElementInfo";
 import { MapFrame, MapFrameClass } from "./mapFrame";
 
@@ -15,8 +15,8 @@ export function convertNumberMapToMapFrameMap(map: number[][]) {
     for (let j = 0; j < map[i].length; j++) {
       const mapInfo = getMapInfoById(map[i][j]);
       const mapFrame: MapFrame = {
-        mapPosX: j,
-        mapPosY: i,
+        mapPointX: j,
+        mapPointY: i,
         info: mapInfo,
         activate: false,
         empty: true,
@@ -28,11 +28,24 @@ export function convertNumberMapToMapFrameMap(map: number[][]) {
   return mapFrameMap;
 }
 
-export class MapManagerClass implements CanvasObjectManagerClassType<MapManager> {
-  constructor(mapManager: MapManager) {
-    this.manager = mapManager;
-  }
-  manager: MapManager;
-  add: Function = () => {};
-  delete: Function = () => {};
+export class MapManagerClass extends CanvasObjectManagerClass<MapManager, MapFrameClass, MapFrame> {
+  static convertNumberMapToMapFrameMap = (map: number[][]) => {
+    const mapFrameMap: MapFrameClass[][] = [];
+    for (let i = 0; i < map.length; i++) {
+      mapFrameMap.push([]);
+      for (let j = 0; j < map[i].length; j++) {
+        const mapInfo = getMapInfoById(map[i][j]);
+        const mapFrame: MapFrame = {
+          mapPointX: j,
+          mapPointY: i,
+          info: mapInfo,
+          activate: false,
+          empty: true,
+          images: [],
+        };
+        mapFrameMap[i].push(new MapFrameClass(mapFrame));
+      }
+    }
+    return mapFrameMap;
+  };
 }

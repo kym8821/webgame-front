@@ -3,19 +3,17 @@ import { Position } from "../Position";
 import { MapElementInfo } from "./mapElementInfo";
 
 export interface MapFrame extends ObjectFrame {
-  mapPosX: number;
-  mapPosY: number;
   activate: boolean;
   empty: boolean;
 }
 
 export class MapFrameClass implements ObjectFrameClassType<MapFrame> {
-  static loadFrame = (mapInfo: MapElementInfo, startMapX: number, startMapY: number) => {
+  static loadFrame = (mapInfo: MapElementInfo, mapPointX: number, mapPointY: number) => {
     const mapFrame: MapFrame = {
       info: mapInfo,
       images: [],
-      mapPosX: startMapX,
-      mapPosY: startMapY,
+      mapPointX: mapPointX,
+      mapPointY: mapPointY,
       activate: false,
       empty: false,
     };

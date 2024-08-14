@@ -2,27 +2,24 @@ import porjectileImages from "../../assets/images/projectile/projectileImages";
 import { LauncherFrame } from "../launcher/launcherFrame";
 import mapCoordConverter from "../map/mapCoordConverter";
 import { ObjectFrame, ObjectFrameClassType } from "../object/objectFrame";
-import { objectType } from "../object/objectInfo";
 import { Position } from "../Position";
 import { ProjectileInfo } from "./projectileInfo";
 
 export interface ProjectileFrame extends ObjectFrame {
   info: ProjectileInfo;
   frameNumber: number;
-  launcherX: number;
-  launcherY: number;
   move: number;
   angle: number;
   hitMonsters: number[];
 }
 
 export class ProjectileFrameClass implements ObjectFrameClassType<ProjectileFrame> {
-  loadFrame: Function = (projectileInfo: ProjectileInfo, launcherFrame: LauncherFrame) => {
+  static loadFrame = (projectileInfo: ProjectileInfo, launcherFrame: LauncherFrame) => {
     const projectile: ProjectileFrame = {
       info: projectileInfo,
       frameNumber: 0,
-      launcherX: launcherFrame.mapStartX,
-      launcherY: launcherFrame.mapStartY,
+      mapPointX: launcherFrame.mapPointX,
+      mapPointY: launcherFrame.mapPointY,
       move: 0,
       angle: launcherFrame.angle,
       images: [],
@@ -36,7 +33,7 @@ export class ProjectileFrameClass implements ObjectFrameClassType<ProjectileFram
     } else {
       console.error(`Frame ${src} not found in monsterImages object.`);
     }
-    if (projectile.images.length > 0) return projectile;
+    if (projectile.images.length > 0) return new ProjectileFrameClass(projectile);
     return undefined;
   };
   constructor(projectileFrame: ProjectileFrame) {
@@ -47,7 +44,7 @@ export class ProjectileFrameClass implements ObjectFrameClassType<ProjectileFram
     const info = this.frame.info;
     const weight = canvasWidth * 0.01;
     const dist = weight * this.frame.move;
-    const launcherPosition = mapCoordConverter.mapToCanvasCoord(this.frame.launcherX, this.frame.launcherY, blockSize);
+    const launcherPosition = mapCoordConverter.mapToCanvasCoord(this.frame.mapPointX, this.frame.mapPointY, blockSize);
     const [posX, posY] = [
       launcherPosition.posX + dist * Math.cos(this.frame.angle),
       launcherPosition.posY + dist * Math.sin(this.frame.angle),
