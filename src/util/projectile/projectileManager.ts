@@ -1,6 +1,6 @@
-import { AnimationFrameInfo } from "../object/animationFrameInfo";
-import { CanvasObjectFrameManager } from "../object/CanvasObjectFrameManager";
-import { CanvasObjectManagerClassType } from "../object/canvasObjectManager";
+import { AnimationFrameInfo } from "../animationFrameInfo";
+import { CanvasObjectFrameManager } from "../object/objectManager/CanvasObjectFrameManager";
+import { CanvasObjectManagerClass, CanvasObjectManagerClassType } from "../object/objectManager/canvasObjectManager";
 import { ProjectileFrame, ProjectileFrameClass } from "./projectileFrame";
 
 export interface ProjectileManager extends CanvasObjectFrameManager<ProjectileFrameClass, ProjectileFrame> {
@@ -9,21 +9,4 @@ export interface ProjectileManager extends CanvasObjectFrameManager<ProjectileFr
   movementFrame?: undefined;
 }
 
-export class ProjectileManagerClass implements CanvasObjectManagerClassType<ProjectileManager> {
-  constructor(projectileManager: ProjectileManager) {
-    this.manager = projectileManager;
-  }
-  manager: ProjectileManager;
-  delete: Function = (callback: (arg: ProjectileFrameClass) => boolean) => {
-    for (let i = 0; i < this.manager.objects.length; i++) {
-      const projectile = this.manager.objects[i];
-      if (callback(projectile)) {
-        this.manager.objects.splice(i, 1);
-        i -= 1;
-      }
-    }
-  };
-  add: Function = (projectileFrame: ProjectileFrameClass) => {
-    this.manager.objects.push(projectileFrame);
-  };
-}
+export class ProjectileManagerClass extends CanvasObjectManagerClass<ProjectileManager, ProjectileFrameClass, ProjectileFrame> {}

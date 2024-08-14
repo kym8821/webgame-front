@@ -1,6 +1,6 @@
-import { AnimationFrameInfo } from "./animationFrameInfo";
+import { AnimationFrameInfo } from "../../animationFrameInfo";
 import { CanvasObjectManager } from "./canvasObjectManager";
-import { ObjectFrame, ObjectFrameClassType } from "./objectFrame";
+import { ObjectFrame, ObjectFrameClassType } from "../objectFrame";
 
 export interface CanvasObjectFrameManager<T1 extends ObjectFrameClassType<T2>, T2 extends ObjectFrame> extends CanvasObjectManager<T1, T2> {
   animationFrame?: AnimationFrameInfo | undefined;

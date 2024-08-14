@@ -1,17 +1,15 @@
-import monsterImages from "../../assets/images/monster/monsterImages";
 import mapCoordConverter from "../map/mapCoordConverter";
 import { MapManager } from "../map/mapManager";
 import ObjectElementHandler from "../object/ObjectElementHandler";
-import { Position } from "../Position";
-import MonsterFrame, { MonsterFrameClass } from "./monsterFrame";
-import { MonsterInfo } from "./monsterInfo";
+import MonsterFrame from "./monsterFrame";
 import { MonsterManager } from "./monsterManager";
 
 export default class MonsterElementHandler implements ObjectElementHandler<MonsterManager> {
   constructor(manager: MonsterManager, mapManager: MapManager) {
     this.manager = manager;
     this.mapManager = mapManager;
-    this.monsterId = manager.monsters[manager.monsters.length - 1].frame.id + 1;
+    if (manager.objects.length > 0) this.monsterId = manager.objects[manager.objects.length - 1].frame.id + 1;
+    else this.monsterId = 1;
   }
   manager: MonsterManager;
   mapManager: MapManager;
@@ -19,7 +17,7 @@ export default class MonsterElementHandler implements ObjectElementHandler<Monst
 
   private drawAll = (callback: (monsterFrame: MonsterFrame, idx: number, mpx: number, mpy: number) => void) => {
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
-    const monsters = this.manager.monsters;
+    const monsters = this.manager.objects;
     if (!canvas || !context) return;
     context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < monsters.length; i++) {
@@ -48,7 +46,7 @@ export default class MonsterElementHandler implements ObjectElementHandler<Monst
       if (mapCoordConverter.isOutOfRange(mpx, mpy, this.mapManager)) {
         return;
       } else {
-        this.manager.monsters[idx].frame.move += monsterFrame.info.speed;
+        this.manager.objects[idx].frame.move += monsterFrame.info.speed;
       }
     };
     this.drawAll(callback);
@@ -61,7 +59,7 @@ export default class MonsterElementHandler implements ObjectElementHandler<Monst
 
   animate = () => {
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
-    const monsters = this.manager.monsters;
+    const monsters = this.manager.objects;
     if (!canvas || !context) return;
     for (let i = 0; i < monsters.length; i++) {
       const monster = monsters[i];
