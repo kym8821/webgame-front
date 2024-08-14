@@ -30,7 +30,7 @@ export default class LauncherElementHandler implements ObjectElementHandler<Laun
   private drawAll = (callback: Function) => {
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
     if (!canvas || !context) return;
-    const launchers = this.manager.launchers;
+    const launchers = this.manager.objects;
     context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < launchers.length; i++) {
       const [launcherFrame, launcherInfo] = [launchers[i].frame, launchers[i].frame.info];
@@ -47,7 +47,7 @@ export default class LauncherElementHandler implements ObjectElementHandler<Laun
   drawNext = (monsters: MonsterFrameClass[]) => {
     const callback = (launcherFrame: LauncherFrameClass) => {
       const monsterOnFront = monsters.at(0);
-      const activate = this.mapManager.map[launcherFrame.frame.mapStartY][launcherFrame.frame.mapStartX].frame.activate;
+      const activate = this.mapManager.map[launcherFrame.frame.mapPointY][launcherFrame.frame.mapPointX].frame.activate;
       const context = this.manager.contextRef.current;
       if (!context || !activate) return;
       if (monsters.length <= 0 || !monsterOnFront) return;

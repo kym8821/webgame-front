@@ -6,6 +6,19 @@ export interface MonsterInfo extends ObjectInfo {
   speed: number;
 }
 
+export function getNextMonster() {
+  const monsterInfoList = Object.values(monsterInfo);
+  let totalTicket = 0,
+    currentTicket = 0,
+    expectedTicket = 0;
+  monsterInfoList.forEach((info) => (totalTicket += info.spawnRate));
+  expectedTicket = Math.random() % totalTicket;
+  for (let i = 0; i < monsterInfoList.length; i++) {
+    if (expectedTicket < currentTicket) return monsterInfoList[i];
+    currentTicket += monsterInfoList[i].spawnRate;
+  }
+}
+
 const monsterInfo: Record<string, MonsterInfo> = {
   greenSlime: {
     type: objectType.monster,

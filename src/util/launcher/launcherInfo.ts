@@ -1,4 +1,3 @@
-import { StringLiteral } from "typescript";
 import { ObjectInfo, objectType } from "../object/objectInfo";
 import launcherImages from "../../assets/images/launcher/launcherImages";
 import mapImages from "../../assets/images/map/mapImages";

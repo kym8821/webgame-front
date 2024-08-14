@@ -1,10 +1,7 @@
-import launcherInfo from "../launcher/launcherInfo";
 import mapCoordConverter from "../map/mapCoordConverter";
 import { MapManager } from "../map/mapManager";
 import ObjectElementHandler from "../object/ObjectElementHandler";
-import { FacilityFrame, FacilityFrameClass } from "./facilityFrame";
-import { FacilityInfo } from "./facilityInfo";
-import { FacilityManager, FacilityManagerClass } from "./facilityManager";
+import { FacilityManager } from "./facilityManager";
 
 export default class FacilityElementHandler implements ObjectElementHandler<FacilityManager> {
   manager: FacilityManager;
@@ -15,13 +12,15 @@ export default class FacilityElementHandler implements ObjectElementHandler<Faci
     this.mapManager = mapManager;
   }
 
-  getCurrentOutput = (facilities: FacilityFrame[]) => {
+  getCurrentOutput = () => {
+    const facilities = this.manager.objects;
     let [energyOutput, evolveFactorOutput] = [0, 0];
     console.log(facilities);
-    facilities.forEach((fac) => {
-      const { mapPosX, mapPosY, info } = fac;
-      console.log(this.mapManager.map[mapPosY][mapPosX]);
-      if (this.mapManager.map[mapPosY][mapPosX].frame.activate) {
+    facilities.forEach((facilityFrameClass) => {
+      const fac = facilityFrameClass.frame;
+      const { mapPointX, mapPointY, info } = fac;
+      console.log(this.mapManager.map[mapPointY][mapPointX]);
+      if (this.mapManager.map[mapPointY][mapPointX].frame.activate) {
         console.log(info);
         energyOutput += info.energyOutput;
         evolveFactorOutput += info.evolveFactorOutput;
@@ -30,8 +29,8 @@ export default class FacilityElementHandler implements ObjectElementHandler<Faci
     return [energyOutput, evolveFactorOutput];
   };
 
-  animate = (facilityManager: FacilityManager) => {
-    const facilities = facilityManager.facilities;
+  animate = () => {
+    const facilities = this.manager.objects;
     for (let i = 0; i < facilities.length; i++) {
       const nextFrameNumber = (facilities[i].frame.frameNumber + 1) % facilities[i].frame.info.frameSize;
       facilities[i].frame.frameNumber = nextFrameNumber;
@@ -40,13 +39,13 @@ export default class FacilityElementHandler implements ObjectElementHandler<Faci
   };
 
   private drawAll = (callback: Function) => {
-    const [canvas, context, facilities] = [this.manager.canvasRef.current, this.manager.contextRef.current, this.manager.facilities];
+    const [canvas, context, facilities] = [this.manager.canvasRef.current, this.manager.contextRef.current, this.manager.objects];
     const blockSize = this.mapManager.blockSize;
     if (!canvas || !context) return;
     context.clearRect(0, 0, canvas.width, canvas.height);
     facilities.forEach((facility) => {
-      const { mapPosX, mapPosY, info } = facility.frame;
-      const position = mapCoordConverter.mapToCanvasCoord(mapPosX, mapPosY, blockSize);
+      const { mapPointX, mapPointY, info } = facility.frame;
+      const position = mapCoordConverter.mapToCanvasCoord(mapPointX, mapPointY, blockSize);
       const image = facility.frame.images[facility.frame.frameNumber];
       context.save();
       context.translate(position.posX, position.posY - blockSize * (info.height - 1));

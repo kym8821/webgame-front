@@ -1,7 +1,5 @@
 import { ReactNode, useEffect, useState } from "react";
 import launcherInfo, { LauncherInfo } from "../../util/launcher/launcherInfo";
-import launcherImages from "../../assets/images/launcher/launcherImages";
-import { MapElementInfo } from "../../util/map/mapElementInfo";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import { SelectedComponentType } from "../../util/canvasClickEvent";
 

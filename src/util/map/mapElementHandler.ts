@@ -1,7 +1,5 @@
 import { MapManager } from "./mapManager";
-import { Position } from "../Position";
-import mapElementInfo, { getMapInfoById, MapElementInfo } from "./mapElementInfo";
-import mapImages from "../../assets/images/map/mapImages";
+import { MapElementInfo } from "./mapElementInfo";
 import mapCoordConverter from "./mapCoordConverter";
 import ObjectElementHandler from "../object/ObjectElementHandler";
 import { MapFrame, MapFrameClass } from "./mapFrame";
@@ -119,7 +117,7 @@ export default class MapElementHandler implements ObjectElementHandler<MapManage
         // const pipeId = this.getPipe(j, i);
         // src = mapImages[pipeId];
       } else if (mapInfo.tag.core) {
-        const pos: MapPosition = { x: mapFrame.mapPosX, y: mapFrame.mapPosY };
+        const pos: MapPosition = { x: mapFrame.mapPointX, y: mapFrame.mapPointY };
         corePos.push(pos);
       }
     };
@@ -133,7 +131,7 @@ export default class MapElementHandler implements ObjectElementHandler<MapManage
         // const pipeId = this.getPipe(j, i);
         // src = mapImages[pipeId];
       } else if (mapInfo.tag.core) {
-        const pos: MapPosition = { x: mapFrame.mapPosX, y: mapFrame.mapPosY };
+        const pos: MapPosition = { x: mapFrame.mapPointX, y: mapFrame.mapPointY };
         corePos.push(pos);
       }
     };

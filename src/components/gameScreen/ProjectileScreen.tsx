@@ -1,29 +1,20 @@
-import { ProjectileManager } from "../../util/projectile/projectileManager";
 import style from "../../assets/css/gameScreen.module.css";
-import { useEffect, useRef } from "react";
-import { AnimationFrameInfo } from "../../util/object/animationFrameInfo";
-import { LauncherManager } from "../../util/launcher/launcherManager";
-import projectileInfo, { getProjectileInfoById } from "../../util/projectile/projectileInfo";
-import { MonsterManager } from "../../util/monster/monsterManager";
-import { MapManager } from "../../util/map/mapManager";
+import { useEffect } from "react";
+import { AnimationFrameInfo } from "../../util/animationFrameInfo";
+import { getProjectileInfoById } from "../../util/projectile/projectileInfo";
 import ProjectileElementHandler from "../../util/projectile/projectileElementHandler";
-import { getCurrentBlockSize } from "../../util/windowSize";
 import { Resource } from "../../util/resource";
+import { TotalScreenManager } from "../../util/totalScreenManager";
+import { ProjectileFrameClass } from "../../util/projectile/projectileFrame";
 
 interface ProjectileScreenProps {
-  projectileRef: React.MutableRefObject<ProjectileManager>;
-  launcherRef: React.MutableRefObject<LauncherManager>;
-  monsterRef: React.MutableRefObject<MonsterManager>;
-  mapManager: React.MutableRefObject<MapManager>;
+  totalScreenManager: TotalScreenManager | undefined;
   resource: Resource;
   setResource: React.Dispatch<React.SetStateAction<Resource>>;
 }
 
-const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager, resource, setResource }: ProjectileScreenProps) => {
-  const [canvasRef, contextRef] = [projectileRef.current.canvasRef, projectileRef.current.contextRef];
-  const projectileHandler = new ProjectileElementHandler(mapManager.current);
-  const lastUpdatedBlockSize = useRef<number>(0);
-  const resourceRef = useRef<Resource>(resource);
+const ProjectileScreen = ({ totalScreenManager, resource, setResource }: ProjectileScreenProps) => {
+  const projectileHandler: ProjectileElementHandler | null = null;
 
   function animate(animation: AnimationFrameInfo, callback: Function) {
     const step = (timeStamp: number) => {
@@ -38,29 +29,39 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager, 
   }
 
   function setProjectileAnimateTimer() {
+    if (!totalScreenManager) return;
+    const projectileManager = totalScreenManager.projectileManager;
     function animateProjectile() {
-      projectileHandler.draw(canvasRef.current, contextRef.current, projectileRef.current.projectiles, monsterRef.current.monsters, true);
+      if (!projectileHandler || !totalScreenManager) return;
+      const monsters = totalScreenManager.monsterManager.manager.objects;
+      projectileHandler.drawNext(monsters);
     }
-    animate(projectileRef.current.animationFrame, animateProjectile);
+    animate(projectileManager.manager.animationFrame, animateProjectile);
   }
 
   function setProjectileGenerateTimer() {
+    if (!totalScreenManager) return;
+    const projectileManager = totalScreenManager.projectileManager;
+    const monsters = totalScreenManager.monsterManager.manager.objects;
+    const launchers = totalScreenManager.launcherManager.manager.objects;
+    const mapManager = totalScreenManager.mapManager.manager;
     function generateProjectile() {
-      if (monsterRef.current.monsters.length === 0) return;
-      const launchers = launcherRef.current.launchers;
-      let updatedEnergy = resourceRef.current.energy;
-      // console.log(updatedEnergy);
-      launchers.forEach((launcher) => {
+      if (!projectileHandler || !totalScreenManager) return;
+      if (monsters.length === 0) return;
+      const canvas = projectileHandler.manager.canvasRef.current;
+      if (!canvas) return;
+      let updatedEnergy = resource.energy;
+      launchers.forEach((launcherFrameClass) => {
+        const launcher = launcherFrameClass.frame;
         const projectileId = launcher.projectileId;
         const projectileInfo = getProjectileInfoById(projectileId);
         if (
           updatedEnergy >= launcher.info.shootCost &&
-          mapManager.current.map[launcher.mapStartY][launcher.mapStartX].activate &&
-          canvasRef.current &&
+          mapManager.map[launcher.mapPointY][launcher.mapPointX].frame.activate &&
           projectileInfo
         ) {
-          const projectileFrame = projectileHandler.loadFrames(canvasRef.current, projectileInfo, launcher);
-          if (projectileFrame) projectileRef.current.projectiles.push(projectileFrame);
+          const projectileFrame = ProjectileFrameClass.loadFrame(projectileInfo, launcher);
+          if (projectileFrame) projectileManager.manager.objects.push(projectileFrame);
           updatedEnergy -= launcher.info.shootCost;
         }
       });
@@ -69,35 +70,38 @@ const ProjectileScreen = ({ projectileRef, launcherRef, monsterRef, mapManager, 
         energy: updatedEnergy,
       }));
     }
-    if (launcherRef.current.generationFrame) animate(launcherRef.current.generationFrame, generateProjectile);
+    if (projectileManager.manager.generationFrame) animate(projectileManager.manager.generationFrame, generateProjectile);
   }
 
   useEffect(() => {
-    function setCanvasSize() {
-      if (!canvas) return;
-      canvas.width = canvas.scrollWidth;
-      canvas.height = canvas.width / 2;
-    }
-
+    if (!totalScreenManager) return;
+    const { canvasRef, contextRef } = totalScreenManager.projectileManager.manager;
+    // set canvas
     if (!canvasRef.current) return;
-    const canvas = canvasRef.current;
-    setCanvasSize();
-
-    const context = canvas.getContext("2d");
-    if (context) contextRef.current = context;
-    resourceRef.current = resource;
+    canvasRef.current.width = canvasRef.current.scrollWidth;
+    canvasRef.current.height = canvasRef.current.width / 2;
+    // set context
+    const context = canvasRef.current.getContext("2d");
+    if (!context) return;
+    contextRef.current = context;
+    // set facilityElementHandler
+    const mapManager = totalScreenManager.mapManager.manager;
+    const projectileManager = totalScreenManager.projectileManager.manager;
+    const projectileElementHandler = new ProjectileElementHandler(projectileManager, mapManager);
+    projectileElementHandler.reDraw();
+    // set animation frame
     setProjectileGenerateTimer();
     setProjectileAnimateTimer();
     return () => {
-      const [animationFrame, generationFrame] = [projectileRef.current.animationFrame, projectileRef.current.generationFrame];
-      if (generationFrame && generationFrame.animationFrame) cancelAnimationFrame(generationFrame.animationFrame);
+      const { animationFrame, generationFrame } = projectileManager;
+      if (generationFrame.animationFrame) cancelAnimationFrame(generationFrame.animationFrame);
       if (animationFrame.animationFrame) cancelAnimationFrame(animationFrame.animationFrame);
     };
-  }, [resource]);
+  }, [totalScreenManager, resource]);
 
   return (
     <div className={style.gameScreen}>
-      <canvas ref={canvasRef}></canvas>
+      {totalScreenManager && <canvas ref={totalScreenManager.projectileManager.manager.canvasRef}></canvas>}
     </div>
   );
 };

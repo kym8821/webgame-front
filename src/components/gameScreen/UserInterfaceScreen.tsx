@@ -1,33 +1,20 @@
-import { SelectedComponent } from '../../pages/gamePage/GamePage';
-import { LauncherManager } from '../../util/launcher/launcherManager';
-import { CanvasManager } from '../../util/object/CanvasManager';
-import { MapManager } from '../../util/map/mapManager';
-import { MonsterManager } from '../../util/monster/monsterManager';
-import { ProjectileManager } from '../../util/projectile/projectileManager';
-import { useEffect, useRef } from 'react';
-import { handleCanvasClickEvent } from '../../util/canvasClickEvent';
-import style from '../../assets/css/gameScreen.module.css';
-import { CanvasObjectManager } from '../../util/object/canvasObjectManager';
-import MonsterElementHandler from '../../util/monster/monsterElementHandler';
-import ProjectileElementHandler from '../../util/projectile/projectileElementHandler';
-import LauncherElementHandler from '../../util/launcher/launcherElementHandler';
-import { getCurrentBlockSize } from '../../util/windowSize';
-import MapElementHandler from '../../util/map/mapElementHandler';
-import { FacilityManager } from '../../util/facility/facilityManager';
-import FacilityElementHandler from '../../util/facility/facilityElementHandler';
-import { Resource } from '../../util/resource';
-import { AnimationFrameInfo } from '../../util/object/animationFrameInfo';
-import mapCoordConverter from '../../util/map/mapCoordConverter';
+import { SelectedComponent } from "../../pages/gamePage/GamePage";
+import { useEffect, useRef } from "react";
+import { handleCanvasClickEvent } from "../../util/canvasClickEvent";
+import style from "../../assets/css/gameScreen.module.css";
+import { CanvasObjectManagerClass } from "../../util/object/objectManager/canvasObjectManager";
+import MonsterElementHandler from "../../util/monster/monsterElementHandler";
+import { getCurrentBlockSize } from "../../util/windowSize";
+import MapElementHandler from "../../util/map/mapElementHandler";
+import FacilityElementHandler from "../../util/facility/facilityElementHandler";
+import { Resource } from "../../util/resource";
+import { TotalScreenManager } from "../../util/totalScreenManager";
+import { TotalElementHandler } from "../../util/totalElementHandler";
 
 interface UserInterfaceScreen {
-  userScreenManager: React.MutableRefObject<CanvasManager>;
-  launcherRef: React.MutableRefObject<LauncherManager>;
-  monsterRef: React.MutableRefObject<MonsterManager>;
-  projectileRef: React.MutableRefObject<ProjectileManager>;
-  // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
+  totalScreenManager: TotalScreenManager | undefined;
+  totalElementHandler: TotalElementHandler | undefined;
   selectedComponent: SelectedComponent | null;
-  mapManager: React.MutableRefObject<MapManager>;
-  facilityManager: React.MutableRefObject<FacilityManager>;
   resource: Resource;
   setResource: React.Dispatch<React.SetStateAction<Resource>>;
 }
@@ -45,117 +32,78 @@ interface TransformInfo {
 }
 
 const UserInterfaceScreen = ({
-  userScreenManager,
-  launcherRef,
-  monsterRef,
-  projectileRef,
+  totalScreenManager,
+  totalElementHandler,
   selectedComponent,
-  mapManager,
-  facilityManager,
   resource,
   setResource,
 }: UserInterfaceScreen) => {
-  const [canvasRef, contextRef] = [userScreenManager.current.canvasRef, userScreenManager.current.contextRef];
   const transformInfoRef = useRef<TransformInfo>({
     scale: 1,
     panning: false,
     viewPos: { x: 0, y: 0 },
     startPos: { x: 0, y: 0 },
   });
-  const lastUpdatedBlockSize = useRef<number>(0);
-
-  function animate(animation: AnimationFrameInfo, callback: Function) {
-    const step = (timeStamp: number) => {
-      const { interval, lastFrameTime } = animation;
-      if (timeStamp - lastFrameTime > interval) {
-        animation.lastFrameTime = timeStamp;
-        callback();
-      }
-      if (animation) animation.animationFrame = requestAnimationFrame(step);
-    };
-    animation.animationFrame = requestAnimationFrame(step);
-  }
 
   useEffect(() => {
-    function setCanvasSize() {
-      if (!canvas) return;
-      canvas.width = canvas.scrollWidth;
-      canvas.height = canvas.width / 2;
-    }
+    if (!totalScreenManager || !totalElementHandler) return;
+    const { canvasRef, contextRef } = totalScreenManager.userScreenManager;
+    // set canvas
+    if (!canvasRef.current) return;
+    canvasRef.current.width = canvasRef.current.scrollWidth;
+    canvasRef.current.height = canvasRef.current.width / 2;
+    // set context
+    const context = canvasRef.current.getContext("2d");
+    if (!context) return;
+    contextRef.current = context;
+    draw();
 
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    setCanvasSize();
-    canvas.onresize = setCanvasSize;
-    canvas.onclick = (e: MouseEvent) => {
-      // alert('mouse event');
-      handleCanvasClickEvent(
-        e,
-        selectedComponent,
-        launcherRef,
-        monsterRef,
-        mapManager,
-        facilityManager,
-        resource,
-        setResource
-      );
+    canvasRef.current.onresize = () => {
+      const { canvasRef } = totalScreenManager.userScreenManager;
+      if (!canvasRef.current) return;
+      canvasRef.current.width = canvasRef.current.scrollWidth;
+      canvasRef.current.height = canvasRef.current.width / 2;
     };
-
-    const monsterHandler = new MonsterElementHandler(mapManager.current);
-    const projectileHandler = new ProjectileElementHandler(mapManager.current);
-    const launcherHandler = new LauncherElementHandler(mapManager.current);
-    const mapHandler = new MapElementHandler(mapManager.current);
-    const facilityHandler = new FacilityElementHandler(mapManager.current);
-    window.addEventListener('resize', () => {
-      function resizeScreen(manager: CanvasObjectManager | CanvasManager) {
-        const [canvas, context] = [manager.canvasRef.current, manager.contextRef.current];
+    canvasRef.current.onclick = (e: MouseEvent) => {
+      handleCanvasClickEvent(e, totalScreenManager, totalElementHandler, selectedComponent, resource, setResource);
+    };
+    window.addEventListener("resize", () => {
+      function resizeScreen(objectManager: CanvasObjectManagerClass<any, any, any>) {
+        const [canvas, context] = [objectManager.manager.canvasRef.current, objectManager.manager.contextRef.current];
         if (!canvas || !context) return;
         canvas.width = canvas.scrollWidth;
         canvas.height = canvas.width / 2;
       }
-
-      const currentBlockSize = getCurrentBlockSize(canvas.scrollWidth, mapManager.current.numberMap);
+      if (!totalScreenManager || !canvasRef.current) return;
+      const currentBlockSize = getCurrentBlockSize(canvasRef.current.scrollWidth, totalScreenManager.mapManager.manager.numberMap);
       if (currentBlockSize) {
-        const mapContext = mapManager.current.contextRef.current;
-        const facilityContext = facilityManager.current.contextRef.current;
-        mapManager.current.blockSize = currentBlockSize;
-        resizeScreen(monsterRef.current);
-        resizeScreen(launcherRef.current);
-        resizeScreen(projectileRef.current);
-        resizeScreen(mapManager.current);
-        resizeScreen(facilityManager.current);
-        mapManager.current.blockSize = currentBlockSize;
-        if (mapContext) {
-          mapHandler.draw(mapContext);
-        }
-        if (facilityContext) {
-          facilityHandler.draw(facilityManager.current);
-        }
+        const facilityHandler = new FacilityElementHandler(
+          totalScreenManager.facilityManager.manager,
+          totalScreenManager.mapManager.manager
+        );
+        const mapHandler = new MapElementHandler(totalScreenManager.mapManager.manager);
+        totalScreenManager.mapManager.manager.blockSize = currentBlockSize;
+        resizeScreen(totalScreenManager.mapManager);
+        resizeScreen(totalScreenManager.launcherManager);
+        resizeScreen(totalScreenManager.projectileManager);
+        resizeScreen(totalScreenManager.mapManager);
+        resizeScreen(totalScreenManager.facilityManager);
+        totalScreenManager.mapManager.manager.blockSize = currentBlockSize;
+        facilityHandler.reDraw();
+        mapHandler.reDraw();
       }
     });
-    const context = canvas.getContext('2d');
-    if (context) {
-      contextRef.current = context;
-      draw();
-    }
   }, [selectedComponent, resource]);
 
   const setTransform = () => {
-    // const context = contextRef.current;
-    const canvas = monsterRef.current.canvasRef.current;
+    if (!totalScreenManager) return;
+    const canvas = totalScreenManager.monsterManager.manager.canvasRef.current;
     if (!canvas) return;
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext("2d");
     //const context = monsterRef.current.contextRef.current;
     if (!context) return;
     const transformInfo = transformInfoRef.current;
-    context.setTransform(
-      transformInfo.scale,
-      0,
-      0,
-      transformInfo.scale,
-      transformInfo.viewPos.x,
-      transformInfo.viewPos.y
-    );
+    context.setTransform(transformInfo.scale, 0, 0, transformInfo.scale, transformInfo.viewPos.x, transformInfo.viewPos.y);
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -178,16 +126,13 @@ const UserInterfaceScreen = ({
   };
 
   const draw = () => {
+    if (!totalScreenManager) return;
+    const { canvasRef, contextRef } = totalScreenManager.monsterManager.manager;
+    if (!canvasRef.current) return;
+    canvasRef.current.width = canvasRef.current.width;
     setTransform();
-    const context = monsterRef.current.contextRef.current;
-    const canvas = monsterRef.current.canvasRef.current;
-    if (!context || !canvas) return;
-    canvas.width = canvas.width;
-    setTransform();
-    // context.fillRect(0, 0, 100, 100);
-    const monsterHandler = new MonsterElementHandler(mapManager.current);
-    // monsterHandler.animate(canvas, context, monsterRef.current.monsters, false);
-    monsterHandler.move(canvas, context, monsterRef.current.monsters, false);
+    const monsterHandler = new MonsterElementHandler(totalScreenManager.monsterManager.manager, totalScreenManager.mapManager.manager);
+    monsterHandler.reDraw();
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -205,13 +150,15 @@ const UserInterfaceScreen = ({
 
   return (
     <div className={`${style.gameScreen} ${style.clickEventScreen}`} style={{ zIndex: 10 }}>
-      <canvas
-        ref={userScreenManager.current.canvasRef}
-        onMouseMove={handleMouseMove}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseOut={handleMouseOut}
-      />
+      {totalScreenManager && (
+        <canvas
+          ref={totalScreenManager.userScreenManager.canvasRef}
+          onMouseMove={handleMouseMove}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseOut={handleMouseOut}
+        />
+      )}
     </div>
   );
 };

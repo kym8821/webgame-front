@@ -1,27 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
-import { MonsterManager } from '../../util/monster/monsterManager';
-import { AnimationFrameInfo } from '../../util/object/animationFrameInfo';
-import style from '../../assets/css/gameScreen.module.css';
-import { MapManager } from '../../util/map/mapManager';
-import MonsterElementHandler from '../../util/monster/monsterElementHandler';
-import { getCurrentBlockSize } from '../../util/windowSize';
-import { Resource } from '../../util/resource';
-import mapCoordConverter from '../../util/map/mapCoordConverter';
+import { useEffect } from "react";
+import { AnimationFrameInfo } from "../../util/animationFrameInfo";
+import style from "../../assets/css/gameScreen.module.css";
+import MonsterElementHandler from "../../util/monster/monsterElementHandler";
+import { Resource } from "../../util/resource";
+import mapCoordConverter from "../../util/map/mapCoordConverter";
+import { TotalScreenManager } from "../../util/totalScreenManager";
+import { getNextMonster } from "../../util/monster/monsterInfo";
+import { MonsterFrameClass } from "../../util/monster/monsterFrame";
 
 type monsterScreenProps = {
-  monsterRef: React.MutableRefObject<MonsterManager>;
-  mapManager: React.MutableRefObject<MapManager>;
+  totalScreenManager: TotalScreenManager | undefined;
   setResource: React.Dispatch<React.SetStateAction<Resource>>;
 };
 
-const MonsterScreen = ({ monsterRef, mapManager, setResource }: monsterScreenProps) => {
-  const [canvasRef, contextRef] = [monsterRef.current.canvasRef, monsterRef.current.contextRef];
-  const monsterElementHandler = new MonsterElementHandler(mapManager.current);
-  const lastUpdatedBlockSize = useRef<number>(0);
-  const [pointer, setPointer] = useState({
-    x: -1,
-    y: -1,
-  });
+const MonsterScreen = ({ totalScreenManager, setResource }: monsterScreenProps) => {
+  let monsterElementHandler: MonsterElementHandler | null = null;
 
   function animate(animation: AnimationFrameInfo, callback: Function) {
     const step = (timeStamp: number) => {
@@ -36,103 +29,95 @@ const MonsterScreen = ({ monsterRef, mapManager, setResource }: monsterScreenPro
   }
 
   function setGenerationTimer() {
+    if (!totalScreenManager) return;
+    const monsterManager = totalScreenManager.monsterManager.manager;
     const generate = () => {
-      const object = monsterElementHandler.getNextObject();
+      if (!monsterElementHandler) return;
+      const object = getNextMonster();
       if (object) {
-        const objectFrame = monsterElementHandler.loadFrames(object, 0, 2);
-        if (objectFrame) monsterRef.current.monsters.push(objectFrame);
+        const nextMonsterId = monsterManager.objects[monsterManager.objects.length - 1].frame.id + 1;
+        const objectFrame = MonsterFrameClass.loadFrame(object, 0, 2, nextMonsterId);
+        if (objectFrame) monsterManager.objects.push(objectFrame);
       }
     };
-    if (monsterRef.current.generationFrame) animate(monsterRef.current.generationFrame, generate);
+    animate(monsterManager.generationFrame, generate);
   }
 
   function setAnimationTimer() {
+    if (!totalScreenManager) return;
+    const monsterManager = totalScreenManager.monsterManager.manager;
     const animateMonster = () => {
-      monsterElementHandler.animate(canvasRef.current, contextRef.current, monsterRef.current.monsters, true);
+      if (!monsterElementHandler) return;
+      monsterElementHandler.animate();
     };
-    animate(monsterRef.current.animationFrame, animateMonster);
+    animate(monsterManager.animationFrame, animateMonster);
   }
 
   function setMovementTimer() {
+    if (!totalScreenManager) return;
+    const monsterManager = totalScreenManager.monsterManager.manager;
     const moveMonster = () => {
-      monsterElementHandler.move(canvasRef.current, contextRef.current, monsterRef.current.monsters, true);
+      monsterElementHandler?.drawNext();
     };
-    animate(monsterRef.current.movementFrame, moveMonster);
+    animate(monsterManager.movementFrame, moveMonster);
   }
 
   function setDamageTimer() {
+    if (!totalScreenManager) return;
+    const monsterManager = totalScreenManager.monsterManager.manager;
+    const mapManager = totalScreenManager.mapManager;
+    const canvas = monsterManager.canvasRef.current;
     const giveDamage = () => {
+      if (!monsterElementHandler || !canvas) return;
       let damage = -1;
-      monsterRef.current.monsters.forEach((monster) => {
-        if (!canvasRef.current) return;
-        const position = monsterElementHandler.getPosition(canvasRef.current, monster);
-        const [mpx, mpy] = mapCoordConverter.canvasToMapCoord(
-          position.posX,
-          position.posY,
-          mapManager.current.blockSize
-        );
-        if (monsterElementHandler.isOutOfRange(mpx, mpy)) damage += monster.id;
+      const blockSize = monsterElementHandler.mapManager.blockSize;
+      monsterManager.objects.forEach((monster) => {
+        const position = monster.getPosition(canvas.width, canvas.height, blockSize);
+        const [mpx, mpy] = mapCoordConverter.canvasToMapCoord(position.posX, position.posY, blockSize);
+        if (monster.intersectWithCore(canvas.width, canvas.height, mapManager.manager)) damage += monster.frame.id + 1;
       });
       setResource((prev) => {
-        if (damage > prev.health) {
-          damage = prev.health;
-        } else if (prev.health - damage > 100) {
-          damage = 0;
-        }
-        // console.log(prev);
         return {
           ...prev,
-          health: prev.health - damage,
+          health: prev.health - damage >= 0 ? prev.health - damage : 0,
         };
       });
     };
-    animate(monsterRef.current.damageFrame, giveDamage);
+    animate(monsterManager.damageFrame, giveDamage);
   }
 
   useEffect(() => {
-    function setCanvasSize() {
-      if (!canvas) return;
-      canvas.width = canvas.scrollWidth;
-      canvas.height = canvas.width / 2;
-    }
-
+    if (!totalScreenManager) return;
+    const { canvasRef, contextRef } = totalScreenManager.monsterManager.manager;
+    // set canvas
     if (!canvasRef.current) return;
-    const canvas = canvasRef.current;
-    setCanvasSize();
-
-    const context = canvas.getContext('2d');
-    if (context) {
-      contextRef.current = context;
-    }
-
-    // canvas.onmousemove = (e: MouseEvent) => {
-    //   const x = e.clientX;
-    //   const y = e.clientY;
-    //   console.log(x, y);
-    // };
-
-    // window.addEventListener("resize", windowResize);
+    canvasRef.current.width = canvasRef.current.scrollWidth;
+    canvasRef.current.height = canvasRef.current.width / 2;
+    // set context
+    const context = canvasRef.current.getContext("2d");
+    if (!context) return;
+    contextRef.current = context;
+    // set facilityElementHandler
+    const mapManager = totalScreenManager.mapManager.manager;
+    const monsterManager = totalScreenManager.monsterManager.manager;
+    const monsterElementHandler = new MonsterElementHandler(monsterManager, mapManager);
+    monsterElementHandler.reDraw();
+    // set animation frame
     setAnimationTimer();
     setGenerationTimer();
     setMovementTimer();
     setDamageTimer();
     return () => {
-      // window.removeEventListener("resize", windowResize);
-      const monsterAnimationFrame = monsterRef.current.animationFrame;
-      const monsterGenerationFrame = monsterRef.current.generationFrame;
-      const monsterMovementFrame = monsterRef.current.movementFrame;
-      const monsterDamageFrame = monsterRef.current.damageFrame;
-      if (monsterAnimationFrame.animationFrame) cancelAnimationFrame(monsterAnimationFrame.animationFrame);
-      if (monsterMovementFrame.animationFrame) cancelAnimationFrame(monsterMovementFrame.animationFrame);
-      if (monsterGenerationFrame && monsterGenerationFrame.animationFrame)
-        cancelAnimationFrame(monsterGenerationFrame.animationFrame);
-      if (monsterDamageFrame.animationFrame) cancelAnimationFrame(monsterDamageFrame.animationFrame);
+      if (monsterManager.animationFrame.animationFrame) cancelAnimationFrame(monsterManager.animationFrame.animationFrame);
+      if (monsterManager.generationFrame.animationFrame) cancelAnimationFrame(monsterManager.generationFrame.animationFrame);
+      if (monsterManager.damageFrame.animationFrame) cancelAnimationFrame(monsterManager.damageFrame.animationFrame);
+      if (monsterManager.movementFrame.animationFrame) cancelAnimationFrame(monsterManager.movementFrame.animationFrame);
     };
   }, []);
 
   return (
     <div className={style.gameScreen} style={{ zIndex: 2 }}>
-      <canvas ref={canvasRef}></canvas>
+      {totalScreenManager && <canvas ref={totalScreenManager.monsterManager.manager.canvasRef}></canvas>}
     </div>
   );
 };

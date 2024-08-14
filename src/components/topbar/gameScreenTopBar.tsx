@@ -1,12 +1,11 @@
 import { Resource } from "../../util/resource";
 import style from "../../assets/css/gameScreen.module.css";
-import { MapManager } from "../../util/map/mapManager";
-import mapElementInfo from "../../util/map/mapElementInfo";
+import { MapManagerClass } from "../../util/map/mapManager";
 import systemImages from "../../assets/images/system/systemImages";
 
 interface GameScreenTopBarProps {
   resource: Resource;
-  mapManager: React.MutableRefObject<MapManager>;
+  mapManager: MapManagerClass;
 }
 
 const cssStyle: Record<string, React.CSSProperties> = {
@@ -47,7 +46,7 @@ const cssStyle: Record<string, React.CSSProperties> = {
 
 const GameScreenTopBar = ({ resource, mapManager }: GameScreenTopBarProps) => {
   return (
-    <div className={style.gameScreenTopBar} style={{ height: `${mapManager.current.blockSize}px` }}>
+    <div className={style.gameScreenTopBar} style={{ height: `${mapManager.manager.blockSize}px` }}>
       <div style={cssStyle.resourceContainer}>
         <div style={cssStyle.resourceStyle}>
           <img src={systemImages.pointerLeft} style={{ ...cssStyle.resourceImage }} />

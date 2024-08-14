@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import style from "../../assets/css/gameScreen.module.css";
-import mapElementInfo, { getMapInfoById, MapElementInfo } from "../../util/map/mapElementInfo";
-import { LauncherInfo } from "../../util/launcher/launcherInfo";
+import mapElementInfo, { MapElementInfo } from "../../util/map/mapElementInfo";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import { SelectedComponentType } from "../../util/canvasClickEvent";
 

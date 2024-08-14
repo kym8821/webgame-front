@@ -1,6 +1,5 @@
-import { ObjectType } from 'typescript';
-import mapImages from '../../assets/images/map/mapImages';
-import { objectType } from '../object/objectInfo';
+import mapImages from "../../assets/images/map/mapImages";
+import { objectType } from "../object/objectInfo";
 
 interface MapElementTag {
   pipe: boolean;
@@ -27,11 +26,11 @@ export interface MapElementInfo {
 export function isMapElementInfo(obj: MapElementInfo) {
   if (
     obj.type === objectType.mapElement &&
-    typeof obj.name === 'string' &&
-    typeof obj.id === 'number' &&
-    typeof obj.src === 'string' &&
-    typeof obj.width === 'number' &&
-    typeof obj.height === 'number' &&
+    typeof obj.name === "string" &&
+    typeof obj.id === "number" &&
+    typeof obj.src === "string" &&
+    typeof obj.width === "number" &&
+    typeof obj.height === "number" &&
     obj.tag
   ) {
     return true;
@@ -47,13 +46,13 @@ export function getMapInfoById(id: number) {
       ret = info;
     }
   });
-  if (!ret) return mapElementInfo['ex'];
+  if (!ret) return mapElementInfo["ex"];
   return ret;
 }
 
 const mapElementInfo: Record<string, MapElementInfo> = {
   turretBase: {
-    name: '터렛 베이스',
+    name: "터렛 베이스",
     type: objectType.mapElement,
     id: 0,
     width: 1,
@@ -72,7 +71,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: 10,
   },
   floor: {
-    name: '바닥',
+    name: "바닥",
     type: objectType.mapElement,
     id: 1,
     width: 1,
@@ -91,7 +90,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: -1,
   },
   ex: {
-    name: '에러타일',
+    name: "에러타일",
     type: objectType.mapElement,
     id: 2,
     width: 1,
@@ -110,7 +109,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: -1,
   },
   core: {
-    name: '코어',
+    name: "코어",
     type: objectType.mapElement,
     id: 3,
     width: 1,
@@ -129,7 +128,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: -1,
   },
   tile: {
-    name: '타일',
+    name: "타일",
     type: objectType.mapElement,
     id: 4,
     width: 1,
@@ -148,7 +147,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: 10,
   },
   pipe: {
-    name: '파이프',
+    name: "파이프",
     type: objectType.mapElement,
     id: 5,
     width: 1,
@@ -167,7 +166,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: 5,
   },
   objectRemover: {
-    name: '모듈 제거',
+    name: "모듈 제거",
     type: objectType.mapElement,
     id: 6,
     width: 1,
@@ -186,7 +185,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: -5,
   },
   facilityBase: {
-    name: '시설 베이스',
+    name: "시설 베이스",
     type: objectType.mapElement,
     id: 7,
     width: 1,
@@ -205,7 +204,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: 10,
   },
   pipeFacilityBase: {
-    name: '감염',
+    name: "감염",
     type: objectType.mapElement,
     id: 8,
     width: 1,
@@ -224,7 +223,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: 10,
   },
   background: {
-    name: '배경',
+    name: "배경",
     type: objectType.mapElement,
     id: 9,
     width: 1,

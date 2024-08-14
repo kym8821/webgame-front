@@ -1,14 +1,10 @@
-import { useState } from "react";
 import style from "../../assets/css/gameScreen.module.css";
 import systemImages from "../../assets/images/system/systemImages";
 import MapComponentSelector from "../selector/MapComponentSelector";
-import { MapElementInfo } from "../../util/map/mapElementInfo";
 import LauncherSelector from "../selector/LauncherSelector";
-import { LauncherInfo } from "../../util/launcher/launcherInfo";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import { SelectedComponentType } from "../../util/canvasClickEvent";
 import FacilitySelector from "../selector/FacilitySelector";
-import { Resource } from "../../util/resource";
 
 interface GameObjectFooterType {
   page: number;

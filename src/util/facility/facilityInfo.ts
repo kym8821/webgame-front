@@ -1,7 +1,6 @@
-import facilityImages from '../../assets/images/facility/facilityImages';
-import mapImages from '../../assets/images/map/mapImages';
-import { MapElementInfo } from '../map/mapElementInfo';
-import { objectType } from '../object/objectInfo';
+import facilityImages from "../../assets/images/facility/facilityImages";
+import mapImages from "../../assets/images/map/mapImages";
+import { objectType } from "../object/objectInfo";
 
 interface FacilityTag {
   core: boolean;
@@ -31,13 +30,13 @@ export function isFacilityInfo(obj: FacilityInfo) {
   console.log(obj);
   if (
     obj.type === objectType.facility &&
-    typeof obj.id === 'number' &&
-    typeof obj.name === 'string' &&
-    typeof obj.src === 'string' &&
-    typeof obj.width === 'number' &&
-    typeof obj.height === 'number' &&
-    typeof obj.energy === 'number' &&
-    typeof obj.evolveFactor === 'number'
+    typeof obj.id === "number" &&
+    typeof obj.name === "string" &&
+    typeof obj.src === "string" &&
+    typeof obj.width === "number" &&
+    typeof obj.height === "number" &&
+    typeof obj.energy === "number" &&
+    typeof obj.evolveFactor === "number"
   ) {
     return true;
   }
@@ -59,7 +58,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
   core: {
     id: 1,
     type: objectType.facility,
-    name: 'core',
+    name: "core",
     src: facilityImages.core1,
     width: 2,
     height: 2,
@@ -80,7 +79,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
   energy: {
     id: 2,
     type: objectType.facility,
-    name: 'energy facility',
+    name: "energy facility",
     src: facilityImages.energy1,
     width: 1,
     height: 1,
@@ -101,7 +100,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
   evolveFactor: {
     id: 3,
     type: objectType.facility,
-    name: 'evolve facility',
+    name: "evolve facility",
     src: facilityImages.evolveFactor1,
     width: 1,
     height: 1,
@@ -122,7 +121,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
   objectRemover: {
     id: 4,
     type: objectType.facility,
-    name: 'objectRemover',
+    name: "objectRemover",
     src: mapImages.tile,
     width: 1,
     height: 1,

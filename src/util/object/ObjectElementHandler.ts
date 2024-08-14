@@ -1,7 +1,5 @@
 import { MapManager } from "../map/mapManager";
-import { CanvasManager } from "./CanvasManager";
-import { CanvasObjectManager } from "./canvasObjectManager";
-import { ObjectFrame } from "./objectFrame";
+import { CanvasManager } from "./objectManager/CanvasManager";
 
 export default interface ObjectElementHandler<T extends CanvasManager> {
   manager: T | undefined;

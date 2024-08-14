@@ -3,9 +3,7 @@ import style from "../../assets/css/gameScreen.module.css";
 import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import { getMapInfoById, isMapElementInfo, MapElementInfo } from "../../util/map/mapElementInfo";
 import { getLauncherInfoById, isLauncherInfo, LauncherInfo } from "../../util/launcher/launcherInfo";
-import launcherImages from "../../assets/images/launcher/launcherImages";
 import { FacilityInfo, getFacilityInfoById, isFacilityInfo } from "../../util/facility/facilityInfo";
-import { SelectedComponentType } from "../../util/canvasClickEvent";
 import { objectType } from "../../util/object/objectInfo";
 
 interface GameObjectSibeBarType {

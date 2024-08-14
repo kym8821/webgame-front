@@ -1,10 +1,8 @@
-import { LauncherFrame } from "../launcher/launcherFrame";
-import launcherInfo from "../launcher/launcherInfo";
 import { MapManager } from "../map/mapManager";
 import { MonsterFrameClass } from "../monster/monsterFrame";
 import ObjectElementHandler from "../object/ObjectElementHandler";
 import { Position } from "../Position";
-import { ProjectileFrame, ProjectileFrameClass } from "./projectileFrame";
+import { ProjectileFrame } from "./projectileFrame";
 import { ProjectileManager } from "./projectileManager";
 
 export default class ProjectileElementHandler implements ObjectElementHandler<ProjectileManager> {
@@ -14,17 +12,10 @@ export default class ProjectileElementHandler implements ObjectElementHandler<Pr
     this.manager = projectileManager;
     this.mapManager = mapManager;
   }
-  getNextObject = (launcher: LauncherFrame) => {
-    const lv = launcher.info.type;
-    if (lv in launcherInfo) {
-      const _launcher = launcherInfo.lv;
-    }
-    return undefined;
-  };
   animate = () => {};
   drawAll = (callback: Function) => {
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
-    const projectiles = this.manager.projectiles;
+    const projectiles = this.manager.objects;
     if (!canvas || !context) return;
     context.clearRect(0, 0, canvas.width, canvas.height); // 이전 내용을 지우기
     for (let i = 0; i < projectiles.length; i++) {
