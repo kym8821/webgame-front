@@ -12,7 +12,6 @@ export interface LauncherInfo extends ObjectInfo {
   lv: number;
   shootRate: number;
   projectileSpeed: number;
-  src: string;
   energy: number;
   gas: number;
   shootCost: number;
@@ -40,7 +39,8 @@ const launcherInfo: Record<string, LauncherInfo> = {
     width: 140,
     height: 100,
     lv: 1,
-    src: launcherImages.lv1,
+    src: [launcherImages.lv1],
+    images: [],
     shootRate: 1,
     projectileSpeed: 1,
     energy: 10,
@@ -59,7 +59,8 @@ const launcherInfo: Record<string, LauncherInfo> = {
     width: 100,
     height: 100,
     lv: 1,
-    src: mapImages.tile,
+    src: [mapImages.tile],
+    images: [],
     shootRate: 1,
     projectileSpeed: 1,
     energy: -5,
@@ -75,12 +76,8 @@ const launcherInfo: Record<string, LauncherInfo> = {
 export function getLauncherInfoById(id: number): LauncherInfo | undefined {
   const infoList = Object.values(launcherInfo);
   let ret: LauncherInfo | undefined = undefined;
-  // console.log("InfoList:", infoList);
-  // console.log("Searching for ID:", id);
   infoList.forEach((info) => {
-    // console.log("Checking info:", info);
     if (info.id === id) {
-      // console.log("Match found:", info);
       ret = info;
     }
   });

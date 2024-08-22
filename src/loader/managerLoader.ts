@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { FacilityManagerClass } from "../util/facility/facilityManager";
 import { LauncherManagerClass } from "../util/launcher/launcherManager";
 import { MapManagerClass } from "../util/map/mapManager";
@@ -7,10 +6,10 @@ import { CanvasManager } from "../util/object/objectManager/CanvasManager";
 import { ProjectileManagerClass } from "../util/projectile/projectileManager";
 import { TotalScreenManager } from "../util/totalScreenManager";
 
-export function useTotalScreenManager() {
+export function loadTotalScreenManager() {
   const userScreenManager: CanvasManager = {
-    canvasRef: useRef<HTMLCanvasElement>(null),
-    contextRef: useRef<CanvasRenderingContext2D>(null),
+    canvasRef: null,
+    contextRef: null,
   };
   const monsterManager: MonsterManagerClass = new MonsterManagerClass({
     animationFrame: {
@@ -34,8 +33,8 @@ export function useTotalScreenManager() {
       animationFrame: null,
     },
     objects: [],
-    canvasRef: useRef<HTMLCanvasElement>(null),
-    contextRef: useRef<CanvasRenderingContext2D>(null),
+    canvasRef: null,
+    contextRef: null,
   });
   const projectileManager: ProjectileManagerClass = new ProjectileManagerClass({
     animationFrame: {
@@ -50,16 +49,16 @@ export function useTotalScreenManager() {
     },
     movementFrame: undefined,
     objects: [],
-    canvasRef: useRef<HTMLCanvasElement>(null),
-    contextRef: useRef<CanvasRenderingContext2D>(null),
+    canvasRef: null,
+    contextRef: null,
   });
   const mapManager: MapManagerClass = new MapManagerClass({
     numberMap: [],
     blockSize: window.innerWidth / 20,
     map: [[]],
     objects: [],
-    canvasRef: useRef<HTMLCanvasElement>(null),
-    contextRef: useRef<CanvasRenderingContext2D>(null),
+    canvasRef: null,
+    contextRef: null,
   });
   const facilityManager: FacilityManagerClass = new FacilityManagerClass({
     generationFrame: {
@@ -73,8 +72,8 @@ export function useTotalScreenManager() {
       animationFrame: null,
     },
     objects: [],
-    canvasRef: useRef<HTMLCanvasElement>(null),
-    contextRef: useRef<CanvasRenderingContext2D>(null),
+    canvasRef: null,
+    contextRef: null,
   });
   const launcherManager: LauncherManagerClass = new LauncherManagerClass({
     animationFrame: {
@@ -83,8 +82,8 @@ export function useTotalScreenManager() {
       animationFrame: null,
     },
     objects: [],
-    canvasRef: useRef<HTMLCanvasElement>(null),
-    contextRef: useRef<CanvasRenderingContext2D>(null),
+    canvasRef: null,
+    contextRef: null,
   });
   const totalScreenManager: TotalScreenManager = {
     userScreenManager: userScreenManager,

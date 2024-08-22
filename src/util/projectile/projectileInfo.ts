@@ -1,3 +1,4 @@
+import porjectileImages from "../../assets/images/projectile/projectileImages";
 import { ObjectInfo, objectType } from "../object/objectInfo";
 
 export interface ProjectileInfo extends ObjectInfo {
@@ -23,6 +24,8 @@ const projectileInfo: Record<string, ProjectileInfo> = {
     damage: 1,
     width: 100,
     height: 15,
+    src: [porjectileImages.lv1],
+    images: [],
   },
 };
 

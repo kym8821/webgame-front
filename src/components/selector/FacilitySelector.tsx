@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useState } from "react";
-import { SelectedComponent } from "../../pages/gamePage/GamePage";
-import { SelectedComponentType } from "../../util/canvasClickEvent";
 import style from "../../assets/css/gameScreen.module.css";
 import facilityInfo, { FacilityInfo } from "../../util/facility/facilityInfo";
+import { objectType } from "../../util/object/objectInfo";
+import { ComponentPageNumber, SelectedComponent } from "../../util/SelectedComponent";
 
 interface ComponentSelectorType {
   // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
@@ -16,7 +16,7 @@ const FacilitySelector = ({ selectedComponent, setSelectedComponent }: Component
   function handleClickedObject(element: FacilityInfo) {
     const sc: SelectedComponent = {
       component: element,
-      type: SelectedComponentType.facility,
+      type: ComponentPageNumber.facility,
     };
     // selectedComponent.current = sc;
     setSelectedComponent(() => sc);
@@ -39,7 +39,7 @@ const FacilitySelector = ({ selectedComponent, setSelectedComponent }: Component
         newFacilityList.push(
           <div>
             <img
-              src={element.src}
+              src={element.src[0]}
               alt={element.name}
               style={mapElementStyle}
               key={element.name}

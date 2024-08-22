@@ -3,14 +3,13 @@ import { ObjectFrame, ObjectFrameClassType } from "../object/objectFrame";
 import { Position } from "../Position";
 import { LauncherInfo } from "./launcherInfo";
 
-export interface LauncherFrame extends ObjectFrame {
-  info: LauncherInfo;
+export interface LauncherFrame extends ObjectFrame<LauncherInfo> {
   angle: number;
   projectileId: number;
   frameNumber: number;
 }
 
-export class LauncherFrameClass implements ObjectFrameClassType<LauncherFrame> {
+export class LauncherFrameClass implements ObjectFrameClassType<LauncherFrame, LauncherInfo> {
   static loadFrame = (launcherInfo: LauncherInfo, mapPointX: number, mapPointY: number) => {
     const launcher: LauncherFrame = {
       info: launcherInfo,
@@ -21,9 +20,10 @@ export class LauncherFrameClass implements ObjectFrameClassType<LauncherFrame> {
       mapPointY: mapPointY,
       images: [],
     };
-    const frame = new Image();
-    frame.src = launcherInfo.src;
-    launcher.images.push(frame);
+    for (let i = 0; i < launcherInfo.images.length; i++) {
+      const image = launcherInfo.images[i];
+      launcher.images.push(image);
+    }
     if (launcher.images.length > 0) return new LauncherFrameClass(launcher);
     return undefined;
   };

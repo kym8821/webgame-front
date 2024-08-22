@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import launcherInfo, { LauncherInfo } from "../../util/launcher/launcherInfo";
-import { SelectedComponent } from "../../pages/gamePage/GamePage";
-import { SelectedComponentType } from "../../util/canvasClickEvent";
+import { objectType } from "../../util/object/objectInfo";
+import { ComponentPageNumber, SelectedComponent } from "../../util/SelectedComponent";
 
 interface ComponentSelectorType {
   // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
@@ -15,7 +15,7 @@ const LauncherSelector = ({ selectedComponent, setSelectedComponent }: Component
   function handleClickedObject(element: LauncherInfo) {
     const sc: SelectedComponent = {
       component: element,
-      type: SelectedComponentType.launcher,
+      type: ComponentPageNumber.launcher,
     };
     // selectedComponent.current = sc;
     setSelectedComponent(() => sc);
@@ -37,7 +37,7 @@ const LauncherSelector = ({ selectedComponent, setSelectedComponent }: Component
       newMapElementList.push(
         <div>
           <img
-            src={element.src}
+            src={element.src[0]}
             alt={element.name}
             style={mapElementStyle}
             key={element.name}

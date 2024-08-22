@@ -1,20 +1,34 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import style from "../../assets/css/gameScreen.module.css";
 import { MapManagerClass } from "../../util/map/mapManager";
 import { getCurrentBlockSize } from "../../util/windowSize";
 import MapElementHandler from "../../util/map/mapElementHandler";
-import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import { TotalScreenManager } from "../../util/totalScreenManager";
+import mapImages from "../../assets/images/map/mapImages";
+import mapElementInfo from "../../util/map/mapElementInfo";
+import { TotalElementHandler } from "../../util/totalElementHandler";
+import { SelectedComponent } from "../../util/SelectedComponent";
+
+// const map = [
+//   [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+//   [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+//   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3],
+//   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+//   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+//   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+//   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+//   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+// ];
 
 const map = [
-  [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
-  [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3],
-  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+  [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+  [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3],
+  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3],
+  [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+  [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+  [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
+  [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
 ];
 
 interface MapScreenProps {
@@ -22,6 +36,7 @@ interface MapScreenProps {
   // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
   selectedComponent: SelectedComponent | null;
   totalScreenManager: TotalScreenManager | undefined;
+  totalElementHandler: TotalElementHandler | undefined;
 }
 
 interface MapScreenHandler {
@@ -33,34 +48,45 @@ const mapScreenHandler: MapScreenHandler = {
 };
 
 const MapScreen = ({ page, selectedComponent, totalScreenManager }: MapScreenProps) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   let mapElementHandler: MapElementHandler | null = null;
 
   useEffect(() => {
     if (!totalScreenManager) return;
-    const { canvasRef, contextRef } = totalScreenManager.facilityManager.manager;
-    if (!canvasRef.current) return;
+    function setCanvasAndContext() {
+      if (!totalScreenManager) return;
+      // set canvas
+      if (!canvasRef.current) return;
+      canvasRef.current.width = canvasRef.current.scrollWidth;
+      canvasRef.current.height = canvasRef.current.width / 2;
+      // set context
+      const context = canvasRef.current.getContext("2d");
+      if (!context) return;
+      contextRef.current = context;
+      totalScreenManager.mapManager.manager.canvasRef = canvasRef;
+      totalScreenManager.mapManager.manager.contextRef = contextRef;
+    }
+    setCanvasAndContext();
+    if (!canvasRef.current || !contextRef.current) {
+      console.log(canvasRef, contextRef);
+      return;
+    }
     // set mapManager
     const mapManager = totalScreenManager.mapManager.manager;
-    const currentBlockSize = getCurrentBlockSize(canvasRef.current.width, map);
+    const currentBlockSize = getCurrentBlockSize(canvasRef.current.width, canvasRef.current.height, map);
     if (currentBlockSize) mapManager.blockSize = currentBlockSize;
     mapManager.map = MapManagerClass.convertNumberMapToMapFrameMap(map);
     mapManager.numberMap = map;
-    // set canvas
-    canvasRef.current.width = canvasRef.current.scrollWidth;
-    canvasRef.current.height = canvasRef.current.width / 2;
-    // set context
-    const context = canvasRef.current.getContext("2d");
-    if (!context) return;
-    contextRef.current = context;
     // set object manager
-    mapElementHandler = new MapElementHandler(mapManager);
+    if (!mapElementHandler) mapElementHandler = new MapElementHandler(mapManager);
     mapElementHandler.reDraw();
     return () => {};
-  }, [totalScreenManager]);
+  }, [totalScreenManager, canvasRef, contextRef, mapElementInfo]);
 
   return (
     <div className={`${style.gameScreen} ${style.mapScreen}`}>
-      {totalScreenManager && <canvas ref={totalScreenManager.mapManager.manager.canvasRef} />}
+      <canvas ref={canvasRef} />
     </div>
   );
 };

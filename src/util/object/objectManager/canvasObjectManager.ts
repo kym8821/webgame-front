@@ -1,14 +1,17 @@
 import { CanvasManager } from "./CanvasManager";
 import { ObjectFrame, ObjectFrameClassType } from "../objectFrame";
+import { ObjectInfo } from "../objectInfo";
 
-export interface CanvasObjectManager<T1 extends ObjectFrameClassType<T2>, T2 extends ObjectFrame> extends CanvasManager {
+export interface CanvasObjectManager<T1 extends ObjectFrameClassType<T2, T3>, T2 extends ObjectFrame<T3>, T3 extends ObjectInfo>
+  extends CanvasManager {
   objects: T1[];
 }
 
 export interface CanvasObjectManagerClassType<
-  T1 extends CanvasObjectManager<T2, T3>,
-  T2 extends ObjectFrameClassType<T3>,
-  T3 extends ObjectFrame
+  T1 extends CanvasObjectManager<T2, T3, T4>,
+  T2 extends ObjectFrameClassType<T3, T4>,
+  T3 extends ObjectFrame<T4>,
+  T4 extends ObjectInfo
 > {
   manager: T1;
   delete: Function;
@@ -18,10 +21,11 @@ export interface CanvasObjectManagerClassType<
 }
 
 export abstract class CanvasObjectManagerClass<
-  T1 extends CanvasObjectManager<T2, T3>,
-  T2 extends ObjectFrameClassType<T3>,
-  T3 extends ObjectFrame
-> implements CanvasObjectManagerClassType<T1, T2, T3>
+  T1 extends CanvasObjectManager<T2, T3, T4>,
+  T2 extends ObjectFrameClassType<T3, T4>,
+  T3 extends ObjectFrame<T4>,
+  T4 extends ObjectInfo
+> implements CanvasObjectManagerClassType<T1, T2, T3, T4>
 {
   constructor(manager: T1) {
     this.manager = manager;

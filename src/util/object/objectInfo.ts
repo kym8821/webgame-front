@@ -1,15 +1,17 @@
 export const objectType = {
-  monster: "monster",
-  projectile: "projectile",
-  launcher: "launcher",
-  facility: "facility",
-  mapElement: "mapElement",
+  monster: 1,
+  projectile: 2,
+  launcher: 3,
+  facility: 4,
+  mapElement: 5,
 };
 
 export interface ObjectInfo {
-  type: string;
+  type: number;
   name: string;
   frameSize: number;
   width: number;
   height: number;
+  src: string[];
+  images: HTMLImageElement[];
 }

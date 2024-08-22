@@ -15,6 +15,7 @@ export default class LauncherElementHandler implements ObjectElementHandler<Laun
   }
 
   getLauncherAngle = (monster: MonsterFrameClass, launcher: LauncherFrameClass) => {
+    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
     const canvas = this.manager.canvasRef.current;
     if (!canvas) return;
     const monsterPosition: Position = monster.getPosition(canvas.width, canvas.height, this.mapManager.blockSize);
@@ -28,6 +29,7 @@ export default class LauncherElementHandler implements ObjectElementHandler<Laun
   };
 
   private drawAll = (callback: Function) => {
+    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
     if (!canvas || !context) return;
     const launchers = this.manager.objects;
@@ -46,6 +48,8 @@ export default class LauncherElementHandler implements ObjectElementHandler<Laun
 
   drawNext = (monsters: MonsterFrameClass[]) => {
     const callback = (launcherFrame: LauncherFrameClass) => {
+      if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current)
+        return;
       const monsterOnFront = monsters.at(0);
       const activate = this.mapManager.map[launcherFrame.frame.mapPointY][launcherFrame.frame.mapPointX].frame.activate;
       const context = this.manager.contextRef.current;

@@ -1,35 +1,33 @@
 import LauncherScreen from "../../components/gameScreen/LauncherScreen";
 import MonsterScreen from "../../components/gameScreen/MonsterScreen";
 import style from "../../assets/css/gameScreen.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProjectileScreen from "../../components/gameScreen/ProjectileScreen";
 import MapScreen from "../../components/gameScreen/MapScreen";
 import GameObjectFooter from "../../components/footer/GameObjectFooter";
-import { MapElementInfo } from "../../util/map/mapElementInfo";
-import { LauncherInfo } from "../../util/launcher/launcherInfo";
 import UserInterfaceScreen from "../../components/gameScreen/UserInterfaceScreen";
 import GameObjectSideBar from "../../components/sideBar/GameObjectSibeBar";
 import FacilityScreen from "../../components/gameScreen/facilityScreen";
-import facilityInfo, { FacilityInfo } from "../../util/facility/facilityInfo";
+import facilityInfo from "../../util/facility/facilityInfo";
 import { Resource } from "../../util/resource";
 import GameScreenTopBar from "../../components/topbar/gameScreenTopBar";
 import GameOverModal from "../../components/modal/GameOverModal";
 import FacilityElementHandler from "../../util/facility/facilityElementHandler";
-import { useTotalScreenManager } from "../../api/managerLoader";
-import { useTotalElementHandler } from "../../api/elementHandlerLoader,";
-
-export interface SelectedComponent {
-  component: MapElementInfo | LauncherInfo | FacilityInfo | null;
-  type: number;
-}
+import { TotalScreenManager } from "../../util/totalScreenManager";
+import { TotalElementHandler } from "../../util/totalElementHandler";
+import { loadObjectInfoImages } from "../../loader/imageLoader";
+import { loadTotalScreenManager } from "../../loader/managerLoader";
+import { loadTotalElementHandler } from "../../loader/elementHandlerLoader,";
+import { FacilityFrameClass } from "../../util/facility/facilityFrame";
+import { SelectedComponent } from "../../util/SelectedComponent";
 
 const GamePage = () => {
   // const selectedComponent = useRef<SelectedComponent | null>(null);
   const [selectedComponent, setSelectedComponent] = useState<SelectedComponent | null>(null);
   const [page, setPage] = useState<number>(1);
   const [minPage, maxPage] = [1, 3];
-  const totalScreenManager = useTotalScreenManager();
-  const totalElementHandler = useTotalElementHandler(totalScreenManager);
+  const totalScreenManager = useRef<TotalScreenManager | undefined>(undefined);
+  const totalElementHandler = useRef<TotalElementHandler | undefined>(undefined);
   const [resource, setResource] = useState<Resource>({
     energy: 20,
     energyOutput: facilityInfo.core.energyOutput,
@@ -39,13 +37,14 @@ const GamePage = () => {
   });
 
   function resetGame() {
-    if (!totalScreenManager) return;
-    const mapManager = totalScreenManager.mapManager;
-    const facilityManager = totalScreenManager.facilityManager;
+    if (!totalScreenManager.current) return;
+    const mapManager = totalScreenManager.current.mapManager;
+    const facilityManager = totalScreenManager.current.facilityManager;
     const facilityElementHandler = new FacilityElementHandler(facilityManager.manager, mapManager.manager);
-    totalScreenManager.resetManagers.forEach((manager) => {
+    totalScreenManager.current.resetManagers.forEach((manager) => {
       manager.deleteAll();
     });
+    totalScreenManager.current.facilityManager.add(FacilityFrameClass.loadFrame(facilityInfo.core, 14, 2));
     facilityElementHandler.reDraw();
     setResource(() => ({
       energy: 20,
@@ -57,27 +56,50 @@ const GamePage = () => {
   }
 
   useEffect(() => {
+    const _totalScreenManager = loadTotalScreenManager();
+    totalScreenManager.current = _totalScreenManager;
+    totalElementHandler.current = loadTotalElementHandler(_totalScreenManager);
+    loadObjectInfoImages(totalElementHandler.current);
     resetGame();
   }, []);
 
   return (
     <div className={style.gamePage}>
       {resource.health <= 0 && <GameOverModal setResource={setResource} resetGame={resetGame} />}
-      {totalScreenManager && <GameScreenTopBar resource={resource} mapManager={totalScreenManager.mapManager} />}
+      {totalScreenManager.current && <GameScreenTopBar resource={resource} mapManager={totalScreenManager.current.mapManager} />}
       <div>
         <UserInterfaceScreen
-          totalScreenManager={totalScreenManager}
-          totalElementHandler={totalElementHandler}
+          totalScreenManager={totalScreenManager.current}
+          totalElementHandler={totalElementHandler.current}
           selectedComponent={selectedComponent}
           resource={resource}
           setResource={setResource}
         />
-        <LauncherScreen totalScreenManager={totalScreenManager} selectedComponent={selectedComponent} />
-        <MonsterScreen totalScreenManager={totalScreenManager} setResource={setResource} />
-        <ProjectileScreen totalScreenManager={totalScreenManager} resource={resource} setResource={setResource} />
-        <MapScreen page={page} selectedComponent={selectedComponent} totalScreenManager={totalScreenManager} />
+        <LauncherScreen
+          totalElementHandler={totalElementHandler.current}
+          totalScreenManager={totalScreenManager.current}
+          selectedComponent={selectedComponent}
+        />
+        <MonsterScreen
+          totalScreenManager={totalScreenManager.current}
+          totalElementHandler={totalElementHandler.current}
+          setResource={setResource}
+        />
+        <ProjectileScreen
+          totalElementHandler={totalElementHandler.current}
+          totalScreenManager={totalScreenManager.current}
+          resource={resource}
+          setResource={setResource}
+        />
+        <MapScreen
+          page={page}
+          totalElementHandler={totalElementHandler.current}
+          selectedComponent={selectedComponent}
+          totalScreenManager={totalScreenManager.current}
+        />
         <FacilityScreen
-          totalScreenManager={totalScreenManager}
+          totalElementHandler={totalElementHandler.current}
+          totalScreenManager={totalScreenManager.current}
           page={page}
           selectedComponent={selectedComponent}
           setResource={setResource}

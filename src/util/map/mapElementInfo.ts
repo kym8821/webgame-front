@@ -1,5 +1,5 @@
 import mapImages from "../../assets/images/map/mapImages";
-import { objectType } from "../object/objectInfo";
+import { ObjectInfo, objectType } from "../object/objectInfo";
 
 interface MapElementTag {
   pipe: boolean;
@@ -11,13 +11,8 @@ interface MapElementTag {
   installable: boolean;
 }
 
-export interface MapElementInfo {
-  name: string;
-  type: string;
+export interface MapElementInfo extends ObjectInfo {
   id: number;
-  src: string;
-  width: number;
-  height: number;
   tag: MapElementTag;
   energy: number;
   gas: number;
@@ -52,12 +47,14 @@ export function getMapInfoById(id: number) {
 
 const mapElementInfo: Record<string, MapElementInfo> = {
   turretBase: {
+    images: [],
+    frameSize: 1,
     name: "터렛 베이스",
     type: objectType.mapElement,
     id: 0,
     width: 1,
     height: 1,
-    src: mapImages.base1,
+    src: [mapImages.base1],
     tag: {
       pipe: false,
       tile: false,
@@ -71,12 +68,14 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: 10,
   },
   floor: {
+    images: [],
+    frameSize: 1,
     name: "바닥",
     type: objectType.mapElement,
     id: 1,
     width: 1,
     height: 1,
-    src: mapImages.floor,
+    src: [mapImages.floor],
     tag: {
       pipe: false,
       tile: true,
@@ -90,12 +89,14 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: -1,
   },
   ex: {
+    images: [],
+    frameSize: 1,
     name: "에러타일",
     type: objectType.mapElement,
     id: 2,
     width: 1,
     height: 1,
-    src: mapImages.ex,
+    src: [mapImages.ex],
     tag: {
       pipe: false,
       tile: false,
@@ -109,12 +110,14 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: -1,
   },
   core: {
+    images: [],
+    frameSize: 1,
     name: "코어",
     type: objectType.mapElement,
     id: 3,
     width: 1,
     height: 1,
-    src: mapImages.tile_pipe,
+    src: [mapImages.tile_pipe],
     tag: {
       pipe: false,
       tile: false,
@@ -128,12 +131,14 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: -1,
   },
   tile: {
+    images: [],
+    frameSize: 1,
     name: "타일",
     type: objectType.mapElement,
     id: 4,
     width: 1,
     height: 1,
-    src: mapImages.tile,
+    src: [mapImages.tile],
     tag: {
       pipe: false,
       tile: true,
@@ -147,12 +152,14 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: 10,
   },
   pipe: {
+    images: [],
+    frameSize: 1,
     name: "파이프",
     type: objectType.mapElement,
     id: 5,
     width: 1,
     height: 1,
-    src: mapImages.pipe_0000,
+    src: [mapImages.pipe_0000],
     tag: {
       pipe: true,
       tile: false,
@@ -166,12 +173,14 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: 5,
   },
   objectRemover: {
+    images: [],
+    frameSize: 1,
     name: "모듈 제거",
     type: objectType.mapElement,
     id: 6,
     width: 1,
     height: 1,
-    src: mapImages.tile,
+    src: [mapImages.tile],
     tag: {
       pipe: false,
       tile: false,
@@ -185,12 +194,14 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: -5,
   },
   facilityBase: {
+    images: [],
+    frameSize: 1,
     name: "시설 베이스",
     type: objectType.mapElement,
     id: 7,
     width: 1,
     height: 1,
-    src: mapImages.ex,
+    src: [mapImages.ex],
     tag: {
       pipe: false,
       tile: false,
@@ -204,12 +215,14 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: 10,
   },
   pipeFacilityBase: {
+    images: [],
+    frameSize: 1,
     name: "감염",
     type: objectType.mapElement,
     id: 8,
     width: 1,
     height: 1,
-    src: mapImages.tile_pipe,
+    src: [mapImages.tile_pipe],
     tag: {
       pipe: true,
       tile: false,
@@ -223,12 +236,14 @@ const mapElementInfo: Record<string, MapElementInfo> = {
     gas: 10,
   },
   background: {
+    images: [],
+    frameSize: 1,
     name: "배경",
     type: objectType.mapElement,
     id: 9,
     width: 1,
     height: 1,
-    src: mapImages.background,
+    src: [mapImages.background],
     tag: {
       pipe: false,
       tile: false,

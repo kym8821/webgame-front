@@ -16,6 +16,7 @@ export default class MonsterElementHandler implements ObjectElementHandler<Monst
   monsterId: number;
 
   private drawAll = (callback: (monsterFrame: MonsterFrame, idx: number, mpx: number, mpy: number) => void) => {
+    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
     const monsters = this.manager.objects;
     if (!canvas || !context) return;
@@ -28,15 +29,8 @@ export default class MonsterElementHandler implements ObjectElementHandler<Monst
       const [mpx, mpy] = mapCoordConverter.canvasToMapCoord(position.posX, position.posY, this.mapManager.blockSize);
       context.save();
       context.translate(position.posX + position.width / 2, position.posY + position.height / 2);
-      context.drawImage(
-        frame.images[frameNumber],
-        Math.round(-position.width / 2),
-        Math.round(-position.height / 2),
-        Math.round(position.width),
-        Math.round(position.height)
-      );
+      context.drawImage(frame.images[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
       context.restore();
-      /** call callback on every loop */
       callback(monster.frame, i, mpx, mpy);
     }
   };
@@ -58,6 +52,7 @@ export default class MonsterElementHandler implements ObjectElementHandler<Monst
   };
 
   animate = () => {
+    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
     const monsters = this.manager.objects;
     if (!canvas || !context) return;

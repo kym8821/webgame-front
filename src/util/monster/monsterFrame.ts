@@ -2,10 +2,9 @@ import { ObjectFrame, ObjectFrameClassType } from "../object/objectFrame";
 import { MonsterInfo } from "./monsterInfo";
 import mapCoordConverter from "../map/mapCoordConverter";
 import { Position } from "../Position";
-import monsterImages from "../../assets/images/monster/monsterImages";
 import { MapManager } from "../map/mapManager";
 
-export interface MonsterFrame extends ObjectFrame {
+export interface MonsterFrame extends ObjectFrame<MonsterInfo> {
   id: number;
   info: MonsterInfo;
   frameNumber: number;
@@ -13,7 +12,7 @@ export interface MonsterFrame extends ObjectFrame {
   lifePoint: number;
 }
 
-export class MonsterFrameClass implements ObjectFrameClassType<MonsterFrame> {
+export class MonsterFrameClass implements ObjectFrameClassType<MonsterFrame, MonsterInfo> {
   static loadFrame = (monsterInfo: MonsterInfo, mapPointX: number, mapPointY: number, id: number) => {
     const monster: MonsterFrame = {
       id: id,
@@ -26,14 +25,8 @@ export class MonsterFrameClass implements ObjectFrameClassType<MonsterFrame> {
       images: [],
     };
     for (let i = 0; i < monsterInfo.frameSize; i++) {
-      const frame = new Image();
-      const src = `${monsterInfo.name}${i}`;
-      if (src in monsterImages) {
-        frame.src = monsterImages[src];
-        monster.images.push(frame);
-      } else {
-        console.error(`Frame ${src} not found in monsterImages object.`);
-      }
+      const frame = monsterInfo.images[i];
+      monster.images.push(frame);
     }
     if (monster.images.length > 0) return new MonsterFrameClass(monster);
     return undefined;
@@ -44,10 +37,10 @@ export class MonsterFrameClass implements ObjectFrameClassType<MonsterFrame> {
   frame: MonsterFrame;
   getPosition = (canvasWidth: number, canvasHeight: number, blockSize: number) => {
     const position: Position = mapCoordConverter.mapToCanvasCoord(this.frame.mapPointY, this.frame.mapPointY, blockSize);
-    const width = this.frame.info.width * (canvasWidth * 0.0005);
-    const height = this.frame.info.height * (canvasWidth * 0.0005);
-    const posX = position.posX + this.frame.move * (canvasWidth * 0.02);
-    let posY = position.posY + (blockSize / 2 - height);
+    const width = this.frame.info.width * blockSize;
+    const height = this.frame.info.height * blockSize;
+    const posX = position.posX + this.frame.move * blockSize * 0.1;
+    const posY = position.posY - blockSize * 0.25;
     const boundX = posX + width;
     const boundY = posY + height;
     return {
@@ -59,10 +52,11 @@ export class MonsterFrameClass implements ObjectFrameClassType<MonsterFrame> {
       boundY: boundY,
     } as Position;
   };
-  intersectWithCore = (canvasWidth: number, canvasHeight: number, mapManager: MapManager) => {
+  intersectWithCore = (canvasWidth: number, canvasHeight: number, mapManager: MapManager, blockSize: number) => {
     const { posX, posY } = this.getPosition(canvasWidth, canvasHeight, mapManager.blockSize);
+    const [mapPosX, mapPosY] = mapCoordConverter.canvasToMapCoord(posX, posY, blockSize);
     const map = mapManager.map;
-    if (posX < 0 || posY < 0 || posX >= map.length || posY >= map[0].length) return true;
+    if (mapPosX < 0 || mapPosY < 0 || mapPosX >= map.length || mapPosY >= map[0].length) return true;
     return false;
   };
 }

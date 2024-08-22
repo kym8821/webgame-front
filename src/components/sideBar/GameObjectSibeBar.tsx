@@ -1,10 +1,10 @@
 import { ReactNode, useEffect, useState } from "react";
 import style from "../../assets/css/gameScreen.module.css";
-import { SelectedComponent } from "../../pages/gamePage/GamePage";
-import { getMapInfoById, isMapElementInfo, MapElementInfo } from "../../util/map/mapElementInfo";
-import { getLauncherInfoById, isLauncherInfo, LauncherInfo } from "../../util/launcher/launcherInfo";
-import { FacilityInfo, getFacilityInfoById, isFacilityInfo } from "../../util/facility/facilityInfo";
+import mapElementInfo, { getMapInfoById, isMapElementInfo, MapElementInfo } from "../../util/map/mapElementInfo";
+import launcherInfo, { getLauncherInfoById, isLauncherInfo, LauncherInfo } from "../../util/launcher/launcherInfo";
+import facilityInfo, { FacilityInfo, getFacilityInfoById, isFacilityInfo } from "../../util/facility/facilityInfo";
 import { objectType } from "../../util/object/objectInfo";
+import { ComponentPageNumber, SelectedComponent } from "../../util/SelectedComponent";
 
 interface GameObjectSibeBarType {
   // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
@@ -25,21 +25,21 @@ const GameObjectSideBar = ({ selectedComponent }: GameObjectSibeBarType) => {
   useEffect(() => {
     if (!selectedComponent || !selectedComponent.component) return;
     console.log(selectedComponent);
-    const sc = selectedComponent.component;
-    if (isMapElementInfo(sc as MapElementInfo)) {
-      const component = getMapInfoById(sc.id);
+    const sc = selectedComponent;
+    if (sc.type === ComponentPageNumber.mapElement) {
+      const component = getMapInfoById(selectedComponent.component.id);
       setObjectInfo(() => (
         <div>
           <div className={style.sideBarImgContainer}>
-            <img src={component.src} className={style.sideBarImg} style={{ aspectRatio: component.width / component.height }} />
+            <img src={component.src[0]} className={style.sideBarImg} style={{ aspectRatio: component.width / component.height }} />
           </div>
           <div>{component.name}</div>
           <div>cost : {component.energy}</div>
           <div>gas : {component.gas}</div>
         </div>
       ));
-    } else if (isLauncherInfo(sc as LauncherInfo)) {
-      const component = getLauncherInfoById(sc.id);
+    } else if (sc.type === ComponentPageNumber.launcher) {
+      const component = getLauncherInfoById(selectedComponent.component.id);
       if (!component) {
         alert("side bar : invalid launcher info");
         return;
@@ -47,7 +47,7 @@ const GameObjectSideBar = ({ selectedComponent }: GameObjectSibeBarType) => {
         setObjectInfo(() => (
           <div>
             <div className={style.sideBarImgContainer}>
-              <img src={component.src} className={style.sideBarImg} style={{ aspectRatio: component.width / component.height }} />
+              <img src={component.src[0]} className={style.sideBarImg} style={{ aspectRatio: component.width / component.height }} />
             </div>
             <div>{component.name}</div>
             <div>cost : {component.energy}</div>
@@ -55,17 +55,16 @@ const GameObjectSideBar = ({ selectedComponent }: GameObjectSibeBarType) => {
           </div>
         ));
       }
-    } else if (isFacilityInfo(sc as FacilityInfo)) {
-      const component = getFacilityInfoById(sc.id);
+    } else if (sc.type === ComponentPageNumber.facility) {
+      const component = getFacilityInfoById(selectedComponent.component.id);
       if (!component) {
         alert("side bar : invalid facility info");
         return;
       }
-      console.log(component);
       setObjectInfo(() => (
         <div>
           <div className={style.sideBarImgContainer}>
-            <img src={component.src} className={style.sideBarImg} style={{ aspectRatio: component.width / component.height }} />
+            <img src={component.src[0]} className={style.sideBarImg} style={{ aspectRatio: component.width / component.height }} />
           </div>
           <div>{component.name}</div>
           <div>cost : {component.energy}</div>
@@ -74,7 +73,7 @@ const GameObjectSideBar = ({ selectedComponent }: GameObjectSibeBarType) => {
       ));
     }
     setSideBarType(() => <div>{sc.type}</div>);
-  }, [selectedComponent]);
+  }, [selectedComponent, mapElementInfo, facilityInfo, launcherInfo]);
   return (
     <div className={style.gameObjectSideBar}>
       {sideBarType}

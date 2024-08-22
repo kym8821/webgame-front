@@ -2,12 +2,11 @@ import { ObjectFrame, ObjectFrameClassType } from "../object/objectFrame";
 import { Position } from "../Position";
 import { FacilityInfo } from "./facilityInfo";
 
-export interface FacilityFrame extends ObjectFrame {
-  info: FacilityInfo;
+export interface FacilityFrame extends ObjectFrame<FacilityInfo> {
   frameNumber: number;
 }
 
-export class FacilityFrameClass implements ObjectFrameClassType<FacilityFrame> {
+export class FacilityFrameClass implements ObjectFrameClassType<FacilityFrame, FacilityInfo> {
   static loadFrame = (facilityInfo: FacilityInfo, mapPointX: number, mapPointY: number) => {
     const facilityFrame: FacilityFrame = {
       info: facilityInfo,
@@ -16,13 +15,10 @@ export class FacilityFrameClass implements ObjectFrameClassType<FacilityFrame> {
       frameNumber: 0,
       images: [],
     };
-    const image = new Image();
-    image.src = facilityInfo.src;
-    facilityInfo.frames.forEach((src) => {
-      const image = new Image();
-      image.src = src;
+    for (let i = 0; i < facilityInfo.images.length; i++) {
+      const image = facilityInfo.images[i];
       facilityFrame.images.push(image);
-    });
+    }
     return new FacilityFrameClass(facilityFrame);
   };
   constructor(facilityFrame: FacilityFrame) {

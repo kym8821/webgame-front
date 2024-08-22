@@ -1,5 +1,4 @@
 import { MapManager } from "./mapManager";
-import { MapElementInfo } from "./mapElementInfo";
 import mapCoordConverter from "./mapCoordConverter";
 import ObjectElementHandler from "../object/ObjectElementHandler";
 import { MapFrame, MapFrameClass } from "./mapFrame";
@@ -7,11 +6,6 @@ import { MapFrame, MapFrameClass } from "./mapFrame";
 interface MapPosition {
   x: number;
   y: number;
-}
-
-interface FacilityInfo {
-  pos: MapPosition;
-  element: MapElementInfo;
 }
 
 const delta = [
@@ -22,16 +16,16 @@ const delta = [
 ];
 
 export default class MapElementHandler implements ObjectElementHandler<MapManager> {
-  mapManager: MapManager;
-  manager: MapManager | undefined;
+  manager: MapManager;
+  mapManager: undefined;
 
-  constructor(mapManager: MapManager) {
-    this.mapManager = mapManager;
+  constructor(manager: MapManager) {
+    this.manager = manager;
   }
 
   getPipe = (x: number, y: number) => {
     let pipe = "";
-    const map = this.mapManager.map;
+    const map = this.manager.map;
     for (let i = 0; i < 4; i++) {
       const [dx, dy] = [x + delta[i][0], y + delta[i][1]];
       if (dx < 0 || dy < 0 || dx >= map[0].length || dy >= map.length) {
@@ -49,7 +43,7 @@ export default class MapElementHandler implements ObjectElementHandler<MapManage
   };
 
   activateObject = (corePos: MapPosition[]) => {
-    const map = this.mapManager.map;
+    const map = this.manager.map;
     const visit: boolean[][] = new Array(map.length);
     const stack: MapPosition[] = [];
     for (let i = 0; i < map.length; i++) {
@@ -75,10 +69,8 @@ export default class MapElementHandler implements ObjectElementHandler<MapManage
         if (visit[nn.y][nn.x]) continue;
         visit[nn.y][nn.x] = true;
         const mapElement = map[nn.y][nn.x].frame.info;
-        // console.log(nn);
         if (mapElement.tag.pipe) stack.push(nn);
         if (mapElement.tag.facilityBase || mapElement.tag.turretBase || mapElement.tag.core) {
-          // console.log(`activate ${nn.x} ${nn.y}`);
           map[nn.y][nn.x].frame.activate = true;
         }
       }
@@ -86,23 +78,25 @@ export default class MapElementHandler implements ObjectElementHandler<MapManage
   };
 
   private drawAll = (callback: Function) => {
-    const context = this.mapManager.contextRef.current;
-    const canvas = this.mapManager.canvasRef.current;
+    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
+    const context = this.manager.contextRef.current;
+    const canvas = this.manager.canvasRef.current;
     if (!context || !canvas) return;
-    const map = this.mapManager.map;
-    const blockSize = this.mapManager.blockSize;
+    const map = this.manager.map;
+    const blockSize = this.manager.blockSize;
     const corePos: MapPosition[] = [];
-    const { width, height } = canvas;
-    context.clearRect(0, 0, width, height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < map.length; i++) {
       for (let j = 0; j < map[i].length; j++) {
         const mapFrame = map[i][j].frame;
+        if (mapFrame.info.images.length === 0) continue;
+        const mapInfo = mapFrame.info;
         const position = mapCoordConverter.mapToCanvasCoord(j, i, blockSize);
         context.save();
         context.translate(position.posX, position.posY);
-        context.drawImage(mapFrame.images[0], 0, 0, blockSize * width, blockSize * height);
+        context.drawImage(mapFrame.info.images[0], 0, 0, mapInfo.width * blockSize, mapInfo.height * blockSize);
         context.restore();
-        callback();
+        callback(mapFrame, corePos);
       }
     }
     this.activateObject(corePos);

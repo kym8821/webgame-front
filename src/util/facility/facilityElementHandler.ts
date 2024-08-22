@@ -39,6 +39,7 @@ export default class FacilityElementHandler implements ObjectElementHandler<Faci
   };
 
   private drawAll = (callback: Function) => {
+    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
     const [canvas, context, facilities] = [this.manager.canvasRef.current, this.manager.contextRef.current, this.manager.objects];
     const blockSize = this.mapManager.blockSize;
     if (!canvas || !context) return;
@@ -46,7 +47,8 @@ export default class FacilityElementHandler implements ObjectElementHandler<Faci
     facilities.forEach((facility) => {
       const { mapPointX, mapPointY, info } = facility.frame;
       const position = mapCoordConverter.mapToCanvasCoord(mapPointX, mapPointY, blockSize);
-      const image = facility.frame.images[facility.frame.frameNumber];
+      if (facility.frame.info.images.length === 0) return;
+      const image = facility.frame.info.images[facility.frame.frameNumber];
       context.save();
       context.translate(position.posX, position.posY - blockSize * (info.height - 1));
       context.drawImage(image, 0, -blockSize * 0.25, blockSize * info.width, blockSize * info.height);

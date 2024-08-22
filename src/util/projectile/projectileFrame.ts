@@ -5,7 +5,7 @@ import { ObjectFrame, ObjectFrameClassType } from "../object/objectFrame";
 import { Position } from "../Position";
 import { ProjectileInfo } from "./projectileInfo";
 
-export interface ProjectileFrame extends ObjectFrame {
+export interface ProjectileFrame extends ObjectFrame<ProjectileInfo> {
   info: ProjectileInfo;
   frameNumber: number;
   move: number;
@@ -13,7 +13,7 @@ export interface ProjectileFrame extends ObjectFrame {
   hitMonsters: number[];
 }
 
-export class ProjectileFrameClass implements ObjectFrameClassType<ProjectileFrame> {
+export class ProjectileFrameClass implements ObjectFrameClassType<ProjectileFrame, ProjectileInfo> {
   static loadFrame = (projectileInfo: ProjectileInfo, launcherFrame: LauncherFrame) => {
     const projectile: ProjectileFrame = {
       info: projectileInfo,

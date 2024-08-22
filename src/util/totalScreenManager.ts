@@ -13,6 +13,6 @@ export interface TotalScreenManager {
   launcherManager: LauncherManagerClass;
   monsterManager: MonsterManagerClass;
   projectileManager: ProjectileManagerClass;
-  resetManagers: CanvasObjectManagerClass<any, any, any>[];
-  transformableManagers: CanvasObjectManagerClass<any, any, any>[];
+  resetManagers: CanvasObjectManagerClass<any, any, any, any>[];
+  transformableManagers: CanvasObjectManagerClass<any, any, any, any>[];
 }

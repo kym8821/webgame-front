@@ -1,3 +1,4 @@
+import monsterImages from "../../assets/images/monster/monsterImages";
 import { ObjectInfo, objectType } from "../object/objectInfo";
 
 export interface MonsterInfo extends ObjectInfo {
@@ -25,10 +26,12 @@ const monsterInfo: Record<string, MonsterInfo> = {
     name: "greenSlime",
     frameSize: 2,
     spawnRate: 80,
-    width: 100,
-    height: 100,
+    width: 1,
+    height: 1,
     lifePoint: 10,
-    speed: 1,
+    speed: 0.3,
+    src: [monsterImages.skeleton0, monsterImages.skeleton1, monsterImages.skeleton2, monsterImages.skeleton3],
+    images: [],
   },
 
   blueSlime: {
@@ -36,10 +39,12 @@ const monsterInfo: Record<string, MonsterInfo> = {
     name: "blueSlime",
     frameSize: 2,
     spawnRate: 80,
-    width: 100,
-    height: 100,
+    width: 1,
+    height: 1,
     lifePoint: 12,
-    speed: 1,
+    speed: 0.3,
+    src: [monsterImages.blueSlime0, monsterImages.blueSlime1],
+    images: [],
   },
 
   skeleton: {
@@ -47,10 +52,12 @@ const monsterInfo: Record<string, MonsterInfo> = {
     name: "skeleton",
     frameSize: 4,
     spawnRate: 50,
-    width: 100,
-    height: 120,
+    width: 1,
+    height: 1.2,
     lifePoint: 20,
-    speed: 1,
+    speed: 0.3,
+    src: [monsterImages.greenSlime0, monsterImages.greenSlime1],
+    images: [],
   },
 };
 

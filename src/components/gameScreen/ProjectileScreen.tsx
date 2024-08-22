@@ -1,21 +1,24 @@
 import style from "../../assets/css/gameScreen.module.css";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { AnimationFrameInfo } from "../../util/animationFrameInfo";
 import { getProjectileInfoById } from "../../util/projectile/projectileInfo";
 import ProjectileElementHandler from "../../util/projectile/projectileElementHandler";
 import { Resource } from "../../util/resource";
 import { TotalScreenManager } from "../../util/totalScreenManager";
 import { ProjectileFrameClass } from "../../util/projectile/projectileFrame";
+import { TotalElementHandler } from "../../util/totalElementHandler";
 
 interface ProjectileScreenProps {
   totalScreenManager: TotalScreenManager | undefined;
+  totalElementHandler: TotalElementHandler | undefined;
   resource: Resource;
   setResource: React.Dispatch<React.SetStateAction<Resource>>;
 }
 
 const ProjectileScreen = ({ totalScreenManager, resource, setResource }: ProjectileScreenProps) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   const projectileHandler: ProjectileElementHandler | null = null;
-
   function animate(animation: AnimationFrameInfo, callback: Function) {
     const step = (timeStamp: number) => {
       const { interval, lastFrameTime } = animation;
@@ -48,7 +51,7 @@ const ProjectileScreen = ({ totalScreenManager, resource, setResource }: Project
     function generateProjectile() {
       if (!projectileHandler || !totalScreenManager) return;
       if (monsters.length === 0) return;
-      const canvas = projectileHandler.manager.canvasRef.current;
+      const canvas = canvasRef.current;
       if (!canvas) return;
       let updatedEnergy = resource.energy;
       launchers.forEach((launcherFrameClass) => {
@@ -74,16 +77,21 @@ const ProjectileScreen = ({ totalScreenManager, resource, setResource }: Project
   }
 
   useEffect(() => {
+    function setCanvasAndContext() {
+      if (!totalScreenManager) return;
+      // set canvas
+      if (!canvasRef.current) return;
+      canvasRef.current.width = canvasRef.current.scrollWidth;
+      canvasRef.current.height = canvasRef.current.width / 2;
+      // set context
+      const context = canvasRef.current.getContext("2d");
+      if (!context) return;
+      contextRef.current = context;
+      totalScreenManager.projectileManager.manager.canvasRef = canvasRef;
+      totalScreenManager.projectileManager.manager.contextRef = contextRef;
+    }
+    setCanvasAndContext();
     if (!totalScreenManager) return;
-    const { canvasRef, contextRef } = totalScreenManager.projectileManager.manager;
-    // set canvas
-    if (!canvasRef.current) return;
-    canvasRef.current.width = canvasRef.current.scrollWidth;
-    canvasRef.current.height = canvasRef.current.width / 2;
-    // set context
-    const context = canvasRef.current.getContext("2d");
-    if (!context) return;
-    contextRef.current = context;
     // set facilityElementHandler
     const mapManager = totalScreenManager.mapManager.manager;
     const projectileManager = totalScreenManager.projectileManager.manager;
@@ -101,7 +109,7 @@ const ProjectileScreen = ({ totalScreenManager, resource, setResource }: Project
 
   return (
     <div className={style.gameScreen}>
-      {totalScreenManager && <canvas ref={totalScreenManager.projectileManager.manager.canvasRef}></canvas>}
+      <canvas ref={canvasRef}></canvas>
     </div>
   );
 };

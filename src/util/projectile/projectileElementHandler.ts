@@ -14,6 +14,7 @@ export default class ProjectileElementHandler implements ObjectElementHandler<Pr
   }
   animate = () => {};
   drawAll = (callback: Function) => {
+    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
     const projectiles = this.manager.objects;
     if (!canvas || !context) return;
@@ -32,6 +33,7 @@ export default class ProjectileElementHandler implements ObjectElementHandler<Pr
   };
   drawNext = (monsters: MonsterFrameClass[]) => {
     const callback = (projectile: ProjectileFrame, position: Position) => {
+      if (!this.manager.canvasRef) return;
       const canvas = this.manager.canvasRef.current;
       if (!canvas) return;
       const [canvasWidth, canvasHeight] = [canvas.width, canvas.height];

@@ -2,17 +2,21 @@ import { useEffect, useRef } from "react";
 import style from "../../assets/css/gameScreen.module.css";
 import { AnimationFrameInfo } from "../../util/animationFrameInfo";
 import LauncherElementHandler from "../../util/launcher/launcherElementHandler";
-import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import { TotalScreenManager } from "../../util/totalScreenManager";
+import launcherInfo from "../../util/launcher/launcherInfo";
+import { TotalElementHandler } from "../../util/totalElementHandler";
+import { SelectedComponent } from "../../util/SelectedComponent";
 
 type LauncherScreenProps = {
   totalScreenManager: TotalScreenManager | undefined;
+  totalElementHandler: TotalElementHandler | undefined;
   selectedComponent: SelectedComponent | null;
 };
 
 const LauncherScreen = ({ totalScreenManager, selectedComponent }: LauncherScreenProps) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   let launcherHandler: LauncherElementHandler | null = null;
-
   function animate(animation: AnimationFrameInfo, callback: Function) {
     const step = (timeStamp: number) => {
       const { interval, lastFrameTime } = animation;
@@ -38,17 +42,16 @@ const LauncherScreen = ({ totalScreenManager, selectedComponent }: LauncherScree
   useEffect(() => {
     function setCanvasAndContext() {
       if (!totalScreenManager) return;
-      const { canvasRef, contextRef } = totalScreenManager.launcherManager.manager;
-      if (!canvasRef || !canvasRef.current) return;
       // set canvas
-      const canvas = canvasRef.current;
-      canvas.width = canvas.scrollWidth;
-      canvas.height = canvas.width / 2;
+      if (!canvasRef.current) return;
+      canvasRef.current.width = canvasRef.current.scrollWidth;
+      canvasRef.current.height = canvasRef.current.width / 2;
       // set context
-      const context = canvas.getContext("2d");
-      if (context) {
-        contextRef.current = context;
-      }
+      const context = canvasRef.current.getContext("2d");
+      if (!context) return;
+      contextRef.current = context;
+      totalScreenManager.launcherManager.manager.canvasRef = canvasRef;
+      totalScreenManager.launcherManager.manager.contextRef = contextRef;
     }
     setCanvasAndContext();
     setLauncherAngleTimer();
@@ -57,11 +60,11 @@ const LauncherScreen = ({ totalScreenManager, selectedComponent }: LauncherScree
       const { animationFrame } = totalScreenManager.launcherManager.manager;
       if (animationFrame.animationFrame) cancelAnimationFrame(animationFrame.animationFrame);
     };
-  }, []);
+  }, [totalScreenManager, canvasRef, contextRef, launcherInfo]);
 
   return (
     <div className={`${style.gameScreen}`}>
-      {totalScreenManager && <canvas ref={totalScreenManager.launcherManager.manager.canvasRef}></canvas>}
+      <canvas ref={canvasRef}></canvas>
     </div>
   );
 };

@@ -1,20 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import style from "../../assets/css/gameScreen.module.css";
-import { SelectedComponent } from "../../pages/gamePage/GamePage";
 import FacilityElementHandler from "../../util/facility/facilityElementHandler";
 import { AnimationFrameInfo } from "../../util/animationFrameInfo";
 import { Resource } from "../../util/resource";
 import { TotalScreenManager } from "../../util/totalScreenManager";
+import facilityInfo from "../../util/facility/facilityInfo";
+import { TotalElementHandler } from "../../util/totalElementHandler";
+import { SelectedComponent } from "../../util/SelectedComponent";
 
 interface FacilityScreenProps {
   page: number;
   totalScreenManager: TotalScreenManager | undefined;
+  totalElementHandler: TotalElementHandler | undefined;
   selectedComponent: SelectedComponent | null;
   resource: Resource;
   setResource: React.Dispatch<React.SetStateAction<Resource>>;
 }
 
-const FacilityScreen = ({ totalScreenManager, resource, setResource }: FacilityScreenProps) => {
+const FacilityScreen = ({ totalScreenManager, totalElementHandler, resource, setResource }: FacilityScreenProps) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   let facilityElementHandler: FacilityElementHandler | null = null;
 
   function animate(animation: AnimationFrameInfo, callback: Function) {
@@ -54,22 +59,27 @@ const FacilityScreen = ({ totalScreenManager, resource, setResource }: FacilityS
   }
 
   useEffect(() => {
-    if (!totalScreenManager) return;
-    const { canvasRef, contextRef } = totalScreenManager.facilityManager.manager;
-    // set canvas
-    if (!canvasRef.current) return;
-    canvasRef.current.width = canvasRef.current.scrollWidth;
-    canvasRef.current.height = canvasRef.current.width / 2;
-    // set context
-    const context = canvasRef.current.getContext("2d");
-    if (!context) return;
-    contextRef.current = context;
+    function setCanvasAndContext() {
+      if (!totalScreenManager) return;
+      // set canvas
+      if (!canvasRef.current) return;
+      canvasRef.current.width = canvasRef.current.scrollWidth;
+      canvasRef.current.height = canvasRef.current.width / 2;
+      // set context
+      const context = canvasRef.current.getContext("2d");
+      if (!context) return;
+      contextRef.current = context;
+      totalScreenManager.facilityManager.manager.canvasRef = canvasRef;
+      totalScreenManager.facilityManager.manager.contextRef = contextRef;
+    }
+    setCanvasAndContext();
     // set facilityElementHandler
+    if (!totalScreenManager) return;
     const mapManager = totalScreenManager.mapManager;
     const facilityManager = totalScreenManager.facilityManager;
     const facilityElementHandler = new FacilityElementHandler(facilityManager.manager, mapManager.manager);
     facilityElementHandler.reDraw();
-  }, [totalScreenManager]);
+  }, [totalScreenManager, totalElementHandler, canvasRef, contextRef, facilityInfo]);
 
   useEffect(() => {
     generateResource();
@@ -84,7 +94,7 @@ const FacilityScreen = ({ totalScreenManager, resource, setResource }: FacilityS
 
   return (
     <div className={`${style.gameScreen}`}>
-      {totalScreenManager && <canvas ref={totalScreenManager.facilityManager.manager.canvasRef}></canvas>}
+      <canvas ref={canvasRef}></canvas>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import facilityImages from "../../assets/images/facility/facilityImages";
 import mapImages from "../../assets/images/map/mapImages";
-import { objectType } from "../object/objectInfo";
+import { ObjectInfo, objectType } from "../object/objectInfo";
 
 interface FacilityTag {
   core: boolean;
@@ -10,20 +10,13 @@ interface FacilityTag {
   objectRemover: boolean;
 }
 
-export interface FacilityInfo {
+export interface FacilityInfo extends ObjectInfo {
   id: number;
-  type: string;
-  name: string;
-  src: string;
-  width: number;
-  height: number;
   tag: FacilityTag;
   energy: number;
   evolveFactor: number;
   energyOutput: number;
   evolveFactorOutput: number;
-  frameSize: number;
-  frames: string[];
 }
 
 export function isFacilityInfo(obj: FacilityInfo) {
@@ -59,7 +52,6 @@ const facilityInfo: Record<string, FacilityInfo> = {
     id: 1,
     type: objectType.facility,
     name: "core",
-    src: facilityImages.core1,
     width: 2,
     height: 2,
     tag: {
@@ -74,13 +66,13 @@ const facilityInfo: Record<string, FacilityInfo> = {
     energyOutput: 5,
     evolveFactorOutput: 1,
     frameSize: 2,
-    frames: [facilityImages.core1, facilityImages.core2],
+    src: [facilityImages.core1, facilityImages.core2],
+    images: [],
   },
   energy: {
     id: 2,
     type: objectType.facility,
     name: "energy facility",
-    src: facilityImages.energy1,
     width: 1,
     height: 1,
     tag: {
@@ -95,13 +87,13 @@ const facilityInfo: Record<string, FacilityInfo> = {
     energyOutput: 1,
     evolveFactorOutput: 0,
     frameSize: 2,
-    frames: [facilityImages.energy1, facilityImages.energy2],
+    src: [facilityImages.energy1, facilityImages.energy2],
+    images: [],
   },
   evolveFactor: {
     id: 3,
     type: objectType.facility,
     name: "evolve facility",
-    src: facilityImages.evolveFactor1,
     width: 1,
     height: 1,
     tag: {
@@ -116,13 +108,13 @@ const facilityInfo: Record<string, FacilityInfo> = {
     energyOutput: 0,
     evolveFactorOutput: 1,
     frameSize: 2,
-    frames: [facilityImages.evolveFactor1, facilityImages.evolveFactor2],
+    src: [facilityImages.evolveFactor1, facilityImages.evolveFactor2],
+    images: [],
   },
   objectRemover: {
     id: 4,
     type: objectType.facility,
     name: "objectRemover",
-    src: mapImages.tile,
     width: 1,
     height: 1,
     tag: {
@@ -137,7 +129,8 @@ const facilityInfo: Record<string, FacilityInfo> = {
     energyOutput: 0,
     evolveFactorOutput: 0,
     frameSize: 1,
-    frames: [mapImages.tile],
+    src: [mapImages.tile],
+    images: [],
   },
 };
 

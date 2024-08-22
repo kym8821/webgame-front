@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useState } from "react";
 import style from "../../assets/css/gameScreen.module.css";
 import mapElementInfo, { MapElementInfo } from "../../util/map/mapElementInfo";
-import { SelectedComponent } from "../../pages/gamePage/GamePage";
-import { SelectedComponentType } from "../../util/canvasClickEvent";
+import { objectType } from "../../util/object/objectInfo";
+import { ComponentPageNumber, SelectedComponent } from "../../util/SelectedComponent";
 
 interface ComponentSelectorType {
   // selectedComponent: React.MutableRefObject<SelectedComponent | null>;
@@ -16,7 +16,7 @@ const MapComponentSelector = ({ selectedComponent, setSelectedComponent }: Compo
   function handleClickedObject(element: MapElementInfo) {
     const sc: SelectedComponent = {
       component: element,
-      type: SelectedComponentType.mapElement,
+      type: ComponentPageNumber.mapElement,
     };
     // selectedComponent.current = sc;
     setSelectedComponent(() => sc);
@@ -37,9 +37,9 @@ const MapComponentSelector = ({ selectedComponent, setSelectedComponent }: Compo
     mapComponents.forEach((element, idx) => {
       if (element.tag.installable) {
         newMapElementList.push(
-          <div key={element.name}>
+          <div key={element.id}>
             <img
-              src={element.src}
+              src={element.src[0]}
               alt={element.id.toString()}
               style={mapElementStyle}
               key={element.id}
@@ -52,7 +52,7 @@ const MapComponentSelector = ({ selectedComponent, setSelectedComponent }: Compo
       }
     });
     setMapElementList(() => newMapElementList);
-  }, []);
+  }, [mapElementInfo, selectedComponent]);
 
   return <div className={style.componentSelector}>{mapElementList}</div>;
 };
