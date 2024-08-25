@@ -1,6 +1,6 @@
-import facilityImages from "../../assets/images/facility/facilityImages";
-import mapImages from "../../assets/images/map/mapImages";
-import { ObjectInfo, objectType } from "../object/objectInfo";
+import facilityImages from '../../assets/images/facility/facilityImages';
+import mapImages from '../../assets/images/map/mapImages';
+import { ObjectInfo, objectType } from '../object/objectInfo';
 
 interface FacilityTag {
   core: boolean;
@@ -8,6 +8,7 @@ interface FacilityTag {
   evolveFactor: boolean;
   installable: boolean;
   objectRemover: boolean;
+  pipe: boolean;
 }
 
 export interface FacilityInfo extends ObjectInfo {
@@ -23,13 +24,13 @@ export function isFacilityInfo(obj: FacilityInfo) {
   console.log(obj);
   if (
     obj.type === objectType.facility &&
-    typeof obj.id === "number" &&
-    typeof obj.name === "string" &&
-    typeof obj.src === "string" &&
-    typeof obj.width === "number" &&
-    typeof obj.height === "number" &&
-    typeof obj.energy === "number" &&
-    typeof obj.evolveFactor === "number"
+    typeof obj.id === 'number' &&
+    typeof obj.name === 'string' &&
+    typeof obj.src === 'string' &&
+    typeof obj.width === 'number' &&
+    typeof obj.height === 'number' &&
+    typeof obj.energy === 'number' &&
+    typeof obj.evolveFactor === 'number'
   ) {
     return true;
   }
@@ -51,7 +52,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
   core: {
     id: 1,
     type: objectType.facility,
-    name: "core",
+    name: 'core',
     width: 2,
     height: 2,
     tag: {
@@ -60,6 +61,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
       evolveFactor: false,
       installable: false,
       objectRemover: false,
+      pipe: false,
     },
     energy: -1,
     evolveFactor: -1,
@@ -72,7 +74,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
   energy: {
     id: 2,
     type: objectType.facility,
-    name: "energy facility",
+    name: 'energy facility',
     width: 1,
     height: 1,
     tag: {
@@ -81,6 +83,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
       evolveFactor: false,
       installable: true,
       objectRemover: false,
+      pipe: false,
     },
     energy: -1,
     evolveFactor: -1,
@@ -93,7 +96,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
   evolveFactor: {
     id: 3,
     type: objectType.facility,
-    name: "evolve facility",
+    name: 'evolve facility',
     width: 1,
     height: 1,
     tag: {
@@ -102,6 +105,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
       evolveFactor: true,
       installable: true,
       objectRemover: false,
+      pipe: false,
     },
     energy: -1,
     evolveFactor: -1,
@@ -114,7 +118,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
   objectRemover: {
     id: 4,
     type: objectType.facility,
-    name: "objectRemover",
+    name: 'objectRemover',
     width: 1,
     height: 1,
     tag: {
@@ -123,6 +127,7 @@ const facilityInfo: Record<string, FacilityInfo> = {
       evolveFactor: false,
       installable: true,
       objectRemover: true,
+      pipe: false,
     },
     energy: -5,
     evolveFactor: -5,
@@ -130,6 +135,45 @@ const facilityInfo: Record<string, FacilityInfo> = {
     evolveFactorOutput: 0,
     frameSize: 1,
     src: [mapImages.tile],
+    images: [],
+  },
+  pipe: {
+    id: 5,
+    type: objectType.facility,
+    name: 'pipe',
+    width: 1,
+    height: 1,
+    tag: {
+      core: false,
+      energy: false,
+      evolveFactor: false,
+      installable: true,
+      objectRemover: false,
+      pipe: true,
+    },
+    energy: 5,
+    evolveFactor: 5,
+    energyOutput: 0,
+    evolveFactorOutput: 0,
+    frameSize: 1,
+    src: [
+      facilityImages.pipe_0000,
+      facilityImages.pipe_0001,
+      facilityImages.pipe_0010,
+      facilityImages.pipe_0011,
+      facilityImages.pipe_0100,
+      facilityImages.pipe_0101,
+      facilityImages.pipe_0110,
+      facilityImages.pipe_0111,
+      facilityImages.pipe_1000,
+      facilityImages.pipe_1001,
+      facilityImages.pipe_1010,
+      facilityImages.pipe_1011,
+      facilityImages.pipe_1100,
+      facilityImages.pipe_1101,
+      facilityImages.pipe_1110,
+      facilityImages.pipe_1111,
+    ],
     images: [],
   },
 };

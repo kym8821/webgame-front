@@ -1,6 +1,6 @@
-import { ObjectFrame, ObjectFrameClassType } from "../object/objectFrame";
-import { Position } from "../Position";
-import { FacilityInfo } from "./facilityInfo";
+import { ObjectFrame, ObjectFrameClassType } from '../object/objectFrame';
+import { Position } from '../Position';
+import { FacilityInfo } from './facilityInfo';
 
 export interface FacilityFrame extends ObjectFrame<FacilityInfo> {
   frameNumber: number;
