@@ -1,21 +1,29 @@
-import { MapManager } from "../map/mapManager";
-import { MonsterFrameClass } from "../monster/monsterFrame";
-import ObjectElementHandler from "../object/ObjectElementHandler";
-import { Position } from "../Position";
-import { LauncherFrameClass } from "./launcherFrame";
-import { LauncherManager } from "./launcherManager";
+import { MapManager } from '../map/mapManager';
+import { MonsterFrameClass } from '../monster/monsterFrame';
+import ObjectElementHandler from '../object/ObjectElementHandler';
+import { Position } from '../Position';
+import { LauncherFrameClass } from './launcherFrame';
+import { LauncherManager, LauncherManagerClass } from './launcherManager';
 
-export default class LauncherElementHandler implements ObjectElementHandler<LauncherManager> {
+export default class LauncherElementHandler implements ObjectElementHandler<LauncherManagerClass> {
   mapManager: MapManager;
   manager: LauncherManager;
+  managerClass: LauncherManagerClass;
 
-  constructor(manager: LauncherManager, mapManager: MapManager) {
+  constructor(managerClass: LauncherManagerClass, mapManager: MapManager) {
     this.mapManager = mapManager;
-    this.manager = manager;
+    this.managerClass = managerClass;
+    this.manager = managerClass.manager;
   }
 
   getLauncherAngle = (monster: MonsterFrameClass, launcher: LauncherFrameClass) => {
-    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
+    if (
+      !this.manager.canvasRef ||
+      !this.manager.contextRef ||
+      !this.manager.canvasRef.current ||
+      !this.manager.contextRef.current
+    )
+      return;
     const canvas = this.manager.canvasRef.current;
     if (!canvas) return;
     const monsterPosition: Position = monster.getPosition(canvas.width, canvas.height, this.mapManager.blockSize);
@@ -29,7 +37,13 @@ export default class LauncherElementHandler implements ObjectElementHandler<Laun
   };
 
   private drawAll = (callback: Function) => {
-    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
+    if (
+      !this.manager.canvasRef ||
+      !this.manager.contextRef ||
+      !this.manager.canvasRef.current ||
+      !this.manager.contextRef.current
+    )
+      return;
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
     if (!canvas || !context) return;
     const launchers = this.manager.objects;
@@ -41,14 +55,25 @@ export default class LauncherElementHandler implements ObjectElementHandler<Laun
       context.save();
       context.translate(position.posX + this.mapManager.blockSize / 2, position.posY + this.mapManager.blockSize / 2);
       callback(launcherFrame);
-      context.drawImage(launcherFrame.images[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
+      context.drawImage(
+        launcherFrame.images[frameNumber],
+        -position.width / 2,
+        -position.height / 2,
+        position.width,
+        position.height
+      );
       context.restore();
     }
   };
 
   drawNext = (monsters: MonsterFrameClass[]) => {
     const callback = (launcherFrame: LauncherFrameClass) => {
-      if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current)
+      if (
+        !this.manager.canvasRef ||
+        !this.manager.contextRef ||
+        !this.manager.canvasRef.current ||
+        !this.manager.contextRef.current
+      )
         return;
       const monsterOnFront = monsters.at(0);
       const activate = this.mapManager.map[launcherFrame.frame.mapPointY][launcherFrame.frame.mapPointX].frame.activate;
@@ -70,6 +95,11 @@ export default class LauncherElementHandler implements ObjectElementHandler<Laun
   };
 
   animate = () => {
-    throw new Error("invalid function call : launcher animate");
+    throw new Error('invalid function call : launcher animate');
+  };
+
+  reset = () => {
+    this.managerClass.deleteAll();
+    this.reDraw();
   };
 }

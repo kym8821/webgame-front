@@ -1,7 +1,7 @@
-import { MapManager } from "./mapManager";
-import mapCoordConverter from "./mapCoordConverter";
-import ObjectElementHandler from "../object/ObjectElementHandler";
-import { MapFrame, MapFrameClass } from "./mapFrame";
+import { MapManager, MapManagerClass } from './mapManager';
+import mapCoordConverter from './mapCoordConverter';
+import ObjectElementHandler from '../object/ObjectElementHandler';
+import { MapFrame, MapFrameClass } from './mapFrame';
 
 interface MapPosition {
   x: number;
@@ -15,28 +15,30 @@ const delta = [
   [-1, 0],
 ];
 
-export default class MapElementHandler implements ObjectElementHandler<MapManager> {
+export default class MapElementHandler implements ObjectElementHandler<MapManagerClass> {
   manager: MapManager;
+  managerClass: MapManagerClass;
   mapManager: undefined;
 
-  constructor(manager: MapManager) {
-    this.manager = manager;
+  constructor(managerClass: MapManagerClass) {
+    this.managerClass = managerClass;
+    this.manager = managerClass.manager;
   }
 
   getPipe = (x: number, y: number) => {
-    let pipe = "";
+    let pipe = '';
     const map = this.manager.map;
     for (let i = 0; i < 4; i++) {
       const [dx, dy] = [x + delta[i][0], y + delta[i][1]];
       if (dx < 0 || dy < 0 || dx >= map[0].length || dy >= map.length) {
-        pipe = pipe + "0";
+        pipe = pipe + '0';
         continue;
       }
       const elementInfo = map[dy][dx].frame.info;
       if (!elementInfo.tag.tile) {
-        pipe = pipe + "1";
+        pipe = pipe + '1';
       } else {
-        pipe = pipe + "0";
+        pipe = pipe + '0';
       }
     }
     return `pipe_${pipe}`;
@@ -78,7 +80,13 @@ export default class MapElementHandler implements ObjectElementHandler<MapManage
   };
 
   private drawAll = (callback: Function) => {
-    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
+    if (
+      !this.manager.canvasRef ||
+      !this.manager.contextRef ||
+      !this.manager.canvasRef.current ||
+      !this.manager.contextRef.current
+    )
+      return;
     const context = this.manager.contextRef.current;
     const canvas = this.manager.canvasRef.current;
     if (!context || !canvas) return;
@@ -130,5 +138,12 @@ export default class MapElementHandler implements ObjectElementHandler<MapManage
       }
     };
     this.drawAll(callback);
+  };
+
+  reset = () => {
+    this.managerClass.deleteAll();
+    this.manager.numberMap = MapManagerClass.loadNumberMap(20, 20);
+    this.manager.map = MapManagerClass.convertNumberMapToMapFrameMap(this.manager.numberMap);
+    this.reDraw();
   };
 }

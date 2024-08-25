@@ -1,12 +1,12 @@
-import { useEffect, useRef } from "react";
-import style from "../../assets/css/gameScreen.module.css";
-import FacilityElementHandler from "../../util/facility/facilityElementHandler";
-import { AnimationFrameInfo } from "../../util/animationFrameInfo";
-import { Resource } from "../../util/resource";
-import { TotalScreenManager } from "../../util/totalScreenManager";
-import facilityInfo from "../../util/facility/facilityInfo";
-import { TotalElementHandler } from "../../util/totalElementHandler";
-import { SelectedComponent } from "../../util/SelectedComponent";
+import { useEffect, useRef } from 'react';
+import style from '../../assets/css/gameScreen.module.css';
+import FacilityElementHandler from '../../util/facility/facilityElementHandler';
+import { AnimationFrameInfo } from '../../util/animationFrameInfo';
+import { Resource } from '../../util/resource';
+import { TotalScreenManager } from '../../util/totalScreenManager';
+import facilityInfo from '../../util/facility/facilityInfo';
+import { TotalElementHandler } from '../../util/totalElementHandler';
+import { SelectedComponent } from '../../util/SelectedComponent';
 
 interface FacilityScreenProps {
   page: number;
@@ -66,7 +66,7 @@ const FacilityScreen = ({ totalScreenManager, totalElementHandler, resource, set
       canvasRef.current.width = canvasRef.current.scrollWidth;
       canvasRef.current.height = canvasRef.current.width / 2;
       // set context
-      const context = canvasRef.current.getContext("2d");
+      const context = canvasRef.current.getContext('2d');
       if (!context) return;
       contextRef.current = context;
       totalScreenManager.facilityManager.manager.canvasRef = canvasRef;
@@ -74,11 +74,8 @@ const FacilityScreen = ({ totalScreenManager, totalElementHandler, resource, set
     }
     setCanvasAndContext();
     // set facilityElementHandler
-    if (!totalScreenManager) return;
-    const mapManager = totalScreenManager.mapManager;
-    const facilityManager = totalScreenManager.facilityManager;
-    const facilityElementHandler = new FacilityElementHandler(facilityManager.manager, mapManager.manager);
-    facilityElementHandler.reDraw();
+    if (!totalScreenManager || !totalElementHandler) return;
+    totalElementHandler.facilityHandler.reDraw();
   }, [totalScreenManager, totalElementHandler, canvasRef, contextRef, facilityInfo]);
 
   useEffect(() => {

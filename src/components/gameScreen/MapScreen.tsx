@@ -1,13 +1,13 @@
-import { useEffect, useRef } from "react";
-import style from "../../assets/css/gameScreen.module.css";
-import { MapManagerClass } from "../../util/map/mapManager";
-import { getCurrentBlockSize } from "../../util/windowSize";
-import MapElementHandler from "../../util/map/mapElementHandler";
-import { TotalScreenManager } from "../../util/totalScreenManager";
-import mapImages from "../../assets/images/map/mapImages";
-import mapElementInfo from "../../util/map/mapElementInfo";
-import { TotalElementHandler } from "../../util/totalElementHandler";
-import { SelectedComponent } from "../../util/SelectedComponent";
+import { useEffect, useRef } from 'react';
+import style from '../../assets/css/gameScreen.module.css';
+import { MapManagerClass } from '../../util/map/mapManager';
+import { getCurrentBlockSize } from '../../util/windowSize';
+import MapElementHandler from '../../util/map/mapElementHandler';
+import { TotalScreenManager } from '../../util/totalScreenManager';
+import mapImages from '../../assets/images/map/mapImages';
+import mapElementInfo from '../../util/map/mapElementInfo';
+import { TotalElementHandler } from '../../util/totalElementHandler';
+import { SelectedComponent } from '../../util/SelectedComponent';
 
 // const map = [
 //   [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
@@ -47,13 +47,13 @@ const mapScreenHandler: MapScreenHandler = {
   defaultMapElementHandler: undefined,
 };
 
-const MapScreen = ({ page, selectedComponent, totalScreenManager }: MapScreenProps) => {
+const MapScreen = ({ totalScreenManager, totalElementHandler }: MapScreenProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   let mapElementHandler: MapElementHandler | null = null;
 
   useEffect(() => {
-    if (!totalScreenManager) return;
+    if (!totalScreenManager || !totalElementHandler) return;
     function setCanvasAndContext() {
       if (!totalScreenManager) return;
       // set canvas
@@ -61,7 +61,7 @@ const MapScreen = ({ page, selectedComponent, totalScreenManager }: MapScreenPro
       canvasRef.current.width = canvasRef.current.scrollWidth;
       canvasRef.current.height = canvasRef.current.width / 2;
       // set context
-      const context = canvasRef.current.getContext("2d");
+      const context = canvasRef.current.getContext('2d');
       if (!context) return;
       contextRef.current = context;
       totalScreenManager.mapManager.manager.canvasRef = canvasRef;
@@ -76,11 +76,8 @@ const MapScreen = ({ page, selectedComponent, totalScreenManager }: MapScreenPro
     const mapManager = totalScreenManager.mapManager.manager;
     const currentBlockSize = getCurrentBlockSize(canvasRef.current.width, canvasRef.current.height, map);
     if (currentBlockSize) mapManager.blockSize = currentBlockSize;
-    mapManager.map = MapManagerClass.convertNumberMapToMapFrameMap(map);
-    mapManager.numberMap = map;
     // set object manager
-    if (!mapElementHandler) mapElementHandler = new MapElementHandler(mapManager);
-    mapElementHandler.reDraw();
+    totalElementHandler.mapHandler.reDraw();
     return () => {};
   }, [totalScreenManager, canvasRef, contextRef, mapElementInfo]);
 

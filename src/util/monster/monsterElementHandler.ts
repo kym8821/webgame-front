@@ -1,22 +1,32 @@
-import mapCoordConverter from "../map/mapCoordConverter";
-import { MapManager } from "../map/mapManager";
-import ObjectElementHandler from "../object/ObjectElementHandler";
-import MonsterFrame from "./monsterFrame";
-import { MonsterManager } from "./monsterManager";
+import mapCoordConverter from '../map/mapCoordConverter';
+import { MapManager } from '../map/mapManager';
+import ObjectElementHandler from '../object/ObjectElementHandler';
+import MonsterFrame from './monsterFrame';
+import { MonsterManager, MonsterManagerClass } from './monsterManager';
 
-export default class MonsterElementHandler implements ObjectElementHandler<MonsterManager> {
-  constructor(manager: MonsterManager, mapManager: MapManager) {
-    this.manager = manager;
+export default class MonsterElementHandler implements ObjectElementHandler<MonsterManagerClass> {
+  constructor(managerClass: MonsterManagerClass, mapManager: MapManager) {
+    this.managerClass = managerClass;
+    this.manager = managerClass.manager;
     this.mapManager = mapManager;
-    if (manager.objects.length > 0) this.monsterId = manager.objects[manager.objects.length - 1].frame.id + 1;
+    if (managerClass.manager.objects.length > 0)
+      this.monsterId = managerClass.manager.objects[managerClass.manager.objects.length - 1].frame.id + 1;
     else this.monsterId = 1;
   }
+  managerClass: MonsterManagerClass;
   manager: MonsterManager;
   mapManager: MapManager;
   monsterId: number;
 
   private drawAll = (callback: (monsterFrame: MonsterFrame, idx: number, mpx: number, mpy: number) => void) => {
-    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
+    const manager = this.managerClass.manager;
+    if (
+      !this.manager.canvasRef ||
+      !this.manager.contextRef ||
+      !this.manager.canvasRef.current ||
+      !this.manager.contextRef.current
+    )
+      return;
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
     const monsters = this.manager.objects;
     if (!canvas || !context) return;
@@ -26,10 +36,16 @@ export default class MonsterElementHandler implements ObjectElementHandler<Monst
       const [info, frame] = [monster.frame.info, monster.frame];
       const frameNumber = frame.frameNumber;
       const position = monster.getPosition(canvas.width, canvas.height, this.mapManager.blockSize);
-      const [mpx, mpy] = mapCoordConverter.canvasToMapCoord(position.posX, position.posY, this.mapManager.blockSize);
+      const [mpx, mpy] = mapCoordConverter.canvasToMapCoord(position.posX, position.posY, this.mapManager);
       context.save();
       context.translate(position.posX + position.width / 2, position.posY + position.height / 2);
-      context.drawImage(frame.images[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
+      context.drawImage(
+        frame.images[frameNumber],
+        -position.width / 2,
+        -position.height / 2,
+        position.width,
+        position.height
+      );
       context.restore();
       callback(monster.frame, i, mpx, mpy);
     }
@@ -52,7 +68,13 @@ export default class MonsterElementHandler implements ObjectElementHandler<Monst
   };
 
   animate = () => {
-    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
+    if (
+      !this.manager.canvasRef ||
+      !this.manager.contextRef ||
+      !this.manager.canvasRef.current ||
+      !this.manager.contextRef.current
+    )
+      return;
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
     const monsters = this.manager.objects;
     if (!canvas || !context) return;
@@ -63,5 +85,9 @@ export default class MonsterElementHandler implements ObjectElementHandler<Monst
       const frameSize = info.frameSize;
       monsters[i].frame.frameNumber = (frameNumber + 1) % frameSize;
     }
+  };
+  reset = () => {
+    this.managerClass.deleteAll();
+    this.reDraw();
   };
 }
