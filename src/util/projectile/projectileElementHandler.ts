@@ -1,20 +1,28 @@
-import { MapManager } from "../map/mapManager";
-import { MonsterFrameClass } from "../monster/monsterFrame";
-import ObjectElementHandler from "../object/ObjectElementHandler";
-import { Position } from "../Position";
-import { ProjectileFrame } from "./projectileFrame";
-import { ProjectileManager } from "./projectileManager";
+import { MapManager } from '../map/mapManager';
+import { MonsterFrameClass } from '../monster/monsterFrame';
+import ObjectElementHandler from '../object/ObjectElementHandler';
+import { Position } from '../Position';
+import { ProjectileFrame } from './projectileFrame';
+import { ProjectileManager, ProjectileManagerClass } from './projectileManager';
 
-export default class ProjectileElementHandler implements ObjectElementHandler<ProjectileManager> {
+export default class ProjectileElementHandler implements ObjectElementHandler<ProjectileManagerClass> {
   mapManager: MapManager;
+  managerClass: ProjectileManagerClass;
   manager: ProjectileManager;
-  constructor(projectileManager: ProjectileManager, mapManager: MapManager) {
-    this.manager = projectileManager;
+  constructor(projectileManagerClass: ProjectileManagerClass, mapManager: MapManager) {
+    this.managerClass = projectileManagerClass;
+    this.manager = projectileManagerClass.manager;
     this.mapManager = mapManager;
   }
   animate = () => {};
   drawAll = (callback: Function) => {
-    if (!this.manager.canvasRef || !this.manager.contextRef || !this.manager.canvasRef.current || !this.manager.contextRef.current) return;
+    if (
+      !this.manager.canvasRef ||
+      !this.manager.contextRef ||
+      !this.manager.canvasRef.current ||
+      !this.manager.contextRef.current
+    )
+      return;
     const [canvas, context] = [this.manager.canvasRef.current, this.manager.contextRef.current];
     const projectiles = this.manager.objects;
     if (!canvas || !context) return;
@@ -26,7 +34,13 @@ export default class ProjectileElementHandler implements ObjectElementHandler<Pr
       context.save();
       context.translate(position.posX + this.mapManager.blockSize / 2, position.posY + this.mapManager.blockSize / 2);
       context.rotate(projectile.angle);
-      context.drawImage(projectile.images[frameNumber], -position.width / 2, -position.height / 2, position.width, position.height);
+      context.drawImage(
+        projectile.images[frameNumber],
+        -position.width / 2,
+        -position.height / 2,
+        position.width,
+        position.height
+      );
       context.restore();
       callback(projectile, position);
     }
@@ -59,5 +73,9 @@ export default class ProjectileElementHandler implements ObjectElementHandler<Pr
   reDraw = () => {
     const callback = () => {};
     this.drawAll(callback);
+  };
+  reset = () => {
+    this.managerClass.deleteAll();
+    this.reDraw();
   };
 }

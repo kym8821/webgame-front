@@ -1,9 +1,12 @@
-import { CanvasManager } from "./CanvasManager";
-import { ObjectFrame, ObjectFrameClassType } from "../objectFrame";
-import { ObjectInfo } from "../objectInfo";
+import { CanvasManager } from './CanvasManager';
+import { ObjectFrame, ObjectFrameClassType } from '../objectFrame';
+import { ObjectInfo } from '../objectInfo';
 
-export interface CanvasObjectManager<T1 extends ObjectFrameClassType<T2, T3>, T2 extends ObjectFrame<T3>, T3 extends ObjectInfo>
-  extends CanvasManager {
+export interface CanvasObjectManager<
+  T1 extends ObjectFrameClassType<T2, T3>,
+  T2 extends ObjectFrame<T3>,
+  T3 extends ObjectInfo
+> extends CanvasManager {
   objects: T1[];
 }
 
@@ -52,5 +55,15 @@ export abstract class CanvasObjectManagerClass<
       return false;
     }
     this.delete(callback);
+  };
+  findByMapPoint = (mpx: number, mpy: number) => {
+    for (let i = 0; i < this.manager.objects.length; i++) {
+      const obj = this.manager.objects[i].frame;
+      const { mapPointX, mapPointY } = obj;
+      const [boundX, boundY] = [mapPointX + (obj.info.width - 1), mapPointY + (obj.info.height - 1)];
+      if (mpx < mapPointX || mpy < mapPointY) continue;
+      if (mpx > boundX || mpy > boundY) continue;
+      return obj;
+    }
   };
 }

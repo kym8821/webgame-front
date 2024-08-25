@@ -1,25 +1,26 @@
-import LauncherScreen from "../../components/gameScreen/LauncherScreen";
-import MonsterScreen from "../../components/gameScreen/MonsterScreen";
-import style from "../../assets/css/gameScreen.module.css";
-import { useEffect, useRef, useState } from "react";
-import ProjectileScreen from "../../components/gameScreen/ProjectileScreen";
-import MapScreen from "../../components/gameScreen/MapScreen";
-import GameObjectFooter from "../../components/footer/GameObjectFooter";
-import UserInterfaceScreen from "../../components/gameScreen/UserInterfaceScreen";
-import GameObjectSideBar from "../../components/sideBar/GameObjectSibeBar";
-import FacilityScreen from "../../components/gameScreen/facilityScreen";
-import facilityInfo from "../../util/facility/facilityInfo";
-import { Resource } from "../../util/resource";
-import GameScreenTopBar from "../../components/topbar/gameScreenTopBar";
-import GameOverModal from "../../components/modal/GameOverModal";
-import FacilityElementHandler from "../../util/facility/facilityElementHandler";
-import { TotalScreenManager } from "../../util/totalScreenManager";
-import { TotalElementHandler } from "../../util/totalElementHandler";
-import { loadObjectInfoImages } from "../../loader/imageLoader";
-import { loadTotalScreenManager } from "../../loader/managerLoader";
-import { loadTotalElementHandler } from "../../loader/elementHandlerLoader,";
-import { FacilityFrameClass } from "../../util/facility/facilityFrame";
-import { SelectedComponent } from "../../util/SelectedComponent";
+import LauncherScreen from '../../components/gameScreen/LauncherScreen';
+import MonsterScreen from '../../components/gameScreen/MonsterScreen';
+import style from '../../assets/css/gameScreen.module.css';
+import { useEffect, useRef, useState } from 'react';
+import ProjectileScreen from '../../components/gameScreen/ProjectileScreen';
+import MapScreen from '../../components/gameScreen/MapScreen';
+import GameObjectFooter from '../../components/footer/GameObjectFooter';
+import UserInterfaceScreen from '../../components/gameScreen/UserInterfaceScreen';
+import GameObjectSideBar from '../../components/sideBar/GameObjectSibeBar';
+import FacilityScreen from '../../components/gameScreen/facilityScreen';
+import facilityInfo from '../../util/facility/facilityInfo';
+import { Resource } from '../../util/resource';
+import GameScreenTopBar from '../../components/topbar/gameScreenTopBar';
+import GameOverModal from '../../components/modal/GameOverModal';
+import FacilityElementHandler from '../../util/facility/facilityElementHandler';
+import { TotalScreenManager } from '../../util/totalScreenManager';
+import { TotalElementHandler } from '../../util/totalElementHandler';
+import { loadObjectInfoImages } from '../../loader/imageLoader';
+import { loadTotalScreenManager } from '../../loader/managerLoader';
+import { loadTotalElementHandler } from '../../loader/elementHandlerLoader,';
+import { FacilityFrameClass } from '../../util/facility/facilityFrame';
+import { SelectedComponent } from '../../util/SelectedComponent';
+import { convertNumberMapToMapFrameMap, MapManagerClass } from '../../util/map/mapManager';
 
 const GamePage = () => {
   // const selectedComponent = useRef<SelectedComponent | null>(null);
@@ -37,21 +38,16 @@ const GamePage = () => {
   });
 
   function resetGame() {
-    if (!totalScreenManager.current) return;
-    const mapManager = totalScreenManager.current.mapManager;
-    const facilityManager = totalScreenManager.current.facilityManager;
-    const facilityElementHandler = new FacilityElementHandler(facilityManager.manager, mapManager.manager);
-    totalScreenManager.current.resetManagers.forEach((manager) => {
-      manager.deleteAll();
+    if (!totalScreenManager.current || !totalElementHandler.current) return;
+    totalElementHandler.current.redrawScreenLists.forEach((handler) => {
+      handler.reset();
     });
-    totalScreenManager.current.facilityManager.add(FacilityFrameClass.loadFrame(facilityInfo.core, 14, 2));
-    facilityElementHandler.reDraw();
     setResource(() => ({
       energy: 20,
       energyOutput: facilityInfo.core.energyOutput,
       evolveFactor: 20,
       evolveFactorOutput: facilityInfo.core.evolveFactorOutput,
-      health: 100,
+      health: 10000,
     }));
   }
 
@@ -66,7 +62,9 @@ const GamePage = () => {
   return (
     <div className={style.gamePage}>
       {resource.health <= 0 && <GameOverModal setResource={setResource} resetGame={resetGame} />}
-      {totalScreenManager.current && <GameScreenTopBar resource={resource} mapManager={totalScreenManager.current.mapManager} />}
+      {totalScreenManager.current && (
+        <GameScreenTopBar resource={resource} mapManager={totalScreenManager.current.mapManager} />
+      )}
       <div>
         <UserInterfaceScreen
           totalScreenManager={totalScreenManager.current}

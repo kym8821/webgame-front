@@ -1,11 +1,22 @@
-import { CanvasObjectManager, CanvasObjectManagerClass } from "../object/objectManager/canvasObjectManager";
-import { getMapInfoById, MapElementInfo } from "./mapElementInfo";
-import { MapFrame, MapFrameClass } from "./mapFrame";
+import { CanvasObjectManager, CanvasObjectManagerClass } from '../object/objectManager/canvasObjectManager';
+import { Coordinate } from '../Position';
+import mapElementInfo, { getMapInfoById, MapElementInfo } from './mapElementInfo';
+import { MapFrame, MapFrameClass } from './mapFrame';
+
+interface TransformInfo {
+  scale: number;
+  panning: boolean;
+  viewPos: Coordinate;
+  startPos: Coordinate;
+  minScale: number;
+  maxScale: number;
+}
 
 export interface MapManager extends CanvasObjectManager<MapFrameClass, MapFrame, MapElementInfo> {
   numberMap: number[][];
   map: MapFrameClass[][];
   blockSize: number;
+  transformInfo: TransformInfo;
 }
 
 export function convertNumberMapToMapFrameMap(map: number[][]) {
@@ -40,5 +51,21 @@ export class MapManagerClass extends CanvasObjectManagerClass<MapManager, MapFra
       }
     }
     return mapFrameMap;
+  };
+
+  static loadNumberMap = (width: number, height: number) => {
+    const map: number[][] = new Array(height);
+    // set map init
+    for (let i = 0; i < height; i++) {
+      map[i] = new Array(width);
+      for (let j = 0; j < width; j++) map[i][j] = mapElementInfo.tile.id;
+    }
+    // set core
+    for (let i = height / 2 - 1; i <= height / 2; i++) {
+      for (let j = width / 2 - 1; j <= width / 2; j++) {
+        map[i][j] = mapElementInfo.core.id;
+      }
+    }
+    return map;
   };
 }

@@ -10,11 +10,7 @@ const defaultWindowSize: WindowSize = {
 
 export function getCurrentBlockSize(canvasWidth: number, canvasHeight: number, map: number[][]) {
   if (map.length <= 0) return undefined;
-  // const mapLength = map[0].length > 20 ? 20 : map[0].length;
-  // const mapLength = map[0].length;
-  const currentWindowSize =
-    map[0].length / map.length > 2 ? canvasHeight / Math.min(10, map.length) : canvasWidth / Math.min(20, map[0].length);
-  // const currentWindowSize = canvasWidth / mapLength;
+  const currentWindowSize = map[0].length / map.length > 2 ? canvasHeight / map.length : canvasWidth / map[0].length;
   return currentWindowSize;
 }
 

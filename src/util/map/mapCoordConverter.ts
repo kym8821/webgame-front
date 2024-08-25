@@ -1,5 +1,5 @@
-import { Position } from "../Position";
-import { MapManager } from "./mapManager";
+import { Position } from '../Position';
+import { MapManager } from './mapManager';
 
 interface MapPosition {
   x: number;
@@ -26,8 +26,11 @@ function mapToCanvasCoord(x: number, y: number, blockSize: number) {
   return position;
 }
 
-function canvasToMapCoord(x: number, y: number, blockSize: number) {
-  const [posX, posY] = [Math.floor(x / blockSize), Math.floor(y / blockSize)];
+function canvasToMapCoord(x: number, y: number, mapManager: MapManager) {
+  const blockSize = mapManager.blockSize;
+  const { viewPos, scale } = mapManager.transformInfo;
+  const [canvasPosX, canvasPosY] = [(x - viewPos.posX) / scale, (y - viewPos.posY) / scale];
+  const [posX, posY] = [Math.floor(canvasPosX / blockSize), Math.floor(canvasPosY / blockSize)];
   return [posX, posY];
 }
 

@@ -1,8 +1,8 @@
-import { ObjectFrame, ObjectFrameClassType } from "../object/objectFrame";
-import { MonsterInfo } from "./monsterInfo";
-import mapCoordConverter from "../map/mapCoordConverter";
-import { Position } from "../Position";
-import { MapManager } from "../map/mapManager";
+import { ObjectFrame, ObjectFrameClassType } from '../object/objectFrame';
+import { MonsterInfo } from './monsterInfo';
+import mapCoordConverter from '../map/mapCoordConverter';
+import { Position } from '../Position';
+import { MapManager } from '../map/mapManager';
 
 export interface MonsterFrame extends ObjectFrame<MonsterInfo> {
   id: number;
@@ -36,7 +36,11 @@ export class MonsterFrameClass implements ObjectFrameClassType<MonsterFrame, Mon
   }
   frame: MonsterFrame;
   getPosition = (canvasWidth: number, canvasHeight: number, blockSize: number) => {
-    const position: Position = mapCoordConverter.mapToCanvasCoord(this.frame.mapPointY, this.frame.mapPointY, blockSize);
+    const position: Position = mapCoordConverter.mapToCanvasCoord(
+      this.frame.mapPointY,
+      this.frame.mapPointY,
+      blockSize
+    );
     const width = this.frame.info.width * blockSize;
     const height = this.frame.info.height * blockSize;
     const posX = position.posX + this.frame.move * blockSize * 0.1;
@@ -54,7 +58,7 @@ export class MonsterFrameClass implements ObjectFrameClassType<MonsterFrame, Mon
   };
   intersectWithCore = (canvasWidth: number, canvasHeight: number, mapManager: MapManager, blockSize: number) => {
     const { posX, posY } = this.getPosition(canvasWidth, canvasHeight, mapManager.blockSize);
-    const [mapPosX, mapPosY] = mapCoordConverter.canvasToMapCoord(posX, posY, blockSize);
+    const [mapPosX, mapPosY] = mapCoordConverter.canvasToMapCoord(posX, posY, mapManager);
     const map = mapManager.map;
     if (mapPosX < 0 || mapPosY < 0 || mapPosX >= map.length || mapPosY >= map[0].length) return true;
     return false;

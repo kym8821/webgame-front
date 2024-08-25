@@ -1,10 +1,10 @@
-import { FacilityManagerClass } from "../util/facility/facilityManager";
-import { LauncherManagerClass } from "../util/launcher/launcherManager";
-import { MapManagerClass } from "../util/map/mapManager";
-import { MonsterManagerClass } from "../util/monster/monsterManager";
-import { CanvasManager } from "../util/object/objectManager/CanvasManager";
-import { ProjectileManagerClass } from "../util/projectile/projectileManager";
-import { TotalScreenManager } from "../util/totalScreenManager";
+import { FacilityManagerClass } from '../util/facility/facilityManager';
+import { LauncherManagerClass } from '../util/launcher/launcherManager';
+import { MapManagerClass } from '../util/map/mapManager';
+import { MonsterManagerClass } from '../util/monster/monsterManager';
+import { CanvasManager } from '../util/object/objectManager/CanvasManager';
+import { ProjectileManagerClass } from '../util/projectile/projectileManager';
+import { TotalScreenManager } from '../util/totalScreenManager';
 
 export function loadTotalScreenManager() {
   const userScreenManager: CanvasManager = {
@@ -59,6 +59,14 @@ export function loadTotalScreenManager() {
     objects: [],
     canvasRef: null,
     contextRef: null,
+    transformInfo: {
+      scale: 1,
+      panning: false,
+      viewPos: { posX: 0, posY: 0 },
+      startPos: { posX: 0, posY: 0 },
+      minScale: 0.3,
+      maxScale: 3,
+    },
   });
   const facilityManager: FacilityManagerClass = new FacilityManagerClass({
     generationFrame: {
@@ -92,7 +100,6 @@ export function loadTotalScreenManager() {
     monsterManager: monsterManager,
     projectileManager: projectileManager,
     mapManager: mapManager,
-    resetManagers: [launcherManager, facilityManager, monsterManager, projectileManager],
     transformableManagers: [launcherManager, facilityManager, monsterManager, projectileManager, mapManager],
   };
   return totalScreenManager;

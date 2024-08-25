@@ -1,5 +1,5 @@
-import mapImages from "../../assets/images/map/mapImages";
-import { ObjectInfo, objectType } from "../object/objectInfo";
+import mapImages from '../../assets/images/map/mapImages';
+import { ObjectInfo, objectType } from '../object/objectInfo';
 
 interface MapElementTag {
   pipe: boolean;
@@ -21,11 +21,11 @@ export interface MapElementInfo extends ObjectInfo {
 export function isMapElementInfo(obj: MapElementInfo) {
   if (
     obj.type === objectType.mapElement &&
-    typeof obj.name === "string" &&
-    typeof obj.id === "number" &&
-    typeof obj.src === "string" &&
-    typeof obj.width === "number" &&
-    typeof obj.height === "number" &&
+    typeof obj.name === 'string' &&
+    typeof obj.id === 'number' &&
+    typeof obj.src === 'string' &&
+    typeof obj.width === 'number' &&
+    typeof obj.height === 'number' &&
     obj.tag
   ) {
     return true;
@@ -41,7 +41,7 @@ export function getMapInfoById(id: number) {
       ret = info;
     }
   });
-  if (!ret) return mapElementInfo["ex"];
+  if (!ret) return mapElementInfo['ex'];
   return ret;
 }
 
@@ -49,7 +49,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   turretBase: {
     images: [],
     frameSize: 1,
-    name: "터렛 베이스",
+    name: '터렛 베이스',
     type: objectType.mapElement,
     id: 0,
     width: 1,
@@ -70,7 +70,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   floor: {
     images: [],
     frameSize: 1,
-    name: "바닥",
+    name: '바닥',
     type: objectType.mapElement,
     id: 1,
     width: 1,
@@ -91,7 +91,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   ex: {
     images: [],
     frameSize: 1,
-    name: "에러타일",
+    name: '에러타일',
     type: objectType.mapElement,
     id: 2,
     width: 1,
@@ -112,7 +112,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   core: {
     images: [],
     frameSize: 1,
-    name: "코어",
+    name: '코어',
     type: objectType.mapElement,
     id: 3,
     width: 1,
@@ -133,7 +133,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   tile: {
     images: [],
     frameSize: 1,
-    name: "타일",
+    name: '타일',
     type: objectType.mapElement,
     id: 4,
     width: 1,
@@ -154,12 +154,29 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   pipe: {
     images: [],
     frameSize: 1,
-    name: "파이프",
+    name: '파이프',
     type: objectType.mapElement,
     id: 5,
     width: 1,
     height: 1,
-    src: [mapImages.pipe_0000],
+    src: [
+      mapImages.pipe_0000,
+      mapImages.pipe_0001,
+      mapImages.pipe_0010,
+      mapImages.pipe_0011,
+      mapImages.pipe_0100,
+      mapImages.pipe_0101,
+      mapImages.pipe_0110,
+      mapImages.pipe_0111,
+      mapImages.pipe_1000,
+      mapImages.pipe_1001,
+      mapImages.pipe_1010,
+      mapImages.pipe_1011,
+      mapImages.pipe_1100,
+      mapImages.pipe_1101,
+      mapImages.pipe_1110,
+      mapImages.pipe_1111,
+    ],
     tag: {
       pipe: true,
       tile: false,
@@ -175,7 +192,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   objectRemover: {
     images: [],
     frameSize: 1,
-    name: "모듈 제거",
+    name: '모듈 제거',
     type: objectType.mapElement,
     id: 6,
     width: 1,
@@ -196,7 +213,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   facilityBase: {
     images: [],
     frameSize: 1,
-    name: "시설 베이스",
+    name: '시설 베이스',
     type: objectType.mapElement,
     id: 7,
     width: 1,
@@ -217,7 +234,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   pipeFacilityBase: {
     images: [],
     frameSize: 1,
-    name: "감염",
+    name: '감염',
     type: objectType.mapElement,
     id: 8,
     width: 1,
@@ -238,7 +255,7 @@ const mapElementInfo: Record<string, MapElementInfo> = {
   background: {
     images: [],
     frameSize: 1,
-    name: "배경",
+    name: '배경',
     type: objectType.mapElement,
     id: 9,
     width: 1,

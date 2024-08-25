@@ -1,20 +1,28 @@
-import { LauncherInfo } from "./launcher/launcherInfo";
-import mapCoordConverter from "./map/mapCoordConverter";
-import mapElementInfo, { MapElementInfo } from "./map/mapElementInfo";
-import { FacilityInfo } from "./facility/facilityInfo";
-import { Resource } from "./resource";
-import { TotalElementHandler } from "./totalElementHandler";
-import { FacilityFrameClass } from "./facility/facilityFrame";
-import { MapFrameClass } from "./map/mapFrame";
-import { TotalScreenManager } from "./totalScreenManager";
-import { LauncherFrameClass } from "./launcher/launcherFrame";
-import { objectType } from "./object/objectInfo";
-import { ComponentPageNumber, SelectedComponent } from "./SelectedComponent";
+import { LauncherInfo } from './launcher/launcherInfo';
+import mapCoordConverter from './map/mapCoordConverter';
+import mapElementInfo, { MapElementInfo } from './map/mapElementInfo';
+import { FacilityInfo } from './facility/facilityInfo';
+import { Resource } from './resource';
+import { TotalElementHandler } from './totalElementHandler';
+import { FacilityFrameClass } from './facility/facilityFrame';
+import { MapFrameClass } from './map/mapFrame';
+import { TotalScreenManager } from './totalScreenManager';
+import { LauncherFrameClass } from './launcher/launcherFrame';
+import { objectType } from './object/objectInfo';
+import { ComponentPageNumber, SelectedComponent } from './SelectedComponent';
+import { MapManager } from './map/mapManager';
 
-function getMapPoint(clientX: number, clientY: number, canvas: HTMLCanvasElement, blockSize: number) {
+function getMapPoint(clientX: number, clientY: number, canvas: HTMLCanvasElement, mapManager: MapManager) {
   const rect = canvas.getBoundingClientRect();
   const [canvasPointX, canvasPointY] = [clientX - rect.left, clientY - rect.top];
-  return mapCoordConverter.canvasToMapCoord(canvasPointX, canvasPointY, blockSize);
+  console.log(
+    canvasPointX,
+    canvasPointY,
+    mapManager.transformInfo,
+    mapManager.blockSize,
+    mapCoordConverter.canvasToMapCoord(canvasPointX, canvasPointY, mapManager)
+  );
+  return mapCoordConverter.canvasToMapCoord(canvasPointX, canvasPointY, mapManager);
 }
 
 function handleFacilityCreateEvent(
@@ -29,10 +37,9 @@ function handleFacilityCreateEvent(
   if (!canvasRef || !contextRef || !canvasRef.current || !contextRef.current) return;
   if (selectedComponent.type !== ComponentPageNumber.facility) return;
   const component = selectedComponent.component as FacilityInfo;
-  const blockSize = totalElementHandler.mapHandler.manager.blockSize;
   const facilities = totalElementHandler.facilityHandler.manager.objects;
   const mapManager = totalElementHandler.mapHandler.manager;
-  const [mapPointX, mapPointY] = getMapPoint(e.clientX, e.clientY, canvasRef.current, blockSize);
+  const [mapPointX, mapPointY] = getMapPoint(e.clientX, e.clientY, canvasRef.current, mapManager);
   if (resource.energy < component.energy || resource.evolveFactor < component.evolveFactor) return;
   facilities.push(FacilityFrameClass.loadFrame(component, mapPointX, mapPointY));
   mapManager.map[mapPointY][mapPointX].frame.empty = false;
@@ -46,7 +53,7 @@ function handleFacilityCreateEvent(
       evolveFactorOutput: evolveFactorOutput,
     };
   });
-  totalElementHandler.facilityHandler.reDraw();
+  totalElementHandler.facilityHandler.drawNext();
 }
 
 function handleMapElementCreateEvent(
@@ -62,7 +69,7 @@ function handleMapElementCreateEvent(
   if (selectedComponent.type != ComponentPageNumber.mapElement) return;
   const component = selectedComponent.component as MapElementInfo;
   const mapManager = totalElementHandler.mapHandler.manager;
-  const [mapPointX, mapPointY] = getMapPoint(e.clientX, e.clientY, canvasRef.current, mapManager.blockSize);
+  const [mapPointX, mapPointY] = getMapPoint(e.clientX, e.clientY, canvasRef.current, mapManager);
   if (resource.energy < component.energy || resource.evolveFactor < component.gas) return;
   mapManager.map[mapPointY][mapPointX] = MapFrameClass.loadFrame(component, mapPointX, mapPointY);
   setResource((prev) => ({
@@ -70,7 +77,7 @@ function handleMapElementCreateEvent(
     energy: prev.energy - component.energy,
     evolveFactor: prev.evolveFactor - component.gas,
   }));
-  totalElementHandler.mapHandler.reDraw();
+  totalElementHandler.mapHandler.drawNext();
 }
 
 function handleLauncherCreateEvent(
@@ -88,7 +95,7 @@ function handleLauncherCreateEvent(
   if (resource.energy < component.energy || resource.evolveFactor < component.gas) return;
   const mapManager = totalElementHandler.mapHandler.manager;
   const launcherHandler = totalElementHandler.launcherHandler;
-  const [mapPointX, mapPointY] = getMapPoint(e.clientX, e.clientY, canvasRef.current, mapManager.blockSize);
+  const [mapPointX, mapPointY] = getMapPoint(e.clientX, e.clientY, canvasRef.current, mapManager);
   const launcher = LauncherFrameClass.loadFrame(component, mapPointX, mapPointY);
   if (!launcher) return;
   launcherHandler.manager.objects.push(launcher);
@@ -97,7 +104,7 @@ function handleLauncherCreateEvent(
     energy: prev.energy - component.energy,
     evolveFactor: prev.evolveFactor - component.gas,
   }));
-  launcherHandler.reDraw();
+  launcherHandler.drawNext(totalElementHandler.monsterHandler.manager.objects);
 }
 
 export function handleCanvasClickEvent(
@@ -109,7 +116,6 @@ export function handleCanvasClickEvent(
   setResource: React.Dispatch<React.SetStateAction<Resource>>
 ) {
   if (!selectedComponent || !selectedComponent.component) return;
-  console.log(selectedComponent);
   handleFacilityCreateEvent(e, totalScreenManager, totalElementHandler, selectedComponent, resource, setResource);
   handleLauncherCreateEvent(e, totalScreenManager, totalElementHandler, selectedComponent, resource, setResource);
   handleMapElementCreateEvent(e, totalScreenManager, totalElementHandler, selectedComponent, resource, setResource);
