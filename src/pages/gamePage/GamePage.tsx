@@ -7,7 +7,6 @@ import MapScreen from '../../components/gameScreen/MapScreen';
 import GameObjectFooter from '../../components/footer/GameObjectFooter';
 import UserInterfaceScreen from '../../components/gameScreen/UserInterfaceScreen';
 import GameObjectSideBar from '../../components/sideBar/GameObjectSibeBar';
-import FacilityScreen from '../../components/gameScreen/facilityScreen';
 import facilityInfo from '../../util/facility/facilityInfo';
 import { Resource } from '../../util/resource';
 import GameScreenTopBar from '../../components/topbar/gameScreenTopBar';
@@ -18,9 +17,8 @@ import { TotalElementHandler } from '../../util/totalElementHandler';
 import { loadObjectInfoImages } from '../../loader/imageLoader';
 import { loadTotalScreenManager } from '../../loader/managerLoader';
 import { loadTotalElementHandler } from '../../loader/elementHandlerLoader,';
-import { FacilityFrameClass } from '../../util/facility/facilityFrame';
 import { SelectedComponent } from '../../util/SelectedComponent';
-import { convertNumberMapToMapFrameMap, MapManagerClass } from '../../util/map/mapManager';
+import FacilityScreen from '../../components/gameScreen/FacilityScreen';
 
 const GamePage = () => {
   // const selectedComponent = useRef<SelectedComponent | null>(null);

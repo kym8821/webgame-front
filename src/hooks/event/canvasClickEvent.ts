@@ -1,16 +1,16 @@
-import { LauncherInfo } from './launcher/launcherInfo';
-import mapCoordConverter from './map/mapCoordConverter';
-import mapElementInfo, { MapElementInfo } from './map/mapElementInfo';
-import { FacilityInfo } from './facility/facilityInfo';
-import { Resource } from './resource';
-import { TotalElementHandler } from './totalElementHandler';
-import { FacilityFrameClass } from './facility/facilityFrame';
-import { MapFrameClass } from './map/mapFrame';
-import { TotalScreenManager } from './totalScreenManager';
-import { LauncherFrameClass } from './launcher/launcherFrame';
-import { objectType } from './object/objectInfo';
-import { ComponentPageNumber, SelectedComponent } from './SelectedComponent';
-import { MapManager } from './map/mapManager';
+import { LauncherInfo } from '../../util/launcher/launcherInfo';
+import mapCoordConverter from '../../util/map/mapCoordConverter';
+import mapElementInfo, { MapElementInfo } from '../../util/map/mapElementInfo';
+import { FacilityInfo } from '../../util/facility/facilityInfo';
+import { Resource } from '../../util/resource';
+import { TotalElementHandler } from '../../util/totalElementHandler';
+import { FacilityFrameClass } from '../../util/facility/facilityFrame';
+import { MapFrameClass } from '../../util/map/mapFrame';
+import { TotalScreenManager } from '../../util/totalScreenManager';
+import { LauncherFrameClass } from '../../util/launcher/launcherFrame';
+import { objectType } from '../../util/object/objectInfo';
+import { ComponentPageNumber, SelectedComponent } from '../../util/SelectedComponent';
+import { MapManager } from '../../util/map/mapManager';
 
 function getMapPoint(clientX: number, clientY: number, canvas: HTMLCanvasElement, mapManager: MapManager) {
   const rect = canvas.getBoundingClientRect();
