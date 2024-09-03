@@ -7,11 +7,11 @@ import launcherInfo from "../../util/launcher/launcherInfo";
 import { TotalElementHandler } from "../../util/totalElementHandler";
 import { SelectedComponent } from "../../util/SelectedComponent";
 
-type LauncherScreenProps = {
+interface LauncherScreenProps {
   totalScreenManager: TotalScreenManager | undefined;
   totalElementHandler: TotalElementHandler | undefined;
   selectedComponent: SelectedComponent | null;
-};
+}
 
 const LauncherScreen = ({ totalScreenManager, selectedComponent }: LauncherScreenProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

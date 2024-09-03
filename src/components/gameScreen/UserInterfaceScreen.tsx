@@ -1,12 +1,12 @@
-import { useEffect, useRef } from 'react';
-import { handleCanvasClickEvent } from '../../hooks/event/canvasClickEvent';
-import style from '../../assets/css/gameScreen.module.css';
-import { Resource } from '../../util/resource';
-import { TotalScreenManager } from '../../util/totalScreenManager';
-import { TotalElementHandler } from '../../util/totalElementHandler';
-import { SelectedComponent } from '../../util/SelectedComponent';
-import canvasMoveEvent from '../../hooks/event/canvasMoveEvent';
-import canvasResizeEvent from '../../hooks/event/canvasResizeEvent';
+import { useEffect, useRef } from "react";
+import { handleCanvasClickEvent } from "../../hooks/event/canvasClickEvent";
+import style from "../../assets/css/gameScreen.module.css";
+import { Resource } from "../../util/resource";
+import { TotalScreenManager } from "../../util/totalScreenManager";
+import { TotalElementHandler } from "../../util/totalElementHandler";
+import { SelectedComponent } from "../../util/SelectedComponent";
+import canvasMoveEvent from "../../hooks/event/canvasMoveEvent";
+import canvasResizeEvent from "../../hooks/event/canvasResizeEvent";
 
 interface UserInterfaceScreen {
   totalScreenManager: TotalScreenManager | undefined;
@@ -48,7 +48,7 @@ const UserInterfaceScreen = ({
       canvasRef.current.width = canvasRef.current.scrollWidth;
       canvasRef.current.height = canvasRef.current.width / 2;
       // set context
-      const context = canvasRef.current.getContext('2d');
+      const context = canvasRef.current.getContext("2d");
       if (!context) return;
       contextRef.current = context;
       totalScreenManager.userScreenManager.canvasRef = canvasRef;
@@ -63,16 +63,11 @@ const UserInterfaceScreen = ({
 
     const handleResize = debounce((e: UIEvent) => {
       if (!canvasRef.current) return;
-      canvasResizeEvent.handleResize(
-        e,
-        totalElementHandler,
-        canvasRef.current.scrollWidth,
-        canvasRef.current.scrollWidth / 2
-      );
+      canvasResizeEvent.handleResize(e, totalElementHandler, canvasRef.current.scrollWidth, canvasRef.current.scrollWidth / 2);
     }, 100);
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [totalElementHandler, totalScreenManager, selectedComponent, resource]);
 

@@ -14,6 +14,7 @@ export class MapFrameClass implements ObjectFrameClassType<MapFrame, MapElementI
       images: [],
       mapPointX: mapPointX,
       mapPointY: mapPointY,
+      frameNumber: 0,
       activate: false,
       empty: false,
     };

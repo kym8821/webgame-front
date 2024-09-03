@@ -5,6 +5,7 @@ export interface ObjectFrame<T> {
   info: T;
   mapPointX: number;
   mapPointY: number;
+  frameNumber: number;
   images: HTMLImageElement[];
 }
 

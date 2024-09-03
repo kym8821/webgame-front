@@ -1,13 +1,11 @@
-import { useEffect, useRef } from 'react';
-import { AnimationFrameInfo } from '../../util/animationFrameInfo';
-import style from '../../assets/css/gameScreen.module.css';
-import MonsterElementHandler from '../../util/monster/monsterElementHandler';
-import { Resource } from '../../util/resource';
-import mapCoordConverter from '../../util/map/mapCoordConverter';
-import { TotalScreenManager } from '../../util/totalScreenManager';
-import monsterInfo, { getNextMonster } from '../../util/monster/monsterInfo';
-import { MonsterFrameClass } from '../../util/monster/monsterFrame';
-import { TotalElementHandler } from '../../util/totalElementHandler';
+import { useEffect, useRef } from "react";
+import { AnimationFrameInfo } from "../../util/animationFrameInfo";
+import style from "../../assets/css/gameScreen.module.css";
+import { Resource } from "../../util/resource";
+import { TotalScreenManager } from "../../util/totalScreenManager";
+import monsterInfo, { getNextMonster } from "../../util/monster/monsterInfo";
+import { MonsterFrameClass } from "../../util/monster/monsterFrame";
+import { TotalElementHandler } from "../../util/totalElementHandler";
 
 type monsterScreenProps = {
   totalScreenManager: TotalScreenManager | undefined;
@@ -38,9 +36,7 @@ const MonsterScreen = ({ totalScreenManager, totalElementHandler, setResource }:
       const object = getNextMonster();
       if (object) {
         const nextMonsterId =
-          monsterManager.objects.length > 0
-            ? monsterManager.objects[monsterManager.objects.length - 1].frame.id + 1
-            : 1;
+          monsterManager.objects.length > 0 ? monsterManager.objects[monsterManager.objects.length - 1].frame.id + 1 : 1;
         const objectFrame = MonsterFrameClass.loadFrame(object, 0, 2, nextMonsterId);
         if (objectFrame) monsterManager.objects.push(objectFrame);
       }
@@ -80,8 +76,7 @@ const MonsterScreen = ({ totalScreenManager, totalElementHandler, setResource }:
       const blockSize = monsterElementHandler.mapManager.blockSize;
       monsterManager.objects.forEach((monster) => {
         const position = monster.getPosition(canvas.width, canvas.height, blockSize);
-        if (monster.intersectWithCore(canvas.width, canvas.height, mapManager.manager, blockSize))
-          damage += monster.frame.id + 1;
+        if (monster.intersectWithCore(canvas.width, canvas.height, mapManager.manager, blockSize)) damage += monster.frame.id + 1;
       });
       setResource((prev) => {
         return {
@@ -101,7 +96,7 @@ const MonsterScreen = ({ totalScreenManager, totalElementHandler, setResource }:
       canvasRef.current.width = canvasRef.current.scrollWidth;
       canvasRef.current.height = canvasRef.current.width / 2;
       // set context
-      const context = canvasRef.current.getContext('2d');
+      const context = canvasRef.current.getContext("2d");
       if (!context) return;
       contextRef.current = context;
       totalScreenManager.monsterManager.manager.canvasRef = canvasRef;
@@ -118,13 +113,10 @@ const MonsterScreen = ({ totalScreenManager, totalElementHandler, setResource }:
     setMovementTimer();
     setDamageTimer();
     return () => {
-      if (monsterManager.animationFrame.animationFrame)
-        cancelAnimationFrame(monsterManager.animationFrame.animationFrame);
-      if (monsterManager.generationFrame.animationFrame)
-        cancelAnimationFrame(monsterManager.generationFrame.animationFrame);
+      if (monsterManager.animationFrame.animationFrame) cancelAnimationFrame(monsterManager.animationFrame.animationFrame);
+      if (monsterManager.generationFrame.animationFrame) cancelAnimationFrame(monsterManager.generationFrame.animationFrame);
       if (monsterManager.damageFrame.animationFrame) cancelAnimationFrame(monsterManager.damageFrame.animationFrame);
-      if (monsterManager.movementFrame.animationFrame)
-        cancelAnimationFrame(monsterManager.movementFrame.animationFrame);
+      if (monsterManager.movementFrame.animationFrame) cancelAnimationFrame(monsterManager.movementFrame.animationFrame);
     };
   }, [totalScreenManager, totalElementHandler, canvasRef, contextRef, monsterInfo]);
 

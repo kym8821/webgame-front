@@ -1,9 +1,17 @@
-import { ObjectFrame, ObjectFrameClassType } from '../object/objectFrame';
-import { Position } from '../Position';
-import { FacilityInfo } from './facilityInfo';
+import { ObjectFrame, ObjectFrameClassType } from "../object/objectFrame";
+import { Position } from "../Position";
+import { FacilityInfo } from "./facilityInfo";
+
+export enum FacilityDirection {
+  top = 0,
+  right = 90,
+  bottom = 180,
+  left = 270,
+}
 
 export interface FacilityFrame extends ObjectFrame<FacilityInfo> {
   frameNumber: number;
+  direction: FacilityDirection;
 }
 
 export class FacilityFrameClass implements ObjectFrameClassType<FacilityFrame, FacilityInfo> {
@@ -14,6 +22,7 @@ export class FacilityFrameClass implements ObjectFrameClassType<FacilityFrame, F
       mapPointY: mapPointY,
       frameNumber: 0,
       images: [],
+      direction: FacilityDirection.bottom,
     };
     for (let i = 0; i < facilityInfo.images.length; i++) {
       const image = facilityInfo.images[i];
@@ -25,7 +34,7 @@ export class FacilityFrameClass implements ObjectFrameClassType<FacilityFrame, F
     this.frame = facilityFrame;
   }
   frame: FacilityFrame;
-  getPosition: (...args: any) => Position = (canvasWidth: number, canvasHeight: number, blockSize: number) => {
+  getPosition = (blockSize: number) => {
     const pos: Position = {
       posX: this.frame.mapPointX,
       posY: this.frame.mapPointY,
